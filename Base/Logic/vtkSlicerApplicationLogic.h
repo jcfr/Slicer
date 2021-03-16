@@ -269,7 +269,7 @@ private:
   std::mutex WriteDataQueueActiveLock;
   std::mutex WriteDataQueueLock;
   vtkTimeStamp RequestTimeStamp;
-  int ProcessingThreadId;
+  std::vector<int> ProcessingThreadIDs;
   std::vector<int> NetworkingThreadIDs;
   int ProcessingThreadActive;
   int ModifiedQueueActive;
