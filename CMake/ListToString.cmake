@@ -18,7 +18,7 @@
 #
 ################################################################################
 
-cmake_minimum_required(VERSION 3.13.4)
+cmake_minimum_required(VERSION 3.16.3)
 
 function(list_to_string separator input_list output_string_var)
   set(_string "")

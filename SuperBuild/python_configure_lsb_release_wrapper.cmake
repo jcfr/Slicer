@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13.4)
+cmake_minimum_required(VERSION 3.16.3)
 
 foreach(varname IN ITEMS
     CTKAppLauncher_DIR

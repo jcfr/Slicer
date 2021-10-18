@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13.4)
+cmake_minimum_required(VERSION 3.16.3)
 # Two possible approaches to use this script:
 # (1) Copy and adapt to your specific configuration or (2) Use as it is by passing options
 # Either way, the script can be executed using ctest:
