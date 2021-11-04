@@ -126,20 +126,6 @@ qMRMLLabelComboBox::qMRMLLabelComboBox(QWidget* newParent)
 // --------------------------------------------------------------------------
 qMRMLLabelComboBox::~qMRMLLabelComboBox() = default;
 
-// ----------------------------------------------------------------
-void qMRMLLabelComboBox::printAdditionalInfo()
-{
-  Q_D(qMRMLLabelComboBox);
-  qDebug().nospace() << "qMRMLLabelComboBox:" << this << endl
-      << " MRMLColorNode:" << d->ColorNode << endl
-      << "  ClassName:" << (d->ColorNode ? d->ColorNode->GetClassName() : "null") << endl
-      << "  ID:" << (d->ColorNode ? d->ColorNode->GetID() : "null") << endl
-      << "  Type:" << (d->ColorNode ? d->ColorNode->GetTypeAsString() : "null") << endl
-      << " CurrentColor:" << d->CurrentColor << endl
-      << " NoneEnabled:" << d->NoneEnabled << endl
-      << " ColorNameVisible:" << d->ColorNameVisible << endl;
-}
-
 // ---------------------------------------------------------------------------------
 CTK_GET_CPP(qMRMLLabelComboBox, vtkMRMLColorNode*, mrmlColorNode, ColorNode);
 

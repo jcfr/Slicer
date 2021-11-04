@@ -66,8 +66,6 @@ public:
   bool labelValueVisible() const;
   void setLabelValueVisible(bool visible);
 
-  virtual void printAdditionalInfo();
-
   vtkMRMLColorNode* mrmlColorNode()const;
 
   int currentColor()const;
