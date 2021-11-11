@@ -427,7 +427,7 @@ QModelIndex qMRMLSubjectHierarchyModel::indexFromSubjectHierarchyItem(vtkIdType 
     qCritical() << Q_FUNC_INFO << ": Invalid column " << column;
     return QModelIndex();
     }
-  return ctk::modelChildIndex(const_cast<qMRMLSubjectHierarchyModel*>(this), nodeParentIndex, row, column);
+  return ctk::modelChildIndex(this, nodeParentIndex, row, column);
 }
 
 //------------------------------------------------------------------------------

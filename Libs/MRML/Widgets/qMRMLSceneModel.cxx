@@ -494,7 +494,7 @@ QModelIndex qMRMLSceneModel::indexFromNode(vtkMRMLNode* node, int column)const
   const int row = nodeIndex.row();
   QModelIndex nodeParentIndex = nodeIndex.parent();
   Q_ASSERT( column < this->columnCount(nodeParentIndex) );
-  return ctk::modelChildIndex(const_cast<qMRMLSceneModel*>(this), nodeParentIndex, row, column);
+  return ctk::modelChildIndex(this, nodeParentIndex, row, column);
 }
 
 //------------------------------------------------------------------------------

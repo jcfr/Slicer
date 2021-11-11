@@ -88,7 +88,7 @@ QStandardItem* qMRMLSceneCategoryModel::itemFromCategory(const QString& category
 //------------------------------------------------------------------------------
 int qMRMLSceneCategoryModel::categoryCount()const
 {
-  return this->match(ctk::modelChildIndex(const_cast<qMRMLSceneCategoryModel*>(this), this->mrmlSceneIndex(), 0, 0),
+  return this->match(ctk::modelChildIndex(this, this->mrmlSceneIndex(), 0, 0),
                      qMRMLSceneModel::UIDRole,
                      QString("category"),
                      -1,
