@@ -501,7 +501,7 @@ class EndoscopyPathModel:
         :param cursorType: can be 'markups' or 'model'. Markups has a number of advantages (radius it is easier to change the size,
         can jump to views by clicking on it, has more visualization options, can be scaled to fixed display size),
         but if some applications relied on having a model node as cursor then this argument can be used to achieve that.
-        """
+        """  # noqa: E501
 
         fids = fiducialListNode
         scene = slicer.mrmlScene

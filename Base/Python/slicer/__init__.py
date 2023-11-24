@@ -123,7 +123,7 @@
     These attributes are only set in the Python environment embedded in the Slicer
     main application.
 
-"""
+"""  # noqa: E501
 
 
 # -----------------------------------------------------------------------------

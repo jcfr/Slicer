@@ -1,5 +1,5 @@
 target-version = "py39"
-line-length = 550
+line-length = 120
 
 [lint]
 select = [
@@ -131,3 +131,25 @@ convention = "pep257"
 "Modules/*/__init__.py" = ["F401"]
 "Extensions/*/__init__.py" = ["F401"]
 "Utilities/*/__init__.py" = ["F401"]
+# Line too long
+"*/Testing/Python/*.py" = ["E501"]
+"Base/Python/sitkUtils.py" = ["E501"]
+"Base/Python/slicer/parameterNodeWrapper/*.py" = ["E501"]
+"Base/Python/slicer/i18n.py" = ["E501"]
+"Base/Python/slicer/util.py" = ["E501"]
+"Docs/conf.py" = ["E501"]
+"Extensions/Testing/*.py" = ["E501"]
+"Libs/vtkITK/Testing/*.py" = ["E501"]
+"Modules/Loadable/Segmentations/EditorEffects/Python/SegmentEditorEffects/*.py" = ["E501"]
+"Modules/Scripted/DataProbe/DataProbe.py" = ["E501"]
+"Modules/Scripted/DICOMLib/*.py" =  ["E501"]
+"Modules/Scripted/DICOMPatcher/DICOMPatcher.py" = ["E501"]
+"Modules/Scripted/DICOMPlugins/*.py" = ["E501"]
+"Modules/Scripted/SampleData/SampleData.py" = ["E501"]
+"Modules/Scripted/SegmentEditor/*.py" = ["E501"]
+"Modules/Scripted/SegmentStatistics/*.py" = ["E501"]
+"Modules/Scripted/ScreenCapture/ScreenCapture.py" = ["E501"]
+"Modules/Scripted/WebServer/WebServer.py" = ["E501"]
+"Modules/Scripted/WebServer/WebServerLib/DICOMRequestHandler.py" = ["E501"]
+"Utilities/Scripts/*.py" = ["E501"]
+"Utilities/Templates/*.py" = ["E501"]

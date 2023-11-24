@@ -27,7 +27,7 @@ class CropVolumeSequence(ScriptedLoadableModule):
         self.parent.dependencies = []
         self.parent.contributors = ["Andras Lasso (PerkLab, Queen's University)"]
         self.parent.helpText = _(
-            """This module can crop and resample a volume sequence to reduce its size for faster rendering and processing."""
+            """This module can crop and resample a volume sequence to reduce its size for faster rendering and processing."""  # noqa: E501
         )
         self.parent.helpText += self.getDefaultModuleDocumentationLink()
         self.parent.acknowledgementText = _(

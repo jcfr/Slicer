@@ -74,7 +74,7 @@ class VectorToScalarVolume(ScriptedLoadableModule):
     <li>convert RGB images to scalar using luminance as implemented in vtkImageLuminance (scalar = 0.30*R + 0.59*G + 0.11*B).</li>
     <li>computes the mean of all the components.</li>
     </ul>
-    """
+    """  # noqa: E501
         )
         self.parent.acknowledgementText = _(
             """
