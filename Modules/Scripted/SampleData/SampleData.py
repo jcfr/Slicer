@@ -593,7 +593,7 @@ class SampleDataLogic:
              "CT-cardio.seq.nrrd", "CTCardioSeq",
              "SHA256:d1a1119969acead6c39c7c3ec69223fa2957edc561bc5bf384a203e2284dbc93",
              None, None, None, "SequenceFile"),
-        )
+        )  # fmt: skip
 
         if self.builtInCategoryName not in slicer.modules.sampleDataSources:
             slicer.modules.sampleDataSources[self.builtInCategoryName] = []

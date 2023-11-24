@@ -267,7 +267,7 @@ class DICOMPlugin:
             [slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMAttributePrefix() + "ContentTime", tags["contentTime"]],
             [slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMAttributePrefix() + "Manufacturer", tags["manufacturer"]],
             [slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMAttributePrefix() + "Model", tags["model"]],
-        ]
+        ]  # fmt: skip
         for attributeName, tag in seriesAttributes:
             shn.SetItemAttribute(seriesItemID, attributeName, slicer.dicomDatabase.fileValue(firstFile, tag))
 

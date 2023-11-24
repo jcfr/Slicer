@@ -708,10 +708,13 @@ class ExtensionWizard:
 
         candidateBuiltInTemplatePaths = [
             os.path.join(scriptPath, "..", "..", "..", "Utilities", "Templates"),  # Run from source directory
-            os.path.join(scriptPath, "..", "..", "..", "share",  # Run from install
-                         "Slicer-%s.%s" % tuple(__version_info__[:2]),
-                         "Wizard", "Templates"),
-        ]
+            os.path.join(
+                scriptPath, "..", "..", "..", "share",  # Run from install
+                "Slicer-%s.%s" % tuple(__version_info__[:2]),
+                "Wizard",
+                "Templates",
+            ),
+        ]  # fmt: skip
         descriptionFileTemplate = None
         for candidate in candidateBuiltInTemplatePaths:
             if os.path.exists(candidate):

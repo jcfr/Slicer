@@ -55,12 +55,14 @@ def check_exit_code(slicer_executable, testing_enabled=True, debug=False):
         copyfile(currentDirPath + "/ScriptedModuleCleanupTestHelperModule.py",
                  temporaryModuleDirPath + "/ModuleCleanup.py")
 
+        # fmt: off
         common_arguments = [
             "--no-splash",
             "--disable-builtin-modules",
             "--additional-module-path", temporaryModuleDirPath,
             "--python-code", 'slicer.util.selectModule("ModuleCleanup")',
         ]
+        # fmt: off
 
         test_output_file = temporaryModuleDirPath + "/ModuleCleanupTest.out"
         os.environ["SLICER_MODULE_CLEANUP_TEST_OUTPUT"] = test_output_file

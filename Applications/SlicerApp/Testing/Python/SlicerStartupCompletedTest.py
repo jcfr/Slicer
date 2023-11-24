@@ -53,6 +53,7 @@ if __name__ == "__main__":
                  temporaryModuleDirPath + "/SlicerStartupCompletedTestHelperModule.py")
 
         slicer_executable = os.path.expanduser(sys.argv[1])
+        # fmt: off
         common_args = [
             "--testing",
             "--no-splash",
@@ -61,6 +62,7 @@ if __name__ == "__main__":
             "--disable-builtin-scripted-loadable-modules",
             "--additional-module-path", temporaryModuleDirPath,
         ]
+        # fmt: on
 
         test_output_file = temporaryModuleDirPath + "/StartupCompletedTest.out"
         os.environ["SLICER_STARTUP_COMPLETED_TEST_OUTPUT"] = test_output_file

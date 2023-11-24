@@ -211,10 +211,17 @@ class DICOMStoreSCPProcess(DICOMProcess):
         # Offer to terminate running SCP processes.
         # They may be started by other applications, listening on other ports, so we try to start ours anyway.
         self.killStoreSCPProcesses()
-        onReceptionCallback = '%s --load-short --print-short --print-filename --search PatientName "%s/#f"' \
-                              % (self.dcmdumpExecutable, self.incomingDataDir)
-        args = [str(self.port), "--accept-all", "--output-directory", self.incomingDataDir, "--exec-sync",
-                "--exec-on-reception", onReceptionCallback]
+        onReceptionCallback = '%s --load-short --print-short --print-filename --search PatientName "%s/#f"' % (
+            self.dcmdumpExecutable,
+            self.incomingDataDir,
+        )
+        args = [
+            str(self.port),
+            "--accept-all",
+            "--output-directory", self.incomingDataDir,
+            "--exec-sync",
+            "--exec-on-reception", onReceptionCallback,
+        ]  # fmt: skip
         logging.debug("Starting storescp process")
         super().start(self.storescpExecutable, args)
         self.process.connect("readyReadStandardOutput()", self.readFromStandardOutput)

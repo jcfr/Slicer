@@ -91,6 +91,7 @@ class DICOM(ScriptedLoadableModule):
 
             layoutManager = slicer.app.layoutManager()
             layoutManager.layoutChanged.connect(self.onLayoutChanged)
+            # fmt: off
             layout = (
                 '<layout type="horizontal">'
                 " <item>"
@@ -98,6 +99,7 @@ class DICOM(ScriptedLoadableModule):
                 " </item>"
                 "</layout>"
             )
+            # fmt: on
             layoutNode = slicer.app.layoutManager().layoutLogic().GetLayoutNode()
             layoutNode.AddLayoutDescription(
                 slicer.vtkMRMLLayoutNode.SlicerLayoutDicomBrowserView, layout)

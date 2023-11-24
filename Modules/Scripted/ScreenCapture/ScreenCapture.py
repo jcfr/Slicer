@@ -832,7 +832,8 @@ class ScreenCaptureLogic(ScriptedLoadableModuleLogic):
             {"name": _("MPEG-4"), "fileExtension": "mp4", "extraVideoOptions": "-codec mpeg4 -qscale 5"},
             {"name": _("MPEG-4 (high-quality)"), "fileExtension": "mp4", "extraVideoOptions": "-codec mpeg4 -qscale 3"},
             {"name": _("Animated GIF"), "fileExtension": "gif", "extraVideoOptions": "-filter_complex palettegen,[v]paletteuse"},
-            {"name": _("Animated GIF (grayscale)"), "fileExtension": "gif", "extraVideoOptions": "-vf format=gray"}]
+            {"name": _("Animated GIF (grayscale)"), "fileExtension": "gif", "extraVideoOptions": "-vf format=gray"},
+        ]  # fmt: skip
 
         self.watermarkPositionPresets = [
             {"name": "bottom-left", "position": lambda capturedImageSize, watermarkSize, spacing: [-2, -2]},
@@ -1433,12 +1434,14 @@ class ScreenCaptureLogic(ScriptedLoadableModuleLogic):
 
         filePathPattern = os.path.join(outputDir, imageFileNamePattern)
         outputVideoFilePath = os.path.join(outputDir, videoFileName)
-        ffmpegParams = [ffmpegPath,
-                        "-nostdin",  # disable stdin (to prevent hang when running Slicer as background process)
-                        "-y",  # overwrite without asking
-                        "-r", str(frameRate),
-                        "-start_number", "0",
-                        "-i", str(filePathPattern)]
+        ffmpegParams = [
+            ffmpegPath,
+            "-nostdin",  # disable stdin (to prevent hang when running Slicer as background process)
+            "-y",  # overwrite without asking
+            "-r", str(frameRate),
+            "-start_number", "0",
+            "-i", str(filePathPattern),
+        ]  # fmt: skip
         ffmpegParams += [_f for _f in extraOptions.split(" ") if _f]
         ffmpegParams.append(outputVideoFilePath)
 

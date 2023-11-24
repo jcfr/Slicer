@@ -82,12 +82,15 @@ if __name__ == "__main__":
     EMTSerializer = CLISerializationTest()
     EMTSerializer.SlicerExecutable = slicer_executable
     CLIName = "ExecutionModelTour"
+    # fmt: off
     required_inputs = [
         "--transform1", "%s/ExecutionModelTourTestPython.mrml#vtkMRMLLinearTransformNode1" % (temp_dir),
         "--transform2", "%s/ExecutionModelTourTestPython.mrml#vtkMRMLLinearTransformNode2" % (temp_dir),
         mrHeadResampled,
         ctHeadAxial,
     ]
+    # fmt: on
+    # fmt: off
     serialize_options = [
         "--integer", "30",
         "--double", "30",
@@ -99,6 +102,7 @@ if __name__ == "__main__":
         "--seed", "1.0,0.0,-1.0",
         "--seedsOutFile", serializeSeedsOutFile,
     ]
+    # fmt: on
     parameters = serialize_options
     parameters.extend(required_inputs)
 
@@ -211,9 +215,11 @@ if __name__ == "__main__":
             exit(EXIT_FAILURE)
 
     # Now try to deserialize the CLI.
+    # fmt: off
     parameters = [
         "--seedsOutFile", deserializeSeedsOutFile,
     ]
+    # fmt: off
     (returncode, deserializeErr, deserializeOut) = EMTSerializer.deserializeCLI(CLIName, json_file, parameters)
     if returncode != EXIT_SUCCESS:
         print("Problem while deserializing the CLI: %s" % deserializeErr)
