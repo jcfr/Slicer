@@ -65,8 +65,7 @@ class DICOMProcess:
 
         try:
             absSearchPaths = (f"{slicer.app.slicerHome}{path}" for path in relSearchPaths)
-            return next(path for path in absSearchPaths
-                        if os.path.exists(path))
+            return next(path for path in absSearchPaths if os.path.exists(path))
         except StopIteration:
             raise UserWarning("Could not find a valid path to DICOM helper applications")
 
@@ -203,8 +202,11 @@ class DICOMStoreSCPProcess(DICOMProcess):
     def onStateChanged(self, newState):
         stdout, stderr = super().onStateChanged(newState)
         if stderr and stderr.size():
-            slicer.util.errorDisplay("An error occurred. For further information click 'Show Details...'",
-                                     windowTitle=self.__class__.__name__, detailedText=str(stderr))
+            slicer.util.errorDisplay(
+                "An error occurred. For further information click 'Show Details...'",
+                windowTitle=self.__class__.__name__,
+                detailedText=str(stderr),
+            )
         return stdout, stderr
 
     def start(self, cmd=None, args=None):
@@ -573,10 +575,7 @@ class DICOMSender:
         # to initialize the background process and wait for completion of the transfer.
         storeCommand = DICOMCommand(STORESCU_COMMAND, args)
         storeCommand.start()
-        return not (
-            storeCommand.process.ExitStatus() == qt.QProcess.CrashExit
-            or storeCommand.process.exitCode() != 0
-        )
+        return not (storeCommand.process.ExitStatus() == qt.QProcess.CrashExit or storeCommand.process.exitCode() != 0)
 
     def _sendOneFileWithDIMSE(self, file: str) -> None:
         """Send DICOM file to the specified modality with DIMSE.
@@ -598,7 +597,8 @@ class DICOMSender:
 
         # Terminate transfer and notify user of failure
         if self._dicomSendSCU(
-            file, config=os.path.join(RESOURCE_ROOT, self.extended_dicom_config_path),
+            file,
+            config=os.path.join(RESOURCE_ROOT, self.extended_dicom_config_path),
         ):
             # success
             return True
@@ -607,7 +607,9 @@ class DICOMSender:
         raise UserWarning(userMsg)
 
     def _sendOneFileWithDICOMWeb(
-        self, file: str, client: dicomweb_client.DICOMwebClient,
+        self,
+        file: str,
+        client: dicomweb_client.DICOMwebClient,
     ) -> None:
         """
         Do the actual work of transmitting one DICOM file to a remote server
@@ -624,7 +626,8 @@ class DICOMSender:
         client.store_instances(datasets=[dataset])
 
     def _parseKheopsView(
-        self, destinationURL: qt.QUrl,
+        self,
+        destinationURL: qt.QUrl,
     ) -> Optional[tuple[qt.QUrl, HTTPBasicAuth]]:
         """
         Parse parameters for specific Kheops server implementation.

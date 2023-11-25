@@ -148,7 +148,9 @@ class Exclude(Validator):
 
     def validate(self, value) -> None:
         if value in self.excludedValues:
-            raise ValueError(f"Value is {value}, but must not be an excluded value: excluded values {self.excludedValues}")
+            raise ValueError(
+                f"Value is {value}, but must not be an excluded value: excluded values {self.excludedValues}"
+            )
 
 
 class RangeBounds(Validator):
@@ -163,4 +165,6 @@ class RangeBounds(Validator):
 
     def validate(self, value) -> None:
         if not self.minimum <= value.minimum and value.maximum <= self.maximum:
-            raise ValueError(f"Range must be within the bound of [{self.minimum}, {self.maximum}], is [{value.minimum}, {value.maximum}]")
+            raise ValueError(
+                f"Range must be within the bound of [{self.minimum}, {self.maximum}], is [{value.minimum}, {value.maximum}]"
+            )

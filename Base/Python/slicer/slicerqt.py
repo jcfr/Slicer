@@ -42,7 +42,8 @@ class SlicerApplicationLogHandler(logging.Handler):
                 logging.DEBUG: ctk.ctkErrorLogLevel.Debug,
                 logging.INFO: ctk.ctkErrorLogLevel.Info,
                 logging.WARNING: ctk.ctkErrorLogLevel.Warning,
-                logging.ERROR: ctk.ctkErrorLogLevel.Error}
+                logging.ERROR: ctk.ctkErrorLogLevel.Error,
+            }
         self.origin = "Python"
         self.category = "Python"
 
@@ -57,8 +58,14 @@ class SlicerApplicationLogHandler(logging.Handler):
             context.setFunction(record.funcName)
             context.setMessage(msg)
             threadId = f"{record.threadName}({record.thread})"
-            slicer.app.errorLogModel().postEntry(qt.QDateTime.currentDateTime(), threadId,
-                                                 self.pythonToCtkLevelConverter[record.levelno], self.origin, context, msg)
+            slicer.app.errorLogModel().postEntry(
+                qt.QDateTime.currentDateTime(),
+                threadId,
+                self.pythonToCtkLevelConverter[record.levelno],
+                self.origin,
+                context,
+                msg,
+            )
         except:
             self.handleError(record)
 

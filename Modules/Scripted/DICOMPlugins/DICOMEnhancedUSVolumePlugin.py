@@ -89,7 +89,9 @@ class DICOMEnhancedUSVolumePluginClass(DICOMPlugin):
             loadable.singleSequence = False  # put each instance in a separate sequence
             loadable.files = [filePath]
             loadable.name = name.strip()  # remove leading and trailing spaces, if any
-            loadable.warning = _("Loading of this image type is experimental. Please verify image geometry and report any problem is found.")
+            loadable.warning = _(
+                "Loading of this image type is experimental. Please verify image geometry and report any problem is found."
+            )
             loadable.tooltip = _("Ultrasound volume")
             loadable.selected = True
             # Confidence is slightly larger than default scalar volume plugin's (0.5)
@@ -128,8 +130,7 @@ class DICOMEnhancedUSVolumePluginClass(DICOMPlugin):
         reader.Update()
         if reader.GetErrorCode() != vtk.vtkErrorCode.NoError:
             errorString = vtk.vtkErrorCode.GetStringFromErrorCode(reader.GetErrorCode())
-            raise ValueError(
-                f"Could not read image {loadable.name} from file {filePath}. Error is: {errorString}")
+            raise ValueError(f"Could not read image {loadable.name} from file {filePath}. Error is: {errorString}")
 
         rasToIjk = reader.GetRasToIjkMatrix()
         ijkToRas = vtk.vtkMatrix4x4()

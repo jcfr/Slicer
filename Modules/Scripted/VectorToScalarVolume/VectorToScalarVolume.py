@@ -58,10 +58,13 @@ class VectorToScalarVolume(ScriptedLoadableModule):
         self.parent.title = _("Vector to Scalar Volume")
         self.parent.categories = [translate("qSlicerAbstractCoreModule", "Converters")]
         self.parent.dependencies = []
-        self.parent.contributors = ["Steve Pieper (Isomics)",
-                                    "Pablo Hernandez-Cerdan (Kitware)",
-                                    "Jean-Christophe Fillion-Robin (Kitware)" ]
-        self.parent.helpText = _("""
+        self.parent.contributors = [
+            "Steve Pieper (Isomics)",
+            "Pablo Hernandez-Cerdan (Kitware)",
+            "Jean-Christophe Fillion-Robin (Kitware)",
+        ]
+        self.parent.helpText = _(
+            """
     <p>Make a scalar (1 component) volume from a vector volume.</p>
 
     <p>It provides multiple conversion modes:</p>
@@ -71,12 +74,15 @@ class VectorToScalarVolume(ScriptedLoadableModule):
     <li>convert RGB images to scalar using luminance as implemented in vtkImageLuminance (scalar = 0.30*R + 0.59*G + 0.11*B).</li>
     <li>computes the mean of all the components.</li>
     </ul>
-    """)
-        self.parent.acknowledgementText = _("""
+    """
+        )
+        self.parent.acknowledgementText = _(
+            """
 Developed by Steve Pieper, Isomics, Inc.,
 partially funded by NIH grant 3P41RR013218-12S1 (NAC) and is part of the National Alliance
 for Medical Image Computing (NA-MIC), funded by the National Institutes of Health through the
-NIH Roadmap for Medical Research, Grant U54 EB005149.""")
+NIH Roadmap for Medical Research, Grant U54 EB005149."""
+        )
 
 
 #
@@ -244,7 +250,8 @@ class VectorToScalarVolumeWidget(ScriptedLoadableModuleWidget, VTKObservationMix
         self.ui.inputSelector.setCurrentNode(self._parameterNode.InputVolume)
         self.ui.outputSelector.setCurrentNode(self._parameterNode.OutputVolume)
         self.ui.methodSelectorComboBox.setCurrentIndex(
-            self.ui.methodSelectorComboBox.findData(self._parameterNode.ConversionMethod))
+            self.ui.methodSelectorComboBox.findData(self._parameterNode.ConversionMethod)
+        )
         self.ui.componentsSpinBox.value = self._parameterNode.ComponentToExtract
 
         isMethodSingleComponent = self._parameterNode.ConversionMethod is ConversionMethods.SINGLE_COMPONENT
@@ -325,8 +332,7 @@ class VectorToScalarVolumeLogic(ScriptedLoadableModuleLogic):
             logging.debug("isValidInputOutputData failed: %s" % msg)
             return False, msg
         if inputVolumeNode.GetID() == outputVolumeNode.GetID():
-            msg = _("input and output volume is the same. "
-                    "Create a new volume for output to avoid this error.")
+            msg = _("input and output volume is the same. " "Create a new volume for output to avoid this error.")
             logging.debug("isValidInputOutputData failed: %s" % msg)
             return False, msg
 
@@ -345,16 +351,19 @@ class VectorToScalarVolumeLogic(ScriptedLoadableModuleLogic):
         if conversionMethod is ConversionMethods.SINGLE_COMPONENT:
             # componentToExtract is an index with valid values in the range: [0, numberOfComponents-1]
             if not 0 <= componentToExtract < numberOfComponents:
-                msg = _("component to extract ({componentSelected}) is invalid. Image has only {componentsTotal} components.").format(
-                    componentSelected=componentToExtract, componentsTotal=numberOfComponents)
+                msg = _(
+                    "component to extract ({componentSelected}) is invalid. Image has only {componentsTotal} components."
+                ).format(componentSelected=componentToExtract, componentsTotal=numberOfComponents)
                 logging.debug("isValidInputOutputData failed: %s" % msg)
                 return False, msg
 
         # LUMINANCE: Check that input vector has at least three components.
         if conversionMethod is ConversionMethods.LUMINANCE:
             if numberOfComponents < 3:
-                msg = _("input has only {componentsTotal} components but requires "
-                        "at least 3 components for luminance conversion.").format(componentsTotal=numberOfComponents)
+                msg = _(
+                    "input has only {componentsTotal} components but requires "
+                    "at least 3 components for luminance conversion."
+                ).format(componentsTotal=numberOfComponents)
                 logging.debug("isValidInputOutputData failed: %s" % msg)
                 return False, msg
 
@@ -374,8 +383,9 @@ class VectorToScalarVolumeLogic(ScriptedLoadableModuleLogic):
         conversionMethod = parameterNode.ConversionMethod
         componentToExtract = parameterNode.ComponentToExtract
 
-        valid, msg = self.isValidInputOutputData(inputVolumeNode, outputVolumeNode,
-                                                 conversionMethod, componentToExtract)
+        valid, msg = self.isValidInputOutputData(
+            inputVolumeNode, outputVolumeNode, conversionMethod, componentToExtract
+        )
         if not valid:
             raise ValueError(msg)
 
@@ -383,8 +393,7 @@ class VectorToScalarVolumeLogic(ScriptedLoadableModuleLogic):
         logging.debug("ComponentToExtract is %s" % componentToExtract)
 
         if conversionMethod is ConversionMethods.SINGLE_COMPONENT:
-            self.runConversionMethodSingleComponent(inputVolumeNode, outputVolumeNode,
-                                                    componentToExtract)
+            self.runConversionMethodSingleComponent(inputVolumeNode, outputVolumeNode, componentToExtract)
 
         if conversionMethod is ConversionMethods.LUMINANCE:
             self.runConversionMethodLuminance(inputVolumeNode, outputVolumeNode)

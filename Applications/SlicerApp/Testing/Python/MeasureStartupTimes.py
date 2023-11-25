@@ -104,7 +104,8 @@ def read_modules(input_file):
 
 def collect_modules(output_file):
     # Collect list of all modules and their associated types
-    python_script = TemporaryPythonScript("""
+    python_script = TemporaryPythonScript(
+        """
 import json
 
 modules = {{}}
@@ -128,7 +129,8 @@ for name in dir(slicer.moduleNames):
   modules[name] = module_type
 with open("{0}", 'w') as output:
   output.write(json.dumps(modules, indent=4))
-""".format(output_file))
+""".format(output_file)
+    )
 
     (returnCode, stdout, stderr) = runSlicerAndExit(slicer_executable, ["--python-script", python_script.name])
     assert returnCode == EXIT_SUCCESS
@@ -138,10 +140,16 @@ with open("{0}", 'w') as output:
 
 
 def slicerRevision():
-    (returnCode, stdout, stderr) = runSlicerAndExit(slicer_executable, [
-        "--no-main-window", "--ignore-slicerrc", "--disable-modules",
-        "--python-code", "print(slicer.app.repositoryRevision)",
-    ])
+    (returnCode, stdout, stderr) = runSlicerAndExit(
+        slicer_executable,
+        [
+            "--no-main-window",
+            "--ignore-slicerrc",
+            "--disable-modules",
+            "--python-code",
+            "print(slicer.app.repositoryRevision)",
+        ],
+    )
     assert returnCode == EXIT_SUCCESS
     return stdout.split()[0]
 
@@ -182,7 +190,9 @@ def collect_startup_times_excluding_one_module(output_file, module_list, drop_ca
         #  print("=> Skipping CLI [%s]\n" % moduleName)
         #  continue
         print("[%d/%d]" % (idx, len(modules)))
-        (duration, result) = runSlicerAndExitWithTime(slicer_executable, ["--testing", "--modules-to-ignore", moduleName], drop_cache=drop_cache)
+        (duration, result) = runSlicerAndExitWithTime(
+            slicer_executable, ["--testing", "--modules-to-ignore", moduleName], drop_cache=drop_cache
+        )
         (returnCode, stdout, stderr) = result
         if display_output:
             if stdout:
@@ -200,7 +210,9 @@ def collect_startup_times_excluding_one_module(output_file, module_list, drop_ca
         file.write(json.dumps(moduleTimes, indent=4))
 
 
-def collect_startup_times_modules_to_load(output_file, modules_to_load, module_list, drop_cache=False, display_output=False):
+def collect_startup_times_modules_to_load(
+    output_file, modules_to_load, module_list, drop_cache=False, display_output=False
+):
     modules = collect_modules(module_list)
     modulesToIgnore = list(modules.keys())
     for moduleName in modules_to_load.split(","):
@@ -239,11 +251,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     slicer_executable = os.path.expanduser(getattr(args, "/path/to/Slicer"))
-    all = (not args.normal
-           and not args.modules_to_load
-           and not args.overall
-           and not args.excluding_one_module
-           and not args.including_one_module)
+    all = (
+        not args.normal
+        and not args.modules_to_load
+        and not args.overall
+        and not args.excluding_one_module
+        and not args.including_one_module
+    )
 
     runSlicerAndExitWithTime = timecall(runSlicerAndExit, repeat=args.repeat)
 
@@ -268,15 +282,18 @@ if __name__ == "__main__":
     # for convenience, it is not executed by default.
     if args.modules_to_load:
         collect_startup_times_modules_to_load(
-            "StartupTimesSelectedModules.json", args.modules_to_load, module_list, **common_kwargs)
+            "StartupTimesSelectedModules.json", args.modules_to_load, module_list, **common_kwargs
+        )
 
     if all or args.overall:
         collect_startup_times_overall("StartupTimes-r%s.json" % sliver_revision, **common_kwargs)
 
     if all or args.excluding_one_module:
         collect_startup_times_excluding_one_module(
-            "StartupTimesExcludingOneModule-r%s.json" % sliver_revision, module_list, **common_kwargs)
+            "StartupTimesExcludingOneModule-r%s.json" % sliver_revision, module_list, **common_kwargs
+        )
 
     if all or args.including_one_module:
         collect_startup_times_including_one_module(
-            "StartupTimesIncludingOneModule-r%s.json" % sliver_revision, module_list, **common_kwargs)
+            "StartupTimesIncludingOneModule-r%s.json" % sliver_revision, module_list, **common_kwargs
+        )

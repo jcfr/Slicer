@@ -49,7 +49,12 @@ class VolumesLogicCompareVolumeGeometryTesting(ScriptedLoadableModuleTest):
         volumesLogic.SetCompareVolumeGeometryEpsilon(1e-10)
         precision = volumesLogic.GetCompareVolumeGeometryPrecision()
         if precision != 10:
-            print("Error in calculating precision from epsilon of ", volumesLogic.GetCompareVolumeGeometryEpsilon(), ", expected 10, got ", precision)
+            print(
+                "Error in calculating precision from epsilon of ",
+                volumesLogic.GetCompareVolumeGeometryEpsilon(),
+                ", expected 10, got ",
+                precision,
+            )
             return False
         warningString = volumesLogic.CompareVolumeGeometry(head, head)
         if len(warningString) != 0:
@@ -67,7 +72,10 @@ class VolumesLogicCompareVolumeGeometryTesting(ScriptedLoadableModuleTest):
 
         warningString = volumesLogic.CompareVolumeGeometry(head, head2)
         if len(warningString) != 0:
-            print("Error in checking MRHead geometry against itself with epsilon ", volumesLogic.GetCompareVolumeGeometryEpsilon())
+            print(
+                "Error in checking MRHead geometry against itself with epsilon ",
+                volumesLogic.GetCompareVolumeGeometryEpsilon(),
+            )
             print(warningString)
             return False
         else:
@@ -79,11 +87,16 @@ class VolumesLogicCompareVolumeGeometryTesting(ScriptedLoadableModuleTest):
         headLabel = volumesLogic.CreateAndAddLabelVolume(head, "label vol")
         warningString = volumesLogic.CompareVolumeGeometry(head, headLabel)
         if len(warningString) != 0:
-            print("Error in comparing MRHead geometry against a label map of itself with epsilon", volumesLogic.GetCompareVolumeGeometryEpsilon())
+            print(
+                "Error in comparing MRHead geometry against a label map of itself with epsilon",
+                volumesLogic.GetCompareVolumeGeometryEpsilon(),
+            )
             print(warningString)
             return False
         else:
-            print("Success in comparing MRHead vs label map with epsilon", volumesLogic.GetCompareVolumeGeometryEpsilon())
+            print(
+                "Success in comparing MRHead vs label map with epsilon", volumesLogic.GetCompareVolumeGeometryEpsilon()
+            )
 
         #
         # adjust the geometry and make it fail
@@ -97,10 +110,16 @@ class VolumesLogicCompareVolumeGeometryTesting(ScriptedLoadableModuleTest):
 
         warningString = volumesLogic.CompareVolumeGeometry(head, head2)
         if len(warningString) == 0:
-            print("Error in comparing MRHead geometry against an updated clone, with epsilon", volumesLogic.GetCompareVolumeGeometryEpsilon())
+            print(
+                "Error in comparing MRHead geometry against an updated clone, with epsilon",
+                volumesLogic.GetCompareVolumeGeometryEpsilon(),
+            )
             return False
         else:
-            print("Success in making the comparison fail, with with epsilon", volumesLogic.GetCompareVolumeGeometryEpsilon())
+            print(
+                "Success in making the comparison fail, with with epsilon",
+                volumesLogic.GetCompareVolumeGeometryEpsilon(),
+            )
             print(warningString)
 
         #

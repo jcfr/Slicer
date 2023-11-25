@@ -9,8 +9,7 @@ from .EditableTreeWidget import EditableTreeWidget
 
 # -----------------------------------------------------------------------------
 def _map_property(objfunc, name):
-    return property(lambda self: getattr(objfunc(self), name),
-                    lambda self, value: setattr(objfunc(self), name, value))
+    return property(lambda self: getattr(objfunc(self), name), lambda self, value: setattr(objfunc(self), name, value))
 
 
 # =============================================================================
@@ -45,8 +44,7 @@ class _ui_EditExtensionMetadataDialog:
         vLayout.addStretch(1)
 
         self.buttonBox = qt.QDialogButtonBox()
-        self.buttonBox.setStandardButtons(qt.QDialogButtonBox.Ok |
-                                          qt.QDialogButtonBox.Cancel)
+        self.buttonBox.setStandardButtons(qt.QDialogButtonBox.Ok | qt.QDialogButtonBox.Cancel)
         vLayout.addWidget(self.buttonBox)
 
 
@@ -71,12 +69,15 @@ class EditExtensionMetadataDialog:
     # ---------------------------------------------------------------------------
     def accept(self):
         if not len(self.project):
-            slicer.util.errorDisplay("Extension name may not be empty.", windowTitle="Invalid metadata", parent=self.dialog)
+            slicer.util.errorDisplay(
+                "Extension name may not be empty.", windowTitle="Invalid metadata", parent=self.dialog
+            )
             return
 
         if not len(self.description):
-            slicer.util.errorDisplay("Extension description may not be empty.",
-                                     windowTitle="Invalid metadata", parent=self.dialog)
+            slicer.util.errorDisplay(
+                "Extension description may not be empty.", windowTitle="Invalid metadata", parent=self.dialog
+            )
             return
 
         self.dialog.accept()

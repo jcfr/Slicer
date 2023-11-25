@@ -14,7 +14,9 @@ class SegmentEditorEffect(AbstractScriptedSegmentEditorEffect):
 
     def __init__(self, scriptedEffect):
         scriptedEffect.name = "TemplateKey"
-        scriptedEffect.perSegment = False  # this effect operates on all segments at once (not on a single selected segment)
+        scriptedEffect.perSegment = (
+            False  # this effect operates on all segments at once (not on a single selected segment)
+        )
         scriptedEffect.requireSegments = True  # this effect requires segment(s) existing in the segmentation
         AbstractScriptedSegmentEditorEffect.__init__(self, scriptedEffect)
 
@@ -47,7 +49,9 @@ To segment a single object, create a segment and paint inside and create another
         self.objectScaleMmSlider.minimum = 0
         self.objectScaleMmSlider.maximum = 10
         self.objectScaleMmSlider.value = 2.0
-        self.objectScaleMmSlider.setToolTip("Increasing this value smooths the segmentation and reduces leaks. This is the sigma used for edge detection.")
+        self.objectScaleMmSlider.setToolTip(
+            "Increasing this value smooths the segmentation and reduces leaks. This is the sigma used for edge detection."
+        )
         self.scriptedEffect.addLabeledOptionsWidget("Object scale:", self.objectScaleMmSlider)
         self.objectScaleMmSlider.connect("valueChanged(double)", self.updateMRMLFromGUI)
 
@@ -99,11 +103,15 @@ To segment a single object, create a segment and paint inside and create another
         sourceVolumeNode = slicer.vtkMRMLScalarVolumeNode()
         slicer.mrmlScene.AddNode(sourceVolumeNode)
         sourceVolumeNode.SetAndObserveTransformNodeID(segmentationNode.GetTransformNodeID())
-        slicer.vtkSlicerSegmentationsModuleLogic.CopyOrientedImageDataToVolumeNode(self.scriptedEffect.sourceVolumeImageData(), sourceVolumeNode)
+        slicer.vtkSlicerSegmentationsModuleLogic.CopyOrientedImageDataToVolumeNode(
+            self.scriptedEffect.sourceVolumeImageData(), sourceVolumeNode
+        )
         # Generate merged labelmap of all visible segments, as the filter expects a single labelmap with all the labels.
         mergedLabelmapNode = slicer.vtkMRMLLabelMapVolumeNode()
         slicer.mrmlScene.AddNode(mergedLabelmapNode)
-        slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsToLabelmapNode(segmentationNode, visibleSegmentIds, mergedLabelmapNode, sourceVolumeNode)
+        slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsToLabelmapNode(
+            segmentationNode, visibleSegmentIds, mergedLabelmapNode, sourceVolumeNode
+        )
 
         # Run segmentation algorithm
         import SimpleITK as sitk
@@ -113,7 +121,9 @@ To segment a single object, create a segment and paint inside and create another
         labelImage = sitk.ReadImage(sitkUtils.GetSlicerITKReadWriteAddress(mergedLabelmapNode.GetName()))
         backgroundImage = sitk.ReadImage(sitkUtils.GetSlicerITKReadWriteAddress(sourceVolumeNode.GetName()))
         # Run watershed filter
-        featureImage = sitk.GradientMagnitudeRecursiveGaussian(backgroundImage, float(self.scriptedEffect.doubleParameter("ObjectScaleMm")))
+        featureImage = sitk.GradientMagnitudeRecursiveGaussian(
+            backgroundImage, float(self.scriptedEffect.doubleParameter("ObjectScaleMm"))
+        )
         del backgroundImage
         f = sitk.MorphologicalWatershedFromMarkersImageFilter()
         f.SetMarkWatershedLine(False)
@@ -129,7 +139,9 @@ To segment a single object, create a segment and paint inside and create another
         mergedLabelmapNode.Modified()
 
         # Update segmentation from labelmap node and remove temporary nodes
-        slicer.vtkSlicerSegmentationsModuleLogic.ImportLabelmapToSegmentationNode(mergedLabelmapNode, segmentationNode, visibleSegmentIds)
+        slicer.vtkSlicerSegmentationsModuleLogic.ImportLabelmapToSegmentationNode(
+            mergedLabelmapNode, segmentationNode, visibleSegmentIds
+        )
         slicer.mrmlScene.RemoveNode(sourceVolumeNode)
         slicer.mrmlScene.RemoveNode(mergedLabelmapNode)
 

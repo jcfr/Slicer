@@ -103,8 +103,9 @@ class TemplateManager:
 
             if encoding is not None:
                 if confidence < 0.5:
-                    logging.warning("%s: encoding detection confidence is %f:"
-                                    " copied file might be corrupt" % (p, confidence))
+                    logging.warning(
+                        "%s: encoding detection confidence is %f:" " copied file might be corrupt" % (p, confidence)
+                    )
 
                 contents = contents.decode(encoding)
                 contents = contents.replace(key, name)
@@ -166,14 +167,12 @@ class TemplateManager:
             destination = os.path.join(destination, name)
 
         if requireEmptyDirectory and os.path.exists(destination):
-            raise OSError("create %s: refusing to overwrite"
-                          " existing directory '%s'" % (category, destination))
+            raise OSError("create %s: refusing to overwrite" " existing directory '%s'" % (category, destination))
 
         template = templates[kind]
         key = self._getKey(kind)
 
-        logging.info("copy template '%s' to '%s', replacing '%s' -> '%s'" %
-                     (template, destination, key, name))
+        logging.info("copy template '%s' to '%s', replacing '%s' -> '%s'" % (template, destination, key, name))
         for f in _listSources(template):
             self._copyAndReplace(f, template, destination, key, name)
 
@@ -385,16 +384,19 @@ class TemplateManager:
 
                 else:
                     if tpParts[0].lower() not in _templateCategories:
-                        die(("'%s' is not a recognized template category" % tpParts[0],
-                             "recognized categories: %s" % ", ".join(_templateCategories)))
+                        die(
+                            (
+                                "'%s' is not a recognized template category" % tpParts[0],
+                                "recognized categories: %s" % ", ".join(_templateCategories),
+                            )
+                        )
 
                     if not os.path.exists(tpParts[1]):
                         die("template path '%s' does not exist" % tpParts[1])
                     if not os.path.isdir(tpParts[1]):
                         die("template path '%s' is not a directory" % tpParts[1])
 
-                    self.addCategoryPath(tpParts[0].lower(),
-                                         os.path.realpath(tpParts[1]))
+                    self.addCategoryPath(tpParts[0].lower(), os.path.realpath(tpParts[1]))
 
         # Set user-specified template keys
         if args.templateKey is not None:

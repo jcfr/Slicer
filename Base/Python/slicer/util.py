@@ -524,8 +524,15 @@ def updateNodeFromParameterEditWidgets(parameterEditWidgets, parameterNode):
             parameterNode.SetNodeReferenceID(parameterName, widget.currentNodeID)
 
 
-def setSliceViewerLayers(background="keep-current", foreground="keep-current", label="keep-current",
-                         foregroundOpacity=None, labelOpacity=None, fit=False, rotateToVolumePlane=False):
+def setSliceViewerLayers(
+    background="keep-current",
+    foreground="keep-current",
+    label="keep-current",
+    foregroundOpacity=None,
+    labelOpacity=None,
+    fit=False,
+    rotateToVolumePlane=False,
+):
     """Set the slice views with the given nodes.
 
     If node ID is not specified (or value is 'keep-current') then the layer will not be modified.
@@ -721,7 +728,10 @@ def loadNodeFromFile(filename, filetype=None, properties={}, returnNode=False):
     # Deprecated way of returning status and node
     if returnNode:
         import logging
-        logging.warning("loadNodeFromFile `returnNode` argument is deprecated. Loaded node is now returned directly if `returnNode` is not specified.")
+
+        logging.warning(
+            "loadNodeFromFile `returnNode` argument is deprecated. Loaded node is now returned directly if `returnNode` is not specified."
+        )
         import traceback
 
         logging.debug("loadNodeFromFile was called from " + ("".join(traceback.format_stack())))
@@ -1166,7 +1176,9 @@ def exportNode(node, filename, properties={}, world=False):
                 foundFileFormat = fileFormat
                 break
         if not foundFileFormat:
-            raise ValueError(f"Failed to export {node.GetID()} - no known file format was found for filename {filename}")
+            raise ValueError(
+                f"Failed to export {node.GetID()} - no known file format was found for filename {filename}"
+            )
         properties["fileFormat"] = foundFileFormat
 
     userMessages = vtkMRMLMessageCollection()
@@ -1386,8 +1398,7 @@ def reloadScriptedModule(moduleName):
         sys.path.insert(0, p)
 
     with open(filePath, encoding="utf8") as fp:
-        reloaded_module = imp.load_module(
-            moduleName, fp, filePath, (".py", "r", imp.PY_SOURCE))
+        reloaded_module = imp.load_module(moduleName, fp, filePath, (".py", "r", imp.PY_SOURCE))
 
     # find and hide the existing widget
     parent = eval("slicer.modules.%s.widgetRepresentation()" % moduleName.lower())
@@ -1563,7 +1574,9 @@ def getNode(pattern="*", index=0, scene=None):
     """
     nodes = getNodes(pattern, scene)
     if not nodes:
-        raise MRMLNodeNotFoundException("could not find nodes in the scene by name or id '%s'" % (pattern if (isinstance(pattern, str)) else ""))
+        raise MRMLNodeNotFoundException(
+            "could not find nodes in the scene by name or id '%s'" % (pattern if (isinstance(pattern, str)) else "")
+        )
     return list(nodes.values())[index]
 
 
@@ -1808,8 +1821,11 @@ def _vtkArrayFromModelData(modelNode, arrayName, location):
     arrayVtk = modelData.GetArray(arrayName)
     if not arrayVtk:
         availableArrayNames = [modelData.GetArrayName(i) for i in range(modelData.GetNumberOfArrays())]
-        raise ValueError("Input modelNode does not contain {} data array '{}'. Available array names: '{}'".format(
-            location, arrayName, "', '".join(availableArrayNames)))
+        raise ValueError(
+            "Input modelNode does not contain {} data array '{}'. Available array names: '{}'".format(
+                location, arrayName, "', '".join(availableArrayNames)
+            )
+        )
     return arrayVtk
 
 
@@ -2065,7 +2081,10 @@ def arrayFromSegment(segmentationNode, segmentId):
       between multiple segments.
     """
     import logging
-    logging.warning("arrayFromSegment is deprecated. Binary labelmap representation may be shared between multiple segments.")
+
+    logging.warning(
+        "arrayFromSegment is deprecated. Binary labelmap representation may be shared between multiple segments."
+    )
     return arrayFromSegmentBinaryLabelmap(segmentationNode, segmentId)
 
 
@@ -2124,16 +2143,22 @@ def arrayFromSegmentBinaryLabelmap(segmentationNode, segmentId, referenceVolumeN
 
     # Get reference volume
     if not referenceVolumeNode:
-        referenceVolumeNode = segmentationNode.GetNodeReference(slicer.vtkMRMLSegmentationNode.GetReferenceImageGeometryReferenceRole())
+        referenceVolumeNode = segmentationNode.GetNodeReference(
+            slicer.vtkMRMLSegmentationNode.GetReferenceImageGeometryReferenceRole()
+        )
         if not referenceVolumeNode:
-            raise RuntimeError("No reference volume is found in the input segmentationNode, therefore a valid referenceVolumeNode input is required.")
+            raise RuntimeError(
+                "No reference volume is found in the input segmentationNode, therefore a valid referenceVolumeNode input is required."
+            )
 
     # Export segment as vtkImageData (via temporary labelmap volume node)
     segmentIds = vtk.vtkStringArray()
     segmentIds.InsertNextValue(segmentId)
     labelmapVolumeNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode", "__temp__")
     try:
-        if not slicer.modules.segmentations.logic().ExportSegmentsToLabelmapNode(segmentationNode, segmentIds, labelmapVolumeNode, referenceVolumeNode):
+        if not slicer.modules.segmentations.logic().ExportSegmentsToLabelmapNode(
+            segmentationNode, segmentIds, labelmapVolumeNode, referenceVolumeNode
+        ):
             raise RuntimeError("Export of segment failed.")
         narray = slicer.util.arrayFromVolume(labelmapVolumeNode)
     finally:
@@ -2166,9 +2191,13 @@ def updateSegmentBinaryLabelmapFromArray(narray, segmentationNode, segmentId, re
 
     # Get reference volume
     if not referenceVolumeNode:
-        referenceVolumeNode = segmentationNode.GetNodeReference(slicer.vtkMRMLSegmentationNode.GetReferenceImageGeometryReferenceRole())
+        referenceVolumeNode = segmentationNode.GetNodeReference(
+            slicer.vtkMRMLSegmentationNode.GetReferenceImageGeometryReferenceRole()
+        )
         if not referenceVolumeNode:
-            raise RuntimeError("No reference volume is found in the input segmentationNode, therefore a valid referenceVolumeNode input is required.")
+            raise RuntimeError(
+                "No reference volume is found in the input segmentationNode, therefore a valid referenceVolumeNode input is required."
+            )
 
     # Update segment in segmentation
     labelmapVolumeNode = slicer.modules.volumes.logic().CreateAndAddLabelVolume(referenceVolumeNode, "__temp__")
@@ -2185,7 +2214,9 @@ def updateSegmentBinaryLabelmapFromArray(narray, segmentationNode, segmentId, re
             updateVolumeFromArray(labelmapVolumeNode, narrayNormalized)
         segmentIds = vtk.vtkStringArray()
         segmentIds.InsertNextValue(segmentId)
-        if not slicer.modules.segmentations.logic().ImportLabelmapToSegmentationNode(labelmapVolumeNode, segmentationNode, segmentIds):
+        if not slicer.modules.segmentations.logic().ImportLabelmapToSegmentationNode(
+            labelmapVolumeNode, segmentationNode, segmentIds
+        ):
             raise RuntimeError("Importing of segment failed.")
     finally:
         slicer.mrmlScene.RemoveNode(labelmapVolumeNode)
@@ -2300,8 +2331,11 @@ def arrayFromMarkupsCurveData(markupsNode, arrayName, world=False):
     arrayVtk = pointData.GetArray(arrayName)
     if not arrayVtk:
         availableArrayNames = [pointData.GetArrayName(i) for i in range(pointData.GetNumberOfArrays())]
-        raise ValueError("Input markupsNode does not contain curve point data array '{}'. Available array names: '{}'".format(
-            arrayName, "', '".join(availableArrayNames)))
+        raise ValueError(
+            "Input markupsNode does not contain curve point data array '{}'. Available array names: '{}'".format(
+                arrayName, "', '".join(availableArrayNames)
+            )
+        )
 
     narray = vtk.util.numpy_support.vtk_to_numpy(arrayVtk)
     return narray
@@ -2479,7 +2513,10 @@ def updateTableFromArray(tableNode, narrays, columnNames=None):
     elif isinstance(narrays, tuple) or isinstance(narrays, list):
         ncolumns = narrays
     else:
-        raise ValueError("Expected narrays is a numpy ndarray, or tuple or list of numpy ndarrays, got %s instead." % (str(type(narrays))))
+        raise ValueError(
+            "Expected narrays is a numpy ndarray, or tuple or list of numpy ndarrays, got %s instead."
+            % (str(type(narrays)))
+        )
     tableNode.RemoveAllColumns()
     # Convert single string to a single-element string list
     if columnNames is None:
@@ -2513,7 +2550,9 @@ def dataframeFromTable(tableNode):
             warnings.simplefilter(action="ignore", category=UserWarning)
             import pandas as pd
     except ImportError:
-        raise ImportError("Failed to convert to pandas dataframe. Please install pandas by running `slicer.util.pip_install('pandas')`")
+        raise ImportError(
+            "Failed to convert to pandas dataframe. Please install pandas by running `slicer.util.pip_install('pandas')`"
+        )
     dataframe = pd.DataFrame()
     vtable = tableNode.GetTable()
     for columnIndex in range(vtable.GetNumberOfColumns()):
@@ -2551,7 +2590,9 @@ def dataframeFromMarkups(markupsNode):
             warnings.simplefilter(action="ignore", category=UserWarning)
             import pandas as pd
     except ImportError:
-        raise ImportError("Failed to convert to pandas dataframe. Please install pandas by running `slicer.util.pip_install('pandas')`")
+        raise ImportError(
+            "Failed to convert to pandas dataframe. Please install pandas by running `slicer.util.pip_install('pandas')`"
+        )
 
     label = []
     description = []
@@ -2573,14 +2614,17 @@ def dataframeFromMarkups(markupsNode):
         selected.append(markupsNode.GetNthControlPointSelected(controlPointIndex) != 0)
         visible.append(markupsNode.GetNthControlPointVisibility(controlPointIndex) != 0)
 
-    dataframe = pd.DataFrame({
-        "label": label,
-        "position.R": positionWorldR,
-        "position.A": positionWorldA,
-        "position.S": positionWorldS,
-        "selected": selected,
-        "visible": visible,
-        "description": description})
+    dataframe = pd.DataFrame(
+        {
+            "label": label,
+            "position.R": positionWorldR,
+            "position.A": positionWorldA,
+            "position.S": positionWorldS,
+            "selected": selected,
+            "visible": visible,
+            "description": description,
+        }
+    )
     return dataframe
 
 
@@ -2908,8 +2952,17 @@ def infoDisplay(text, windowTitle=None, parent=None, standardButtons=None, **kwa
     import qt, logging
 
     standardButtons = standardButtons if standardButtons else qt.QMessageBox.Ok
-    _messageDisplay(logging.INFO, text, None, parent=parent, windowTitle=windowTitle, mainWindowNeeded=True,
-                    icon=qt.QMessageBox.Information, standardButtons=standardButtons, **kwargs)
+    _messageDisplay(
+        logging.INFO,
+        text,
+        None,
+        parent=parent,
+        windowTitle=windowTitle,
+        mainWindowNeeded=True,
+        icon=qt.QMessageBox.Information,
+        standardButtons=standardButtons,
+        **kwargs,
+    )
 
 
 def warningDisplay(text, windowTitle=None, parent=None, standardButtons=None, **kwargs):
@@ -2921,8 +2974,17 @@ def warningDisplay(text, windowTitle=None, parent=None, standardButtons=None, **
     import qt, logging
 
     standardButtons = standardButtons if standardButtons else qt.QMessageBox.Ok
-    _messageDisplay(logging.WARNING, text, None, parent=parent, windowTitle=windowTitle, mainWindowNeeded=True,
-                    icon=qt.QMessageBox.Warning, standardButtons=standardButtons, **kwargs)
+    _messageDisplay(
+        logging.WARNING,
+        text,
+        None,
+        parent=parent,
+        windowTitle=windowTitle,
+        mainWindowNeeded=True,
+        icon=qt.QMessageBox.Warning,
+        standardButtons=standardButtons,
+        **kwargs,
+    )
 
 
 def errorDisplay(text, windowTitle=None, parent=None, standardButtons=None, **kwargs):
@@ -2934,8 +2996,17 @@ def errorDisplay(text, windowTitle=None, parent=None, standardButtons=None, **kw
     import qt, logging
 
     standardButtons = standardButtons if standardButtons else qt.QMessageBox.Ok
-    _messageDisplay(logging.ERROR, text, None, parent=parent, windowTitle=windowTitle, mainWindowNeeded=True,
-                    icon=qt.QMessageBox.Critical, standardButtons=standardButtons, **kwargs)
+    _messageDisplay(
+        logging.ERROR,
+        text,
+        None,
+        parent=parent,
+        windowTitle=windowTitle,
+        mainWindowNeeded=True,
+        icon=qt.QMessageBox.Critical,
+        standardButtons=standardButtons,
+        **kwargs,
+    )
 
 
 def confirmOkCancelDisplay(text, windowTitle=None, parent=None, **kwargs):
@@ -2948,8 +3019,16 @@ def confirmOkCancelDisplay(text, windowTitle=None, parent=None, **kwargs):
 
     if not windowTitle:
         windowTitle = slicer.app.applicationName + " confirmation"
-    result = _messageDisplay(logging.INFO, text, True, parent=parent, windowTitle=windowTitle, icon=qt.QMessageBox.Question,
-                             standardButtons=qt.QMessageBox.Ok | qt.QMessageBox.Cancel, **kwargs)
+    result = _messageDisplay(
+        logging.INFO,
+        text,
+        True,
+        parent=parent,
+        windowTitle=windowTitle,
+        icon=qt.QMessageBox.Question,
+        standardButtons=qt.QMessageBox.Ok | qt.QMessageBox.Cancel,
+        **kwargs,
+    )
     return result == qt.QMessageBox.Ok
 
 
@@ -2963,8 +3042,16 @@ def confirmYesNoDisplay(text, windowTitle=None, parent=None, **kwargs):
 
     if not windowTitle:
         windowTitle = slicer.app.applicationName + " confirmation"
-    result = _messageDisplay(logging.INFO, text, True, parent=parent, windowTitle=windowTitle, icon=qt.QMessageBox.Question,
-                             standardButtons=qt.QMessageBox.Yes | qt.QMessageBox.No, **kwargs)
+    result = _messageDisplay(
+        logging.INFO,
+        text,
+        True,
+        parent=parent,
+        windowTitle=windowTitle,
+        icon=qt.QMessageBox.Question,
+        standardButtons=qt.QMessageBox.Yes | qt.QMessageBox.No,
+        **kwargs,
+    )
     return result == qt.QMessageBox.Yes
 
 
@@ -2976,12 +3063,23 @@ def confirmRetryCloseDisplay(text, windowTitle=None, parent=None, **kwargs):
     the popup is skipped and False ("Close") is returned, with a message being logged to indicate this.
     """
     import qt, logging
-    result = _messageDisplay(logging.ERROR, text, False, parent=parent, windowTitle=windowTitle,
-                             icon=qt.QMessageBox.Critical, standardButtons=qt.QMessageBox.Retry | qt.QMessageBox.Close, **kwargs)
+
+    result = _messageDisplay(
+        logging.ERROR,
+        text,
+        False,
+        parent=parent,
+        windowTitle=windowTitle,
+        icon=qt.QMessageBox.Critical,
+        standardButtons=qt.QMessageBox.Retry | qt.QMessageBox.Close,
+        **kwargs,
+    )
     return result == qt.QMessageBox.Retry
 
 
-def _messageDisplay(logLevel, text, testingReturnValue, mainWindowNeeded=False, parent=None, windowTitle=None, **kwargs):
+def _messageDisplay(
+    logLevel, text, testingReturnValue, mainWindowNeeded=False, parent=None, windowTitle=None, **kwargs
+):
     """Displays a messagebox and logs message text; knows what to do in testing mode.
 
     :param logLevel: The level at which to log text, e.g. ``logging.INFO``, ``logging.ERROR``
@@ -3008,7 +3106,9 @@ def _messageDisplay(logLevel, text, testingReturnValue, mainWindowNeeded=False, 
     if not windowTitle:
         windowTitle = slicer.app.applicationName + " " + logLevelString
     if slicer.app.testingEnabled():
-        logging.info(f"Testing mode is enabled: Returning {testingReturnValue} and skipping message box [{windowTitle}].")
+        logging.info(
+            f"Testing mode is enabled: Returning {testingReturnValue} and skipping message box [{windowTitle}]."
+        )
         return testingReturnValue
     if mainWindowNeeded and mainWindow() is None:
         return
@@ -3032,7 +3132,9 @@ def messageBox(text, parent=None, **kwargs):
 
     if slicer.app.testingEnabled():
         testingReturnValue = qt.QMessageBox.Ok
-        logging.info(f"Testing mode is enabled: Returning {testingReturnValue} (qt.QMessageBox.Ok) and displaying an auto-closing message box [{text}].")
+        logging.info(
+            f"Testing mode is enabled: Returning {testingReturnValue} (qt.QMessageBox.Ok) and displaying an auto-closing message box [{text}]."
+        )
         slicer.util.delayDisplay(text, autoCloseMsec=3000, parent=parent, **kwargs)
         return testingReturnValue
 
@@ -3400,9 +3502,11 @@ def downloadFile(url, targetFilePath, checksum=None, reDownloadIfChecksumInvalid
             logging.info("Verifying checksum\n  %s" % targetFilePath)
             current_digest = computeChecksum(algo, targetFilePath)
             if current_digest != digest:
-                logging.error("Downloaded file does not have expected checksum."
-                              "\n   current checksum: %s"
-                              "\n  expected checksum: %s" % (current_digest, digest))
+                logging.error(
+                    "Downloaded file does not have expected checksum."
+                    "\n   current checksum: %s"
+                    "\n  expected checksum: %s" % (current_digest, digest)
+                )
                 return False
             else:
                 logging.info("Checksum OK")
@@ -3411,13 +3515,17 @@ def downloadFile(url, targetFilePath, checksum=None, reDownloadIfChecksumInvalid
             current_digest = computeChecksum(algo, targetFilePath)
             if current_digest != digest:
                 if reDownloadIfChecksumInvalid:
-                    logging.info("Requested file has been found but its checksum is different: deleting and re-downloading")
+                    logging.info(
+                        "Requested file has been found but its checksum is different: deleting and re-downloading"
+                    )
                     os.remove(targetFilePath)
                     return downloadFile(url, targetFilePath, checksum, reDownloadIfChecksumInvalid=False)
                 else:
-                    logging.error("Requested file has been found but its checksum is different:"
-                                  "\n   current checksum: %s"
-                                  "\n  expected checksum: %s" % (current_digest, digest))
+                    logging.error(
+                        "Requested file has been found but its checksum is different:"
+                        "\n   current checksum: %s"
+                        "\n  expected checksum: %s" % (current_digest, digest)
+                    )
                     return False
             else:
                 logging.info("Requested file has been found and checksum is OK: " + targetFilePath)
@@ -3447,15 +3555,15 @@ def extractArchive(archiveFilePath, outputDir, expectedNumberOfExtractedFiles=No
         return False
 
     numOfFilesInOutputDir = len(getFilesInDirectory(outputDir, False))
-    if expectedNumberOfExtractedFiles is not None \
-            and numOfFilesInOutputDir == expectedNumberOfExtractedFiles:
+    if expectedNumberOfExtractedFiles is not None and numOfFilesInOutputDir == expectedNumberOfExtractedFiles:
         logging.info(f"File {archiveFilePath} already unzipped into {outputDir}")
         return True
 
     extractSuccessful = app.applicationLogic().Unzip(archiveFilePath, outputDir)
     numOfFilesInOutputDirTest = len(getFilesInDirectory(outputDir, False))
-    if extractSuccessful is False or (expectedNumberOfExtractedFiles is not None \
-                                      and numOfFilesInOutputDirTest != expectedNumberOfExtractedFiles):
+    if extractSuccessful is False or (
+        expectedNumberOfExtractedFiles is not None and numOfFilesInOutputDirTest != expectedNumberOfExtractedFiles
+    ):
         logging.error(f"Unzipping {archiveFilePath} into {outputDir} failed")
         return False
     logging.info(f"Unzipping {archiveFilePath} into {outputDir} successful")
@@ -3505,12 +3613,16 @@ def extractAlgoAndDigest(checksum):
         raise ValueError("invalid algo '{}'. Algo must be one of {}".format(algo, ", ".join(expected_algos)))
     expected_digest_length = {"SHA256": 64, "SHA512": 128, "MD5": 32}
     if len(digest) != expected_digest_length[algo]:
-        raise ValueError("invalid digest length %d. Expected digest length for %s is %d" % (len(digest), algo, expected_digest_length[algo]))
+        raise ValueError(
+            "invalid digest length %d. Expected digest length for %s is %d"
+            % (len(digest), algo, expected_digest_length[algo])
+        )
     return algo, digest
 
 
-def downloadAndExtractArchive(url, archiveFilePath, outputDir, \
-                              expectedNumberOfExtractedFiles=None, numberOfTrials=3, checksum=None):
+def downloadAndExtractArchive(
+    url, archiveFilePath, outputDir, expectedNumberOfExtractedFiles=None, numberOfTrials=3, checksum=None
+):
     """Downloads an archive from ``url`` as ``archiveFilePath``, and extracts it to ``outputDir``.
 
     This combined function tests the success of the download by the extraction step,
@@ -3527,7 +3639,10 @@ def downloadAndExtractArchive(url, archiveFilePath, outputDir, \
 
     def _cleanup():
         # If there was a failure, delete downloaded file and empty output folder
-        logging.warning("Download and extract failed, removing archive and destination folder and retrying. Attempt #%d..." % (maxNumberOfTrials - numberOfTrials))
+        logging.warning(
+            "Download and extract failed, removing archive and destination folder and retrying. Attempt #%d..."
+            % (maxNumberOfTrials - numberOfTrials)
+        )
         os.remove(archiveFilePath)
         shutil.rmtree(outputDir)
         os.mkdir(outputDir)
@@ -3770,9 +3885,19 @@ def launchConsoleProcess(args, useStartupEnvironment=True, updateEnvironment=Non
         info = subprocess.STARTUPINFO()
         info.dwFlags = 1
         info.wShowWindow = 0
-        proc = subprocess.Popen(args, env=startupEnv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, startupinfo=info, cwd=cwd)
+        proc = subprocess.Popen(
+            args,
+            env=startupEnv,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+            startupinfo=info,
+            cwd=cwd,
+        )
     else:
-        proc = subprocess.Popen(args, env=startupEnv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, cwd=cwd)
+        proc = subprocess.Popen(
+            args, env=startupEnv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, cwd=cwd
+        )
     return proc
 
 

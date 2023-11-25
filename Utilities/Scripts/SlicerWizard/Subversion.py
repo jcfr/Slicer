@@ -29,8 +29,7 @@ class CommandError(Exception):
 
     # ---------------------------------------------------------------------------
     def __init__(self, command, code, stderr):
-        super(Exception, self).__init__("%r command exited with non-zero status" %
-                                        command[0])
+        super(Exception, self).__init__("%r command exited with non-zero status" % command[0])
         self.command = command
         self.code = code
         self.stderr = stderr
@@ -59,8 +58,7 @@ class Client:
         """Return a lambda to invoke the svn command ``name``."""
 
         if name[0] == "_":
-            raise AttributeError("%r object has no attribute %r" %
-                                 (self.__class__.__name__, name))
+            raise AttributeError("%r object has no attribute %r" % (self.__class__.__name__, name))
 
         return lambda *args, **kwargs: self.execute(name, *args, **kwargs)
 
@@ -92,8 +90,7 @@ class Client:
         command = ["svn", command] + buildProcessArgs(*args, **kwargs)
         cwd = self._wc_root if self._wc_root is not None else os.getcwd()
 
-        proc = subprocess.Popen(command, cwd=cwd, stdin=subprocess.PIPE,
-                                stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        proc = subprocess.Popen(command, cwd=cwd, stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
         out, err = proc.communicate()
 

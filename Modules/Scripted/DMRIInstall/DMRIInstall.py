@@ -37,7 +37,8 @@ class DMRIInstall(ScriptedLoadableModule):
   <br>
   <br>
   &nbsp;&nbsp; <a href="https://discourse.slicer.org">https://discourse.slicer.org</a><br><br>
-  """)
+  """
+    )
 
     errorText = textwrap.dedent(
         """
@@ -51,9 +52,10 @@ class DMRIInstall(ScriptedLoadableModule):
   Slicer version: {builddate}<br>
   Slicer revision: {revision}<br>
   Platform: {platform}
-  """).format(builddate=slicer.app.applicationVersion,
-              revision=slicer.app.repositoryRevision,
-              platform=slicer.app.platform)
+  """
+    ).format(
+        builddate=slicer.app.applicationVersion, revision=slicer.app.repositoryRevision, platform=slicer.app.platform
+    )
 
     def __init__(self, parent):
         # Hide this module if SlicerDMRI is already installed
@@ -70,11 +72,14 @@ class DMRIInstall(ScriptedLoadableModule):
         self.parent.helpText = DMRIInstall.helpText
         self.parent.helpText += self.getDefaultModuleDocumentationLink()
         self.parent.acknowledgementText = textwrap.dedent(
-            _("""
+            _(
+                """
     SlicerDMRI supported by NIH NCI ITCR U01CA199459 (Open Source Diffusion MRI
     Technology For Brain Cancer Research), and made possible by NA-MIC, NAC,
     BIRN, NCIGT, and the Slicer Community.
-    """))
+    """
+            )
+        )
 
 
 class DMRIInstallWidget(ScriptedLoadableModuleWidget):
@@ -118,7 +123,9 @@ class DMRIInstallWidget(ScriptedLoadableModuleWidget):
         extensionName = "SlicerDMRI"
         emm.interactive = False  # prevent display of popups
         emm.updateExtensionsMetadataFromServer(True, True)  # update extension metadata from server now
-        if not emm.downloadAndInstallExtensionByName(extensionName, True, True):  # install dependencies, wait for installation to finish
+        if not emm.downloadAndInstallExtensionByName(
+            extensionName, True, True
+        ):  # install dependencies, wait for installation to finish
             return self.onError()
 
         slicer.app.confirmRestart(_("Restart to complete SlicerDMRI installation?"))

@@ -740,7 +740,9 @@ class ParameterNodeWrapperGuiTest(unittest.TestCase):
         self.assertIs(currentNodeFunc(widgetBravo), None)
 
     def test_qMRMLNodeComboBoxToNode(self):
-        self.impl_qMRMLToNodeConnector(slicer.qMRMLNodeComboBox, lambda box: box.currentNode(), lambda box: box.setCurrentNode(None))
+        self.impl_qMRMLToNodeConnector(
+            slicer.qMRMLNodeComboBox, lambda box: box.currentNode(), lambda box: box.setCurrentNode(None)
+        )
 
     def test_qMRMLSubjectHierarchyTreeViewToNode(self):
         def getNodeFromSubjectTree(tree):
@@ -751,7 +753,9 @@ class ParameterNodeWrapperGuiTest(unittest.TestCase):
             else:
                 return shNode.GetItemDataNode(itemId)
 
-        self.impl_qMRMLToNodeConnector(qMRMLSubjectHierarchyTreeView, getNodeFromSubjectTree, lambda tree: tree.clearSelection())
+        self.impl_qMRMLToNodeConnector(
+            qMRMLSubjectHierarchyTreeView, getNodeFromSubjectTree, lambda tree: tree.clearSelection()
+        )
 
     def test_parameterPacks_through_dotted_name(self):
         @parameterPack

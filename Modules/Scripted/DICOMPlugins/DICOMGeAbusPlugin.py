@@ -74,7 +74,9 @@ class DICOMGeAbusPluginClass(DICOMPlugin):
                 manufacturerModelName = slicer.dicomDatabase.fileValue(filePath, self.tags["manufacturerModelName"])
                 if manufacturerModelName != "Invenia":
                     if detailedLogging:
-                        logging.debug("ManufacturerModelName is not Invenia, the series will not be considered as an ABUS image")
+                        logging.debug(
+                            "ManufacturerModelName is not Invenia, the series will not be considered as an ABUS image"
+                        )
                     continue
 
             except Exception as e:
@@ -97,7 +99,9 @@ class DICOMGeAbusPluginClass(DICOMPlugin):
 
             if not probeCurvatureRadiusFound:
                 if detailedLogging:
-                    logging.debug("Probe curvature radius is not found, the series will not be considered as an ABUS image")
+                    logging.debug(
+                        "Probe curvature radius is not found, the series will not be considered as an ABUS image"
+                    )
                 continue
 
             name = ""
@@ -114,7 +118,9 @@ class DICOMGeAbusPluginClass(DICOMPlugin):
             loadable.files = [filePath]
             loadable.name = name.strip()  # remove leading and trailing spaces, if any
             loadable.tooltip = _("GE Invenia ABUS")
-            loadable.warning = _("Loading of this image type is experimental. Please verify image size and orientation and report any problem is found.")
+            loadable.warning = _(
+                "Loading of this image type is experimental. Please verify image size and orientation and report any problem is found."
+            )
             loadable.selected = True
             loadable.confidence = 0.9  # this has to be higher than 0.7 (ultrasound sequence)
 
@@ -186,14 +192,15 @@ class DICOMGeAbusPluginClass(DICOMPlugin):
 
         if reader.GetErrorCode() != vtk.vtkErrorCode.NoError:
             errorString = vtk.vtkErrorCode.GetStringFromErrorCode(reader.GetErrorCode())
-            raise ValueError(
-                f"Could not read image {loadable.name} from file {filePath}. Error is: {errorString}")
+            raise ValueError(f"Could not read image {loadable.name} from file {filePath}. Error is: {errorString}")
 
         # Image origin and spacing is stored in IJK to RAS matrix
         imageData.SetSpacing(1.0, 1.0, 1.0)
         imageData.SetOrigin(0.0, 0.0, 0.0)
 
-        volumeNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLScalarVolumeNode", slicer.mrmlScene.GenerateUniqueName(loadable.name))
+        volumeNode = slicer.mrmlScene.AddNewNodeByClass(
+            "vtkMRMLScalarVolumeNode", slicer.mrmlScene.GenerateUniqueName(loadable.name)
+        )
 
         # I axis: scanline index (lateralSpacing)
         # J axis: sound propagation (axialSpacing)
@@ -208,7 +215,9 @@ class DICOMGeAbusPluginClass(DICOMPlugin):
         volumeNode.SetIJKToRASMatrix(ijkToRas)
         volumeNode.SetSpacing(lateralSpacing, axialSpacing, sliceSpacing)
         extent = imageData.GetExtent()
-        volumeNode.SetOrigin((extent[1] - extent[0] + 1) * 0.5 * lateralSpacing, 0, -(extent[5] - extent[2] + 1) * 0.5 * sliceSpacing)
+        volumeNode.SetOrigin(
+            (extent[1] - extent[0] + 1) * 0.5 * lateralSpacing, 0, -(extent[5] - extent[2] + 1) * 0.5 * sliceSpacing
+        )
         volumeNode.SetAndObserveImageData(imageData)
 
         # Apply scan conversion transform
@@ -235,21 +244,27 @@ class DICOMGeAbusPluginClass(DICOMPlugin):
         probeRadius = metadata["CurvatureRadiusProbe"]
         trackRadius = metadata["CurvatureRadiusTrack"]
         if trackRadius != 0.0:
-            raise ValueError(f"Curvature Radius (Track) is {trackRadius}. Currently, only volume with zero radius can be imported.")
+            raise ValueError(
+                f"Curvature Radius (Track) is {trackRadius}. Currently, only volume with zero radius can be imported."
+            )
 
         # Create a sampling grid for the transform
         import numpy as np
 
         spacing = np.array(volumeNode.GetSpacing())
         averageSpacing = (spacing[0] + spacing[1] + spacing[2]) / 3.0
-        voxelsPerTransformControlPoint = 20  # the transform is changing smoothly, so we don't need to add too many control points
+        voxelsPerTransformControlPoint = (
+            20  # the transform is changing smoothly, so we don't need to add too many control points
+        )
         gridSpacingMm = averageSpacing * voxelsPerTransformControlPoint
         gridSpacingVoxel = np.floor(gridSpacingMm / spacing).astype(int)
         gridAxesIJK = []
         imageData = volumeNode.GetImageData()
         extent = imageData.GetExtent()
         for axis in range(3):
-            gridAxesIJK.append(list(range(extent[axis * 2], extent[axis * 2 + 1] + gridSpacingVoxel[axis], gridSpacingVoxel[axis])))
+            gridAxesIJK.append(
+                list(range(extent[axis * 2], extent[axis * 2 + 1] + gridSpacingVoxel[axis], gridSpacingVoxel[axis]))
+            )
         samplingPoints_shape = [len(gridAxesIJK[0]), len(gridAxesIJK[1]), len(gridAxesIJK[2]), 3]
 
         # create a grid transform with one vector at the corner of each slice
@@ -259,7 +274,9 @@ class DICOMGeAbusPluginClass(DICOMPlugin):
         gridImage = vtk.vtkImageData()
         gridImage.SetOrigin(*volumeNode.GetOrigin())
         gridImage.SetDimensions(samplingPoints_shape[:3])
-        gridImage.SetSpacing(gridSpacingVoxel[0] * spacing[0], gridSpacingVoxel[1] * spacing[1], gridSpacingVoxel[2] * spacing[2])
+        gridImage.SetSpacing(
+            gridSpacingVoxel[0] * spacing[0], gridSpacingVoxel[1] * spacing[1], gridSpacingVoxel[2] * spacing[2]
+        )
         gridImage.AllocateScalars(vtk.VTK_DOUBLE, 3)
         transform = slicer.vtkOrientedGridTransform()
         directionMatrix = vtk.vtkMatrix4x4()
@@ -296,10 +313,13 @@ class DICOMGeAbusPluginClass(DICOMPlugin):
                     sourcePoint_RAS = np.array(ijkToRas.MultiplyPoint(samplingPoint_IJK)[:3])
                     radius = probeRadius - (samplingPoint_IJK[1] - center_IJK[1]) * spacing[1]
                     angleRad = (samplingPoint_IJK[0] - center_IJK[0]) * spacing[0] / probeRadius
-                    targetPoint_RAS = np.array([
-                        -radius * sin(angleRad),
-                        radius * cos(angleRad) - probeRadius,
-                        spacing[2] * (samplingPoint_IJK[2] - center_IJK[2])])
+                    targetPoint_RAS = np.array(
+                        [
+                            -radius * sin(angleRad),
+                            radius * cos(angleRad) - probeRadius,
+                            spacing[2] * (samplingPoint_IJK[2] - center_IJK[2]),
+                        ]
+                    )
                     displacements[k][j][i] = targetPoint_RAS - sourcePoint_RAS
 
         return gridTransform

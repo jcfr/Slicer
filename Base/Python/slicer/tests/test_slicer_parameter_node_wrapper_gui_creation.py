@@ -59,15 +59,23 @@ class ParameterNodeWrapperGuiCreationTest(unittest.TestCase):
         self.assertIsInstance(createGui(Annotated[FloatRange, RangeBounds(0, 10)]), ctk.ctkRangeWidget)
 
     def test_guiCreations_paths(self):
-        for pathtype in (pathlib.Path, pathlib.PosixPath, pathlib.WindowsPath,
-                         pathlib.PurePath, pathlib.PurePosixPath, pathlib.PureWindowsPath):
+        for pathtype in (
+            pathlib.Path,
+            pathlib.PosixPath,
+            pathlib.WindowsPath,
+            pathlib.PurePath,
+            pathlib.PurePosixPath,
+            pathlib.PureWindowsPath,
+        ):
             self.assertIsInstance(createGui(pathtype), ctk.ctkPathLineEdit)
             self.assertIsInstance(createGui(Annotated[pathtype, Default("path")]), ctk.ctkPathLineEdit)
 
     def test_guiCreations_nodes(self):
         self.assertIsInstance(createGui(vtkMRMLNode), slicer.qMRMLNodeComboBox)
         self.assertIsInstance(createGui(vtkMRMLModelNode), slicer.qMRMLNodeComboBox)
-        self.assertIsInstance(createGui(Union[vtkMRMLModelNode, vtkMRMLScalarVolumeNode, None]), slicer.qMRMLNodeComboBox)
+        self.assertIsInstance(
+            createGui(Union[vtkMRMLModelNode, vtkMRMLScalarVolumeNode, None]), slicer.qMRMLNodeComboBox
+        )
         self.assertIsInstance(createGui(Optional[vtkMRMLModelNode]), slicer.qMRMLNodeComboBox)
 
     def test_guiCreations_parameter_packs(self):

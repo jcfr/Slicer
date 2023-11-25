@@ -110,7 +110,9 @@ class ColorLegendSelfTestTest(ScriptedLoadableModuleTest):
         self.assertIsNotNone(useCurrentColorsButton)
         colorLegendDisplayNodeWidget = slicer.util.findChildren(colorWidget, "ColorLegendDisplayNodeWidget")[0]
         self.assertIsNotNone(colorLegendDisplayNodeWidget)
-        colorLegendVisibilityCheckBox = slicer.util.findChildren(colorLegendDisplayNodeWidget, "ColorLegendVisibilityCheckBox")[0]
+        colorLegendVisibilityCheckBox = slicer.util.findChildren(
+            colorLegendDisplayNodeWidget, "ColorLegendVisibilityCheckBox"
+        )[0]
         self.assertIsNotNone(colorLegendVisibilityCheckBox)
 
         self.delayDisplay("Show color legend on all views and slices", self.delayMs)
@@ -124,7 +126,10 @@ class ColorLegendSelfTestTest(ScriptedLoadableModuleTest):
         testedColorNodeIndices = list(range(0, 60, 3))
         for ind, n in enumerate(testedColorNodeIndices):
             colorNode = slicer.mrmlScene.GetNthNodeByClass(n, "vtkMRMLColorNode")
-            self.delayDisplay(f"Setting color node {colorNode.GetName()} ({ind}/{len(testedColorNodeIndices)}) for the displayable node", shortDelayMs)
+            self.delayDisplay(
+                f"Setting color node {colorNode.GetName()} ({ind}/{len(testedColorNodeIndices)}) for the displayable node",
+                shortDelayMs,
+            )
             activeColorNodeSelector.setCurrentNodeID(colorNode.GetID())
             # use the delay display here to ensure a render
             useCurrentColorsButton.click()

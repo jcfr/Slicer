@@ -59,9 +59,9 @@ class ExtensionDescription:
 
         args = (repo, filepath, sourcedir)
         if args.count(None) < len(args) - 1:
-            raise Exception("cannot construct %s: only one of"
-                            " (repo, filepath, sourcedir) may be given" %
-                            type(self).__name__)
+            raise Exception(
+                "cannot construct %s: only one of" " (repo, filepath, sourcedir) may be given" % type(self).__name__
+            )
 
         if filepath is not None:
             with open(filepath) as fp:
@@ -180,9 +180,7 @@ class ExtensionDescription:
         return result
 
     # ---------------------------------------------------------------------------
-    def _setProjectAttribute(self, name, project, default=None, required=False,
-                             elideempty=False, substitute=True):
-
+    def _setProjectAttribute(self, name, project, default=None, required=False, elideempty=False, substitute=True):
         if default is None and not required:
             default = ""
 

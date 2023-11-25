@@ -513,8 +513,10 @@ def loadSeriesWithVerification(
                 logging.error("Expected DICOM plugin '%s' was not selected" % (pluginName))
                 success = False
             elif actualSelectedPlugins[pluginName] != expectedSelectedPlugins[pluginName]:
-                logging.error("DICOM plugin '%s' was expected to be selected in %d loadables, but was selected in %d" % \
-                              (pluginName, expectedSelectedPlugins[pluginName], actualSelectedPlugins[pluginName]))
+                logging.error(
+                    "DICOM plugin '%s' was expected to be selected in %d loadables, but was selected in %d"
+                    % (pluginName, expectedSelectedPlugins[pluginName], actualSelectedPlugins[pluginName])
+                )
                 success = False
 
     # Count relevant node types in scene
@@ -534,8 +536,10 @@ def loadSeriesWithVerification(
             nodeCollection.UnRegister(None)
             numOfLoadedNodes = nodeCollection.GetNumberOfItems() - actualLoadedNodes[nodeType]
             if numOfLoadedNodes != expectedLoadedNodes[nodeType]:
-                logging.error("Number of loaded %s nodes was %d, but %d was expected" % \
-                              (nodeType, numOfLoadedNodes, expectedLoadedNodes[nodeType]))
+                logging.error(
+                    "Number of loaded %s nodes was %d, but %d was expected"
+                    % (nodeType, numOfLoadedNodes, expectedLoadedNodes[nodeType])
+                )
                 success = False
 
     return success
@@ -575,8 +579,16 @@ def seriesUIDsForFiles(files):
 class LoadDICOMFilesToDatabase:
     """Context manager to conveniently load DICOM files downloaded zipped from the internet"""
 
-    def __init__(self, url, archiveFilePath=None, dicomDataDir=None, \
-                 expectedNumberOfFiles=None, selectedPlugins=None, loadedNodes=None, checksum=None):
+    def __init__(
+        self,
+        url,
+        archiveFilePath=None,
+        dicomDataDir=None,
+        expectedNumberOfFiles=None,
+        selectedPlugins=None,
+        loadedNodes=None,
+        checksum=None,
+    ):
         from time import gmtime, strftime
 
         if archiveFilePath is None:
@@ -595,9 +607,13 @@ class LoadDICOMFilesToDatabase:
         self.loadedNodes = loadedNodes
 
     def __enter__(self):
-        if slicer.util.downloadAndExtractArchive(self.url, self.archiveFilePath, \
-                                                 self.dicomDataDir, self.expectedNumberOfExtractedFiles,
-                                                 checksum=self.checksum):
+        if slicer.util.downloadAndExtractArchive(
+            self.url,
+            self.archiveFilePath,
+            self.dicomDataDir,
+            self.expectedNumberOfExtractedFiles,
+            checksum=self.checksum,
+        ):
             dicomFiles = slicer.util.getFilesInDirectory(self.dicomDataDir)
             if importDicom(self.dicomDataDir):
                 seriesUIDs = seriesUIDsForFiles(dicomFiles)
@@ -686,7 +702,9 @@ def getSortedImageFiles(filePaths: list[str], epsilon: float = 0.01) -> tuple[li
 
     # Get acquisition geometry regularization setting value
     settings = qt.QSettings()
-    acquisitionGeometryRegularizationEnabled = (settings.value("DICOM/ScalarVolume/AcquisitionGeometryRegularization", "default") != "none")
+    acquisitionGeometryRegularizationEnabled = (
+        settings.value("DICOM/ScalarVolume/AcquisitionGeometryRegularization", "default") != "none"
+    )
 
     # Confirm equal spacing between slices
     # - use variable 'epsilon' to determine the tolerance
@@ -711,8 +729,10 @@ def getSortedImageFiles(filePaths: list[str], epsilon: float = 0.01) -> tuple[li
                 if acquisitionGeometryRegularizationEnabled:
                     warningText += "  Slicer will apply a transform to this series trying to regularize the volume. Please use caution.\n"
                 else:
-                    warningText += ("  If loaded image appears distorted, enable 'Acquisition geometry regularization'"
-                                    " in Application settings / DICOM / DICOMScalarVolumePlugin. Please use caution.\n")
+                    warningText += (
+                        "  If loaded image appears distorted, enable 'Acquisition geometry regularization'"
+                        " in Application settings / DICOM / DICOMScalarVolumePlugin. Please use caution.\n"
+                    )
                 break
 
     if spaceWarnings != 0:
@@ -736,7 +756,9 @@ def refreshDICOMWidget():
     return True
 
 
-def getLoadablesFromFileLists(fileLists, pluginClassNames=None, messages=None, progressCallback=None, pluginInstances=None):
+def getLoadablesFromFileLists(
+    fileLists, pluginClassNames=None, messages=None, progressCallback=None, pluginInstances=None
+):
     """Take list of file lists, return loadables by plugin dictionary"""
     detailedLogging = slicer.util.settingsValue("DICOM/detailedLogging", False, converter=slicer.util.toBool)
     loadablesByPlugin = {}
@@ -813,9 +835,15 @@ def loadLoadables(loadablesByPlugin, messages=None, progressCallback=None):
         except:
             loadSuccess = False
             import traceback
-            logging.error("DICOM plugin failed to load '"
-                          + loadable.name + "' as a '" + plugin.loadType + "'.\n"
-                          + traceback.format_exc())
+
+            logging.error(
+                "DICOM plugin failed to load '"
+                + loadable.name
+                + "' as a '"
+                + plugin.loadType
+                + "'.\n"
+                + traceback.format_exc()
+            )
         if (not loadSuccess) and (messages is not None):
             messages.append(f"Could not load: {loadable.name} as a {plugin.loadType}")
 
@@ -826,7 +854,9 @@ def loadLoadables(loadablesByPlugin, messages=None, progressCallback=None):
             for derivedItem in loadable.derivedItems:
                 indexer = ctk.ctkDICOMIndexer()
                 if progressCallback:
-                    cancelled = progressCallback(f"{loadable.name} ({derivedItem})", step * 100 / len(selectedLoadables))
+                    cancelled = progressCallback(
+                        f"{loadable.name} ({derivedItem})", step * 100 / len(selectedLoadables)
+                    )
                     if cancelled:
                         break
                 indexer.addFile(slicer.dicomDatabase, derivedItem)
@@ -906,7 +936,9 @@ def importFromDICOMWeb(
         )
 
     progressDialog = slicer.util.createProgressDialog(
-        parent=slicer.util.mainWindow(), value=0, maximum=100,
+        parent=slicer.util.mainWindow(),
+        value=0,
+        maximum=100,
     )
     try:
         progressDialog.labelText = f"Retrieving series list..."
@@ -943,8 +975,8 @@ def importFromDICOMWeb(
 
             try:
                 seriesInfo = client.retrieve_series_metadata(
-                    study_instance_uid=studyInstanceUID,
-                    series_instance_uid=currentSeriesInstanceUID)
+                    study_instance_uid=studyInstanceUID, series_instance_uid=currentSeriesInstanceUID
+                )
                 numberOfInstances = len(seriesInfo)
 
                 # Skip retrieve and import of this series if it is already imported
@@ -961,8 +993,8 @@ def importFromDICOMWeb(
 
                 if bulkRetrieve:
                     instances = client.iter_series(
-                        study_instance_uid=studyInstanceUID,
-                        series_instance_uid=currentSeriesInstanceUID)
+                        study_instance_uid=studyInstanceUID, series_instance_uid=currentSeriesInstanceUID
+                    )
 
                 slicer.app.processEvents()
                 cancelled = progressDialog.wasCanceled
@@ -1014,9 +1046,13 @@ def importFromDICOMWeb(
         clientLogger.setLevel(originalClientLogLevel)
 
     if errors:
-        slicer.util.errorDisplay(f"Errors occurred during DICOMweb import of {len(errors)} series.", detailedText="\n\n".join(errors))
+        slicer.util.errorDisplay(
+            f"Errors occurred during DICOMweb import of {len(errors)} series.", detailedText="\n\n".join(errors)
+        )
     elif cancelled and (len(seriesImported) < len(seriesInstanceUIDs)):
-        slicer.util.infoDisplay(f"DICOMweb import has been interrupted after completing {len(seriesImported)} out of {len(seriesInstanceUIDs)} series.")
+        slicer.util.infoDisplay(
+            f"DICOMweb import has been interrupted after completing {len(seriesImported)} out of {len(seriesInstanceUIDs)} series."
+        )
 
     return seriesImported
 
@@ -1029,7 +1065,9 @@ def registerSlicerURLHandler():
     For now, only implemented on Windows.
     """
     if os.name == "nt":
-        launcherPath = qt.QDir.toNativeSeparators(qt.QFileInfo(slicer.app.launcherExecutableFilePath).absoluteFilePath())
+        launcherPath = qt.QDir.toNativeSeparators(
+            qt.QFileInfo(slicer.app.launcherExecutableFilePath).absoluteFilePath()
+        )
         reg = qt.QSettings(f"HKEY_CURRENT_USER\\Software\\Classes", qt.QSettings.NativeFormat)
         reg.setValue(f"{slicer.app.applicationName}/.", f"{slicer.app.applicationName} supported file")
         reg.setValue(f"{slicer.app.applicationName}/URL protocol", "")

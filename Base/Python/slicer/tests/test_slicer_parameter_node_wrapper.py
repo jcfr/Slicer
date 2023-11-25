@@ -873,10 +873,13 @@ class TypedParameterNodeTest(unittest.TestCase):
     def test_validated_union(self):
         @parameterNodeWrapper
         class ParameterNodeType:
-            value: Annotated[typing.Union[
-                Annotated[int, Minimum(5)],
-                Annotated[str, Choice(["q", "r", "s"])],
-            ], Default(7)]
+            value: Annotated[
+                typing.Union[
+                    Annotated[int, Minimum(5)],
+                    Annotated[str, Choice(["q", "r", "s"])],
+                ],
+                Default(7),
+            ]
 
         param = ParameterNodeType(newParameterNode())
         self.assertTrue(param.isCached("value"))

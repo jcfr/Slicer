@@ -39,12 +39,14 @@ class SegmentEditorLevelTracingEffect(AbstractScriptedSegmentEditorLabelEffect):
         return qt.QIcon()
 
     def helpText(self):
-        return "<html>" + _("""Add uniform intensity region to selected segment<br>.
+        return "<html>" + _(
+            """Add uniform intensity region to selected segment<br>.
         <p><ul style="margin: 0">
         <li><b>Mouse move:</b> current background voxel is used to find a closed path that
         follows the same intensity value back to the starting point within the current slice.
         <li><b>Left-click:</b> add the previewed region to the current segment.
-        </ul><p>""")
+        </ul><p>"""
+        )
 
     def setupOptionsFrame(self):
         self.sliceRotatedErrorLabel = qt.QLabel()
@@ -73,7 +75,9 @@ class SegmentEditorLevelTracingEffect(AbstractScriptedSegmentEditorLabelEffect):
         if pipeline is None:
             return abortEvent
 
-        anyModifierKeyPressed = callerInteractor.GetShiftKey() or callerInteractor.GetControlKey() or callerInteractor.GetAltKey()
+        anyModifierKeyPressed = (
+            callerInteractor.GetShiftKey() or callerInteractor.GetControlKey() or callerInteractor.GetAltKey()
+        )
 
         if eventId == vtk.vtkCommand.LeftButtonPressEvent and not anyModifierKeyPressed:
             abortEvent = True
@@ -94,7 +98,9 @@ class SegmentEditorLevelTracingEffect(AbstractScriptedSegmentEditorLabelEffect):
             # Apply poly data on modifier labelmap
             pipeline.appendPolyMask(modifierLabelmap)
             # TODO: it would be nice to reduce extent
-            self.scriptedEffect.modifySelectedSegmentByLabelmap(modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeAdd)
+            self.scriptedEffect.modifySelectedSegmentByLabelmap(
+                modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeAdd
+            )
 
         elif eventId == vtk.vtkCommand.MouseMoveEvent:
             if pipeline.actionState == "":
@@ -104,8 +110,11 @@ class SegmentEditorLevelTracingEffect(AbstractScriptedSegmentEditorLabelEffect):
                 else:
                     self.sliceRotatedErrorLabel.text = (
                         '<b><font color="red">'
-                        + _("Slice view is not aligned with segmentation axis.<br>To use this effect, click the 'Slice views orientation' warning button.")
-                        + "</font></b>")
+                        + _(
+                            "Slice view is not aligned with segmentation axis.<br>To use this effect, click the 'Slice views orientation' warning button."
+                        )
+                        + "</font></b>"
+                    )
                 abortEvent = True
                 self.lastXY = xy
         elif eventId == vtk.vtkCommand.EnterEvent:

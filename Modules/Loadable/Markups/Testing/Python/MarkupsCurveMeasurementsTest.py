@@ -16,7 +16,9 @@ def verifyArrays(pointData, arrayNames):
         return
     for arrIdx in range(pointData.GetNumberOfArrays()):
         if pointData.GetArrayName(arrIdx) != arrayNames[arrIdx]:
-            raise RuntimeError(f"Unexpected data array name at index {arrIdx}: {pointData.GetArrayName(arrIdx)} (expected {arrayNames})")
+            raise RuntimeError(
+                f"Unexpected data array name at index {arrIdx}: {pointData.GetArrayName(arrIdx)} (expected {arrayNames})"
+            )
 
 
 #
@@ -34,7 +36,8 @@ testSceneFilePath = curveMeasurementsTestDir + "/MarkupsCurvatureTestScene.mrb"
 slicer.util.downloadFile(
     TESTING_DATA_URL + "SHA256/5b1f39e28ad8611790152fdc092ec9b3ee14254aad4897377db9576139c88e32",
     testSceneFilePath,
-    checksum="SHA256:5b1f39e28ad8611790152fdc092ec9b3ee14254aad4897377db9576139c88e32")
+    checksum="SHA256:5b1f39e28ad8611790152fdc092ec9b3ee14254aad4897377db9576139c88e32",
+)
 
 # Import test scene
 slicer.util.loadScene(testSceneFilePath)
@@ -53,7 +56,10 @@ verifyArrays(curvePointData, ["PedigreeIDs", "Tangents", "Normals", "Binormals",
 
 curvatureArray = curvePointData.GetArray(4)
 if curvatureArray.GetMaxId() != curvePointData.GetNumberOfTuples() - 1:
-    exceptionMessage = "Unexpected number of values in curvature data array: %d (expected %d)" % (curvatureArray.GetMaxId(), curvePointData.GetNumberOfTuples() - 1)
+    exceptionMessage = "Unexpected number of values in curvature data array: %d (expected %d)" % (
+        curvatureArray.GetMaxId(),
+        curvePointData.GetNumberOfTuples() - 1,
+    )
     raise Exception(exceptionMessage)
 
 if abs(curvatureArray.GetRange()[0] - 0.0) > 0.0001:
@@ -86,7 +92,10 @@ verifyArrays(curvePointData, ["PedigreeIDs", "Tangents", "Normals", "Binormals",
 
 curvatureArray = curvePointData.GetArray(4)
 if curvatureArray.GetMaxId() != curvePointData.GetNumberOfTuples() - 1:
-    exceptionMessage = "Unexpected number of values in curvature data array: %d (expected %d)" % (curvatureArray.GetMaxId(), curvePointData.GetNumberOfTuples() - 1)
+    exceptionMessage = "Unexpected number of values in curvature data array: %d (expected %d)" % (
+        curvatureArray.GetMaxId(),
+        curvePointData.GetNumberOfTuples() - 1,
+    )
     raise Exception(exceptionMessage)
 
 if abs(curvatureArray.GetRange()[0] - 0.0) > 0.0001:
@@ -112,7 +121,8 @@ testSceneFilePath = curveMeasurementsTestDir + "/MarkupsControlPointMeasurementI
 slicer.util.downloadFile(
     TESTING_DATA_URL + "SHA256/b636ecfc1be54504c2c9843e1ff53242ee6b951228490ae99a89e06c8890e344",
     testSceneFilePath,
-    checksum="SHA256:b636ecfc1be54504c2c9843e1ff53242ee6b951228490ae99a89e06c8890e344")
+    checksum="SHA256:b636ecfc1be54504c2c9843e1ff53242ee6b951228490ae99a89e06c8890e344",
+)
 
 # Import test scene
 slicer.util.loadScene(testSceneFilePath)
@@ -142,7 +152,9 @@ verifyArrays(centerlineCurvePointData, ["PedigreeIDs", "Tangents", "Normals", "B
 
 interpolatedRadiusArray = centerlineCurvePointData.GetArray(4)
 if interpolatedRadiusArray.GetNumberOfTuples() != 571:
-    exceptionMessage = "Unexpected number of data points in interpolated radius array: " + str(interpolatedRadiusArray.GetNumberOfTuples())
+    exceptionMessage = "Unexpected number of data points in interpolated radius array: " + str(
+        interpolatedRadiusArray.GetNumberOfTuples()
+    )
     raise Exception(exceptionMessage)
 
 if abs(interpolatedRadiusArray.GetRange()[0] - 12.322814731747465) > 0.0001:
@@ -201,7 +213,9 @@ closedCurveNode.GetMeasurement("curvature mean").SetEnabled(True)
 closedCurveNode.GetMeasurement("curvature max").SetEnabled(True)
 curvatureArray = closedCurveNode.GetCurveWorld().GetPointData().GetArray("Curvature")
 if curvatureArray.GetNumberOfValues() < 10:
-    exceptionMessage = "Many values are expected in the curvature array, instead found just %d" % curvatureArray.GetNumberOfValues()
+    exceptionMessage = (
+        "Many values are expected in the curvature array, instead found just %d" % curvatureArray.GetNumberOfValues()
+    )
     raise Exception(exceptionMessage)
 
 if abs(curvatureArray.GetRange()[0] - 1 / radius) > 1e-4:
@@ -214,22 +228,31 @@ if abs(curvatureArray.GetRange()[1] - 1 / radius) > 1e-4:
     exceptionMessage = "Unexpected maximum in curvature data array: " + str(curvatureArray.GetRange()[1])
     raise Exception(exceptionMessage)
 if abs(closedCurveNode.GetMeasurement("curvature mean").GetValue() - 1 / radius) > 1e-4:
-    exceptionMessage = "Unexpected curvature mean value: " + str(closedCurveNode.GetMeasurement("curvature mean").GetValue())
+    exceptionMessage = "Unexpected curvature mean value: " + str(
+        closedCurveNode.GetMeasurement("curvature mean").GetValue()
+    )
     raise Exception(exceptionMessage)
 if abs(closedCurveNode.GetMeasurement("curvature max").GetValue() - 1 / radius) > 1e-4:
-    exceptionMessage = "Unexpected curvature max value: " + str(closedCurveNode.GetMeasurement("curvature max").GetValue())
+    exceptionMessage = "Unexpected curvature max value: " + str(
+        closedCurveNode.GetMeasurement("curvature max").GetValue()
+    )
     raise Exception(exceptionMessage)
 
 # Check length and area
 
 closedCurveNode.GetMeasurement("length").SetEnabled(True)
 if closedCurveNode.GetMeasurement("length").GetValueWithUnitsAsPrintableString() != "219.9mm":
-    exceptionMessage = "Unexpected curve length value: " + closedCurveNode.GetMeasurement("length").GetValueWithUnitsAsPrintableString()
+    exceptionMessage = (
+        "Unexpected curve length value: "
+        + closedCurveNode.GetMeasurement("length").GetValueWithUnitsAsPrintableString()
+    )
     raise Exception(exceptionMessage)
 
 closedCurveNode.GetMeasurement("area").SetEnabled(True)
 if closedCurveNode.GetMeasurement("area").GetValueWithUnitsAsPrintableString() != "38.48cm2":
-    exceptionMessage = "Unexpected curve area value: " + closedCurveNode.GetMeasurement("area").GetValueWithUnitsAsPrintableString()
+    exceptionMessage = (
+        "Unexpected curve area value: " + closedCurveNode.GetMeasurement("area").GetValueWithUnitsAsPrintableString()
+    )
     raise Exception(exceptionMessage)
 
 # Display surface area as a model.

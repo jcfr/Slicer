@@ -86,10 +86,12 @@ def _initMethod(self, *args, **kwargs) -> None:
 
 def _eqMethod(self, other) -> bool:
     if type(self) == type(other):
-        return all([
-            _readValue(self, parameter.basename) == _readValue(other, parameter.basename)
-            for parameter in self.allParameters.values()
-        ])
+        return all(
+            [
+                _readValue(self, parameter.basename) == _readValue(other, parameter.basename)
+                for parameter in self.allParameters.values()
+            ]
+        )
     else:
         return False
 
@@ -205,7 +207,9 @@ def _processParameterPack(classtype):
 
         for reserved in [_implName(parameter.basename), _serializerName(parameter.basename)]:
             if reserved in classtype.__dict__ or reserved in members.keys():
-                raise ValueError(f"Cannot use reserved name (based off of parameter name) '{reserved}' in a parameterPack")
+                raise ValueError(
+                    f"Cannot use reserved name (based off of parameter name) '{reserved}' in a parameterPack"
+                )
 
         setattr(classtype, parameter.basename, _makeConcreteProperty(parameter.basename))
         setattr(classtype, _serializerName(parameter.basename), serializer)
@@ -293,11 +297,13 @@ def _makeObservedProperty(superType, name: str):
 
 def createObservedParameterPackImpl(packType):
     class ObservedParameterPack(packType):
-        def __init__(self,
-                     parameterNode: slicer.vtkMRMLScriptedModuleNode,
-                     serializer: Serializer,
-                     name: str,
-                     args: dict[str, typing.Any]):
+        def __init__(
+            self,
+            parameterNode: slicer.vtkMRMLScriptedModuleNode,
+            serializer: Serializer,
+            name: str,
+            args: dict[str, typing.Any],
+        ):
             super().__setattr__("_observedPackValues", _ObservedParameterPackValues(parameterNode, serializer, name))
             # always want to go through the well known init interface, even if a custom init is in use
             _initMethod(self, **args)
@@ -306,8 +312,10 @@ def createObservedParameterPackImpl(packType):
         # prevent new attributes from being added dynamically
         def __setattr__(self, key, value):
             if self._observedPackValues.frozen and not hasattr(self, key):
-                raise AttributeError(f"'ObservedParameterPack({packType.__name__})' has no attribute '{key}'"
-                                     " and attributes cannot be added dynamcially")
+                raise AttributeError(
+                    f"'ObservedParameterPack({packType.__name__})' has no attribute '{key}'"
+                    " and attributes cannot be added dynamcially"
+                )
             super().__setattr__(key, value)
 
         def __str__(self) -> str:
@@ -346,10 +354,7 @@ def createObservedParameterPackImpl(packType):
             if type(self) == type(other):
                 return packType.__eq__(self, other)
             elif packType == type(other):
-                return all([
-                    self.getValue(name) == other.getValue(name)
-                    for name in self.allParameters.keys()
-                ])
+                return all([self.getValue(name) == other.getValue(name) for name in self.allParameters.keys()])
             else:
                 return False
 
@@ -393,8 +398,9 @@ class ParameterPackSerializer(Serializer):
     @staticmethod
     def create(type_):
         if ParameterPackSerializer.canSerialize(type_):
-            return ValidatedSerializer(ParameterPackSerializer(type_),
-                                       [NotNone(), _ParameterPackInstanceValidator(type_)])
+            return ValidatedSerializer(
+                ParameterPackSerializer(type_), [NotNone(), _ParameterPackInstanceValidator(type_)]
+            )
         return None
 
     def __init__(self, type_) -> None:

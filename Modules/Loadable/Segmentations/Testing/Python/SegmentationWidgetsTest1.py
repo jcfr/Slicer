@@ -54,8 +54,8 @@ class SegmentationWidgetsTest1(ScriptedLoadableModuleTest):
             sphere.Update()
             spherePolyData = sphere.GetOutput()
             sphereSegment.AddRepresentation(
-                slicer.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName(),
-                spherePolyData)
+                slicer.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName(), spherePolyData
+            )
 
             self.inputSegmentationNode.GetSegmentation().AddSegment(sphereSegment)
 
@@ -190,7 +190,12 @@ class SegmentationWidgetsTest1(ScriptedLoadableModuleTest):
 
         # Convert MRHead to oriented image data
         import vtkSlicerSegmentationsModuleLogicPython as vtkSlicerSegmentationsModuleLogic
-        mrOrientedImageData = vtkSlicerSegmentationsModuleLogic.vtkSlicerSegmentationsModuleLogic.CreateOrientedImageDataFromVolumeNode(mrVolumeNode)
+
+        mrOrientedImageData = (
+            vtkSlicerSegmentationsModuleLogic.vtkSlicerSegmentationsModuleLogic.CreateOrientedImageDataFromVolumeNode(
+                mrVolumeNode
+            )
+        )
         mrOrientedImageData.UnRegister(None)
 
         # Create segmentation node with binary labelmap master and one segment with MRHead geometry
@@ -198,7 +203,8 @@ class SegmentationWidgetsTest1(ScriptedLoadableModuleTest):
         segmentationNode.GetSegmentation().SetSourceRepresentationName(binaryLabelmapReprName)
         geometryStr = slicer.vtkSegmentationConverter.SerializeImageGeometry(mrOrientedImageData)
         segmentationNode.GetSegmentation().SetConversionParameter(
-            slicer.vtkSegmentationConverter.GetReferenceImageGeometryParameterName(), geometryStr)
+            slicer.vtkSegmentationConverter.GetReferenceImageGeometryParameterName(), geometryStr
+        )
 
         threshold = vtk.vtkImageThreshold()
         threshold.SetInputData(mrOrientedImageData)
@@ -227,11 +233,17 @@ class SegmentationWidgetsTest1(ScriptedLoadableModuleTest):
         # Volume source with no transforms
         geometryWidget.setSourceNode(tinyVolumeNode)
         geometryWidget.geometryImageData(geometryImageData)
-        self.assertTrue(self.compareOutputGeometry(geometryImageData,
-                                                   (49, 49, 23), (248.8439, 248.2890, -123.75),
-                                                   [[-1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, 1.0]]))
+        self.assertTrue(
+            self.compareOutputGeometry(
+                geometryImageData,
+                (49, 49, 23),
+                (248.8439, 248.2890, -123.75),
+                [[-1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, 1.0]],
+            )
+        )
         slicer.vtkOrientedImageDataResample.ResampleOrientedImageToReferenceOrientedImage(
-            segmentOrientedImageData, geometryImageData, geometryImageData, False, True)
+            segmentOrientedImageData, geometryImageData, geometryImageData, False, True
+        )
         self.assertEqual(self.getForegroundVoxelCount(geometryImageData), 92)
 
         # Transformed volume source
@@ -246,33 +258,51 @@ class SegmentationWidgetsTest1(ScriptedLoadableModuleTest):
 
         tinyVolumeNode.SetAndObserveTransformNodeID(translationTransformNode.GetID())
         geometryWidget.geometryImageData(geometryImageData)
-        self.assertTrue(self.compareOutputGeometry(geometryImageData,
-                                                   (49, 49, 23), (273.3439, 272.7890, -112.25),
-                                                   [[-1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, 1.0]]))
+        self.assertTrue(
+            self.compareOutputGeometry(
+                geometryImageData,
+                (49, 49, 23),
+                (273.3439, 272.7890, -112.25),
+                [[-1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, 1.0]],
+            )
+        )
         slicer.vtkOrientedImageDataResample.ResampleOrientedImageToReferenceOrientedImage(
-            segmentOrientedImageData, geometryImageData, geometryImageData, False, True)
+            segmentOrientedImageData, geometryImageData, geometryImageData, False, True
+        )
         self.assertEqual(self.getForegroundVoxelCount(geometryImageData), 94)
 
         # Volume source with isotropic spacing
         tinyVolumeNode.SetAndObserveTransformNodeID(None)
         geometryWidget.setIsotropicSpacing(True)
         geometryWidget.geometryImageData(geometryImageData)
-        self.assertTrue(self.compareOutputGeometry(geometryImageData,
-                                                   (23, 23, 23), (248.8439, 248.2890, -123.75),
-                                                   [[-1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, 1.0]]))
+        self.assertTrue(
+            self.compareOutputGeometry(
+                geometryImageData,
+                (23, 23, 23),
+                (248.8439, 248.2890, -123.75),
+                [[-1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, 1.0]],
+            )
+        )
         slicer.vtkOrientedImageDataResample.ResampleOrientedImageToReferenceOrientedImage(
-            segmentOrientedImageData, geometryImageData, geometryImageData, False, True)
+            segmentOrientedImageData, geometryImageData, geometryImageData, False, True
+        )
         self.assertEqual(self.getForegroundVoxelCount(geometryImageData), 414)
 
         # Volume source with oversampling
         geometryWidget.setIsotropicSpacing(False)
         geometryWidget.setOversamplingFactor(2.0)
         geometryWidget.geometryImageData(geometryImageData)
-        self.assertTrue(self.compareOutputGeometry(geometryImageData,
-                                                   (24.5, 24.5, 11.5), (261.0939, 260.5390, -129.5),
-                                                   [[-1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, 1.0]]))
+        self.assertTrue(
+            self.compareOutputGeometry(
+                geometryImageData,
+                (24.5, 24.5, 11.5),
+                (261.0939, 260.5390, -129.5),
+                [[-1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, 1.0]],
+            )
+        )
         slicer.vtkOrientedImageDataResample.ResampleOrientedImageToReferenceOrientedImage(
-            segmentOrientedImageData, geometryImageData, geometryImageData, False, True)
+            segmentOrientedImageData, geometryImageData, geometryImageData, False, True
+        )
         self.assertEqual(self.getForegroundVoxelCount(geometryImageData), 751)
         slicer.util.delayDisplay("Volume source cases - OK")
 
@@ -280,11 +310,17 @@ class SegmentationWidgetsTest1(ScriptedLoadableModuleTest):
         geometryWidget.setOversamplingFactor(1.0)
         geometryWidget.setSourceNode(tinySegmentationNode)
         geometryWidget.geometryImageData(geometryImageData)
-        self.assertTrue(self.compareOutputGeometry(geometryImageData,
-                                                   (49, 49, 23), (248.8439, 248.2890, -123.75),
-                                                   [[-1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, 1.0]]))
+        self.assertTrue(
+            self.compareOutputGeometry(
+                geometryImageData,
+                (49, 49, 23),
+                (248.8439, 248.2890, -123.75),
+                [[-1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, 1.0]],
+            )
+        )
         slicer.vtkOrientedImageDataResample.ResampleOrientedImageToReferenceOrientedImage(
-            segmentOrientedImageData, geometryImageData, geometryImageData, False, True)
+            segmentOrientedImageData, geometryImageData, geometryImageData, False, True
+        )
         self.assertEqual(self.getForegroundVoxelCount(geometryImageData), 92)
 
         # Segmentation source with closed surface master
@@ -293,11 +329,17 @@ class SegmentationWidgetsTest1(ScriptedLoadableModuleTest):
         tinySegmentationNode.GetSegmentation().SetSourceRepresentationName(closedSurfaceReprName)
         tinySegmentationNode.Modified()  # Trigger re-calculation of geometry (only generic Modified event is observed)
         geometryWidget.geometryImageData(geometryImageData)
-        self.assertTrue(self.compareOutputGeometry(geometryImageData,
-                                                   (1, 1, 1), (-86.645, 133.929, 116.786),  # current origin of the segmentation is kept
-                                                   [[0.0, 0.0, 1.0], [-1.0, 0.0, 0.0], [0.0, -1.0, 0.0]]))
+        self.assertTrue(
+            self.compareOutputGeometry(
+                geometryImageData,
+                (1, 1, 1),
+                (-86.645, 133.929, 116.786),  # current origin of the segmentation is kept
+                [[0.0, 0.0, 1.0], [-1.0, 0.0, 0.0], [0.0, -1.0, 0.0]],
+            )
+        )
         slicer.vtkOrientedImageDataResample.ResampleOrientedImageToReferenceOrientedImage(
-            segmentOrientedImageData, geometryImageData, geometryImageData, False, True)
+            segmentOrientedImageData, geometryImageData, geometryImageData, False, True
+        )
         self.assertEqual(self.getForegroundVoxelCount(geometryImageData), 5223040)
         slicer.util.delayDisplay("Segmentation source cases - OK")
 
@@ -305,16 +347,23 @@ class SegmentationWidgetsTest1(ScriptedLoadableModuleTest):
         shNode = slicer.vtkMRMLSubjectHierarchyNode.GetSubjectHierarchyNode(slicer.mrmlScene)
         outputFolderId = shNode.CreateFolderItem(shNode.GetSceneItemID(), "ModelsFolder")
         success = vtkSlicerSegmentationsModuleLogic.vtkSlicerSegmentationsModuleLogic.ExportVisibleSegmentsToModels(
-            tinySegmentationNode, outputFolderId)
+            tinySegmentationNode, outputFolderId
+        )
         self.assertTrue(success)
         modelNode = slicer.util.getNode("Body_Contour")
         geometryWidget.setSourceNode(modelNode)
         geometryWidget.geometryImageData(geometryImageData)
-        self.assertTrue(self.compareOutputGeometry(geometryImageData,
-                                                   (1, 1, 1), (-86.645, 133.929, 116.786),  # current origin of the segmentation is kept
-                                                   [[0.0, 0.0, 1.0], [-1.0, 0.0, 0.0], [0.0, -1.0, 0.0]]))
+        self.assertTrue(
+            self.compareOutputGeometry(
+                geometryImageData,
+                (1, 1, 1),
+                (-86.645, 133.929, 116.786),  # current origin of the segmentation is kept
+                [[0.0, 0.0, 1.0], [-1.0, 0.0, 0.0], [0.0, -1.0, 0.0]],
+            )
+        )
         slicer.vtkOrientedImageDataResample.ResampleOrientedImageToReferenceOrientedImage(
-            segmentOrientedImageData, geometryImageData, geometryImageData, False, True)
+            segmentOrientedImageData, geometryImageData, geometryImageData, False, True
+        )
         self.assertEqual(self.getForegroundVoxelCount(geometryImageData), 5223040)
         slicer.util.delayDisplay("Model source - OK")
 
@@ -331,11 +380,17 @@ class SegmentationWidgetsTest1(ScriptedLoadableModuleTest):
         modelNode.SetAndObserveTransformNodeID(rotationTransformNode.GetID())
         modelNode.Modified()
         geometryWidget.geometryImageData(geometryImageData)
-        self.assertTrue(self.compareOutputGeometry(geometryImageData,
-                                                   (1, 1, 1), (-86.645, 177.282, -12.122),
-                                                   [[0.0, 0.0, 1.0], [-0.7071, -0.7071, 0.0], [0.7071, -0.7071, 0.0]]))
+        self.assertTrue(
+            self.compareOutputGeometry(
+                geometryImageData,
+                (1, 1, 1),
+                (-86.645, 177.282, -12.122),
+                [[0.0, 0.0, 1.0], [-0.7071, -0.7071, 0.0], [0.7071, -0.7071, 0.0]],
+            )
+        )
         slicer.vtkOrientedImageDataResample.ResampleOrientedImageToReferenceOrientedImage(
-            segmentOrientedImageData, geometryImageData, geometryImageData, False, True)
+            segmentOrientedImageData, geometryImageData, geometryImageData, False, True
+        )
         self.assertEqual(self.getForegroundVoxelCount(geometryImageData), 5229164)
         slicer.util.delayDisplay("Transformed model source - OK")
 
@@ -351,11 +406,17 @@ class SegmentationWidgetsTest1(ScriptedLoadableModuleTest):
         geometryWidget.setSourceNode(roiNode)
         geometryWidget.geometryImageData(geometryImageData)
         print(f"geometryImageData: {geometryImageData}")
-        self.assertTrue(self.compareOutputGeometry(geometryImageData,
-                                                   (1, 1, 1), (28.344, 27.789, -20.25),
-                                                   [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]))
+        self.assertTrue(
+            self.compareOutputGeometry(
+                geometryImageData,
+                (1, 1, 1),
+                (28.344, 27.789, -20.25),
+                [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
+            )
+        )
         slicer.vtkOrientedImageDataResample.ResampleOrientedImageToReferenceOrientedImage(
-            segmentOrientedImageData, geometryImageData, geometryImageData, False, True)
+            segmentOrientedImageData, geometryImageData, geometryImageData, False, True
+        )
         self.assertEqual(self.getForegroundVoxelCount(geometryImageData), 5223040)
         slicer.util.delayDisplay("ROI source - OK")
 

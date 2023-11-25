@@ -37,7 +37,12 @@ xdiff = coords[0] - startCoords[0]
 ydiff = coords[1] - startCoords[1]
 zdiff = coords[2] - startCoords[2]
 
-print("Difference between coordinates after restored the scene and value from just before stored the scene: ", xdiff, ydiff, zdiff)
+print(
+    "Difference between coordinates after restored the scene and value from just before stored the scene: ",
+    xdiff,
+    ydiff,
+    zdiff,
+)
 
 diffTotal = xdiff + ydiff + zdiff
 

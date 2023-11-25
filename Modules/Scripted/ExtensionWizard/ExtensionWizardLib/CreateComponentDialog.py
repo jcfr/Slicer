@@ -20,8 +20,7 @@ class _ui_CreateComponentDialog:
         self.componentName = qt.QLineEdit()
         self.formLayout.addRow("Name:", self.componentName)
 
-        self.componentNameValidator = qt.QRegExpValidator(
-            qt.QRegExp(r"^[a-zA-Z_][a-zA-Z0-9_]*$"))
+        self.componentNameValidator = qt.QRegExpValidator(qt.QRegExp(r"^[a-zA-Z_][a-zA-Z0-9_]*$"))
         self.componentName.setValidator(self.componentNameValidator)
 
         self.componentType = qt.QComboBox()
@@ -35,8 +34,7 @@ class _ui_CreateComponentDialog:
         self.vLayout.addStretch(1)
 
         self.buttonBox = qt.QDialogButtonBox()
-        self.buttonBox.setStandardButtons(qt.QDialogButtonBox.Ok |
-                                          qt.QDialogButtonBox.Cancel)
+        self.buttonBox.setStandardButtons(qt.QDialogButtonBox.Ok | qt.QDialogButtonBox.Cancel)
         self.vLayout.addWidget(self.buttonBox)
 
 
@@ -60,15 +58,21 @@ class CreateComponentDialog:
     # ---------------------------------------------------------------------------
     def accept(self):
         if not len(self.componentName):
-            slicer.util.errorDisplay("%s name may not be empty." % self._typetc,
-                                     windowTitle="Cannot create %s" % self._typelc, parent=self.dialog)
+            slicer.util.errorDisplay(
+                "%s name may not be empty." % self._typetc,
+                windowTitle="Cannot create %s" % self._typelc,
+                parent=self.dialog,
+            )
             return
 
         if self.showDestination:
             dest = self.destination
             if not len(dest) or not os.path.exists(dest):
-                slicer.util.errorDisplay("Destination must be an existing directory.",
-                                         windowTitle="Cannot create %s" % self._typelc, parent=self.dialog)
+                slicer.util.errorDisplay(
+                    "Destination must be an existing directory.",
+                    windowTitle="Cannot create %s" % self._typelc,
+                    parent=self.dialog,
+                )
                 return
 
         self.dialog.accept()

@@ -39,8 +39,7 @@ class DirectoryListWidget(qt.QWidget):
         self.ui = _ui_DirectoryListWidget(self)
 
         self.ui.addPathButton.connect("clicked()", self.addDirectory)
-        self.ui.removePathButton.connect("clicked()", self.ui.pathList,
-                                         "removeSelectedDirectories()")
+        self.ui.removePathButton.connect("clicked()", self.ui.pathList, "removeSelectedDirectories()")
 
     # ---------------------------------------------------------------------------
     def addDirectory(self):

@@ -73,8 +73,7 @@ class ExtensionWizard:
     """
 
     _reModuleInsertPlaceholder = re.compile("(?<=\n)([ \t]*)## NEXT_MODULE")
-    _reAddSubdirectory = \
-        re.compile("(?<=\n)([ \t]*)add_subdirectory[(][^)]+[)][^\n]*\n")
+    _reAddSubdirectory = re.compile("(?<=\n)([ \t]*)add_subdirectory[(][^)]+[)][^\n]*\n")
 
     # ---------------------------------------------------------------------------
     def __init__(self):
@@ -102,8 +101,7 @@ class ExtensionWizard:
 
         try:
             dest = args.destination
-            args.destination = self._templateManager.copyTemplate(dest, "extensions",
-                                                                  kind, name)
+            args.destination = self._templateManager.copyTemplate(dest, "extensions", kind, name)
             logging.info("created extension '%s'" % name)
 
         except:
@@ -157,7 +155,9 @@ class ExtensionWizard:
             r = None
 
             if args.localExtensionsDir:
-                r = SourceTreeDirectory(args.localExtensionsDir, os.path.relpath(args.destination, args.localExtensionsDir))
+                r = SourceTreeDirectory(
+                    args.localExtensionsDir, os.path.relpath(args.destination, args.localExtensionsDir)
+                )
 
             else:
                 r = getRepo(args.destination)
@@ -187,9 +187,11 @@ class ExtensionWizard:
             confirm = True
 
         if confirm:
-            logging.info("Your extension currently uses '%s' for %s,"
-                         " which can be changed to '%s' to point to your new"
-                         " public repository." % (oldValue, name, value))
+            logging.info(
+                "Your extension currently uses '%s' for %s,"
+                " which can be changed to '%s' to point to your new"
+                " public repository." % (oldValue, name, value)
+            )
             if not inquire("Change it"):
                 return
 
@@ -248,25 +250,24 @@ class ExtensionWizard:
             logging.info("")
             if not inquire("Continue"):
                 prog = os.path.basename(sys.argv[0])
-                die("canceling at user request:"
-                    " update your index and run %s again" % prog)
+                die("canceling at user request:" " update your index and run %s again" % prog)
 
         else:
             # Check if repository is dirty
             if r.is_dirty():
-                die("declined: working tree is dirty;"
-                    " commit or stash your changes first")
+                die("declined: working tree is dirty;" " commit or stash your changes first")
 
             # Check if a remote already exists
             if len(r.remotes):
-                die("declined: publishing is only supported for repositories"
-                    " with no pre-existing remotes")
+                die("declined: publishing is only supported for repositories" " with no pre-existing remotes")
 
             branch = r.active_branch
             if branch.name != "main":
-                logging.warning("You are currently on the '%s' branch. "
-                                "It is strongly recommended to publish"
-                                " the 'main' branch." % branch)
+                logging.warning(
+                    "You are currently on the '%s' branch. "
+                    "It is strongly recommended to publish"
+                    " the 'main' branch." % branch
+                )
                 if not inquire("Continue anyway"):
                     die("canceled at user request")
 
@@ -307,9 +308,11 @@ class ExtensionWizard:
                 r.index.commit("ENH: Initial commit for %s" % name)
             else:
                 logging.info("committing changes")
-                r.index.commit("ENH: Update extension information\n\n"
-                               "Set %s information to reference"
-                               " new github repository." % name)
+                r.index.commit(
+                    "ENH: Update extension information\n\n"
+                    "Set %s information to reference"
+                    " new github repository." % name
+                )
 
             # Set up the remote and push
             logging.info("preparing to push extension repository")
@@ -328,11 +331,13 @@ class ExtensionWizard:
         args["name"] = name
 
         if update:
-            template = textwrap.dedent("""\
+            template = textwrap.dedent(
+                """\
         ENH: Update %(name)s extension
 
         This updates the %(name)s extension to %(scmrevision)s.
-        """)
+        """
+            )
             if wrap:
                 paragraphs = (template % args).split("\n")
                 return "\n".join([textwrap.fill(p, width=76) for p in paragraphs])
@@ -340,7 +345,8 @@ class ExtensionWizard:
                 return template % args
 
         else:
-            template = textwrap.dedent("""\
+            template = textwrap.dedent(
+                """\
         ENH: Add %(name)s extension
 
         Description:
@@ -348,7 +354,8 @@ class ExtensionWizard:
 
         Contributors:
         %(contributors)s
-        """)
+        """
+            )
 
             if wrap:
                 for key in args:
@@ -446,8 +453,7 @@ class ExtensionWizard:
 
             logging.debug("index upstream: %s", upstreamRepo.url)
 
-            forkedRepo = GithubHelper.getFork(user=gh.get_user(), create=True,
-                                              upstream=upstreamRepo)
+            forkedRepo = GithubHelper.getFork(user=gh.get_user(), create=True, upstream=upstreamRepo)
 
             logging.debug("index fork: %s", forkedRepo.url)
 
@@ -469,9 +475,10 @@ class ExtensionWizard:
                 xiRemote = [forkedRepo.clone_url, forkedRepo.git_url]
                 xiRemote = getRemote(xiRepo, xiRemote)
                 if xiRemote is None:
-                    raise Exception("the extension index repository ('%s')"
-                                    " is not a clone of %s" %
-                                    (xiRepo.working_tree_dir, forkedRepo.clone_url))
+                    raise Exception(
+                        "the extension index repository ('%s')"
+                        " is not a clone of %s" % (xiRepo.working_tree_dir, forkedRepo.clone_url)
+                    )
 
             logging.debug("index fork remote: %s", xiRemote.url)
 
@@ -482,8 +489,7 @@ class ExtensionWizard:
 
             # Check that the index repository is clean
             if xiRepo.is_dirty():
-                raise Exception("the extension index repository ('%s') is dirty" %
-                                xiRepo.working_tree_dir)
+                raise Exception("the extension index repository ('%s') is dirty" % xiRepo.working_tree_dir)
 
             # Update the index repository and get the base branch
             logging.info("updating local index clone")
@@ -510,10 +516,8 @@ class ExtensionWizard:
             xiRepo.git.checkout(xiBase, B=branch)
 
             # Check to see if there is an existing pull request
-            pullRequest = GithubHelper.getPullRequest(upstreamRepo, fork=forkedRepo,
-                                                      ref=branch)
-            logging.debug("existing pull request: %s",
-                          pullRequest if pullRequest is None else pullRequest.url)
+            pullRequest = GithubHelper.getPullRequest(upstreamRepo, fork=forkedRepo, ref=branch)
+            logging.debug("existing pull request: %s", pullRequest if pullRequest is None else pullRequest.url)
 
             if update:
                 # Get old SCM revision
@@ -531,8 +535,7 @@ class ExtensionWizard:
             xiRepo.index.add([xdf])
 
             # Commit and push the new/updated extension description
-            xiRepo.index.commit(self._extensionIndexCommitMessage(
-                name, xd, update=update))
+            xiRepo.index.commit(self._extensionIndexCommitMessage(name, xd, update=update))
 
             try:
                 # We need the old branch, if it exists, to be fetched locally, so that
@@ -544,8 +547,7 @@ class ExtensionWizard:
             xiRemote.push("+%s" % branch)
 
             # Get message formatted for pull request
-            msg = self._extensionIndexCommitMessage(name, xd, update=update,
-                                                    wrap=False).split("\n")
+            msg = self._extensionIndexCommitMessage(name, xd, update=update, wrap=False).split("\n")
             if len(msg) > 2 and not len(msg[1].strip()):
                 del msg[1]
 
@@ -573,8 +575,7 @@ class ExtensionWizard:
 
             if args.test:
                 msg.append("")
-                msg.append("THIS PULL REQUEST WAS MACHINE GENERATED"
-                           " FOR TESTING PURPOSES. DO NOT MERGE.")
+                msg.append("THIS PULL REQUEST WAS MACHINE GENERATED" " FOR TESTING PURPOSES. DO NOT MERGE.")
 
             if args.dryRun:
                 if pullRequest is not None:
@@ -590,8 +591,8 @@ class ExtensionWizard:
 
                 pull = f"{forkedRepo.owner.login}:{branch}"
                 pullRequest = upstreamRepo.create_pull(
-                    title=msg[0], body="\n".join(msg[1:]),
-                    head=pull, base=args.target)
+                    title=msg[0], body="\n".join(msg[1:]), head=pull, base=args.target
+                )
 
                 logging.info("created pull request %s", pullRequest.html_url)
 
@@ -695,13 +696,17 @@ class ExtensionWizard:
                 option = "--contribute"
             elif args.name:
                 option = "--name"
-            die(textwrap.dedent(
-                """\
+            die(
+                textwrap.dedent(
+                    """\
             Option '%s' is not available.
 
             Consider re-building Slicer with SSL support or downloading
             Slicer from https://download.slicer.org
-            """ % option))
+            """
+                    % option
+                )
+            )
 
         # Add built-in templates
         scriptPath = os.path.dirname(os.path.realpath(__file__))
@@ -721,8 +726,10 @@ class ExtensionWizard:
                 self._templateManager.addPath(candidate)
                 descriptionFileTemplate = os.path.join(candidate, "Extensions", "extension_description.s4ext.in")
         if descriptionFileTemplate is None or not os.path.exists(descriptionFileTemplate):
-            logging.warning("failed to locate template 'Extensions/extension_description.s4ext.in' "
-                            "in these directories: %s" % candidateBuiltInTemplatePaths)
+            logging.warning(
+                "failed to locate template 'Extensions/extension_description.s4ext.in' "
+                "in these directories: %s" % candidateBuiltInTemplatePaths
+            )
         else:
             ExtensionDescription.DESCRIPTION_FILE_TEMPLATE = descriptionFileTemplate
 

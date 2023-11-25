@@ -159,19 +159,25 @@ class DICOMVolumeSequencePluginClass(DICOMPlugin):
                 return error
             volumeNode = shNode.GetItemDataNode(exportable.subjectHierarchyItemID)
             if volumeNode is None or not volumeNode.IsA("vtkMRMLScalarVolumeNode"):
-                error = _("Series '{itemName}' cannot be exported as volume sequence").format(itemName=shNode.GetItemName(exportable.subjectHierarchyItemID))
+                error = _("Series '{itemName}' cannot be exported as volume sequence").format(
+                    itemName=shNode.GetItemName(exportable.subjectHierarchyItemID)
+                )
                 logging.error(error)
                 return error
 
             sequenceBrowserNode = self.getSequenceBrowserNodeForMasterOutputNode(volumeNode)
             if not sequenceBrowserNode:
-                error = _("Series '{itemName}' cannot be exported as volume sequence").format(itemName=shNode.GetItemName(exportable.subjectHierarchyItemID))
+                error = _("Series '{itemName}' cannot be exported as volume sequence").format(
+                    itemName=shNode.GetItemName(exportable.subjectHierarchyItemID)
+                )
                 logging.error(error)
                 return error
 
             volumeSequenceNode = sequenceBrowserNode.GetSequenceNode(volumeNode)
             if not volumeSequenceNode:
-                error = _("Series '{itemName}' cannot be exported as volume sequence").format(itemName=shNode.GetItemName(exportable.subjectHierarchyItemID))
+                error = _("Series '{itemName}' cannot be exported as volume sequence").format(
+                    itemName=shNode.GetItemName(exportable.subjectHierarchyItemID)
+                )
                 logging.error(error)
                 return error
 
@@ -192,14 +198,20 @@ class DICOMVolumeSequencePluginClass(DICOMPlugin):
             tags = {}
             tags["Patient Name"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientNameTagName())
             tags["Patient ID"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientIDTagName())
-            tags["Patient Comments"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientCommentsTagName())
+            tags["Patient Comments"] = exportable.tag(
+                slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientCommentsTagName()
+            )
             tags["Study Instance UID"] = pydicom.uid.generate_uid()
-            tags["Patient Birth Date"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientBirthDateTagName())
+            tags["Patient Birth Date"] = exportable.tag(
+                slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientBirthDateTagName()
+            )
             tags["Patient Sex"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientSexTagName())
             tags["Study ID"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyIDTagName())
             tags["Study Date"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyDateTagName())
             tags["Study Time"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyTimeTagName())
-            tags["Study Description"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyDescriptionTagName())
+            tags["Study Description"] = exportable.tag(
+                slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyDescriptionTagName()
+            )
             tags["Modality"] = exportable.tag("Modality")
             tags["Manufacturer"] = exportable.tag("Manufacturer")
             tags["Model"] = exportable.tag("Model")
@@ -250,7 +262,9 @@ class DICOMVolumeSequencePluginClass(DICOMPlugin):
                 slicer.app.processEvents()
                 # Compute content date&time
                 # TODO: verify that unit in sequence node is "second" (and convert to seconds if not)
-                timeOffsetSec = float(masterVolumeNode.GetNthIndexValue(sequenceItemIndex)) - float(masterVolumeNode.GetNthIndexValue(0))
+                timeOffsetSec = float(masterVolumeNode.GetNthIndexValue(sequenceItemIndex)) - float(
+                    masterVolumeNode.GetNthIndexValue(0)
+                )
                 contentDatetime = contentStartDatetime + datetime.timedelta(seconds=timeOffsetSec)
                 tags["Content Date"] = contentDatetime.strftime("%Y%m%d")
                 tags["Content Time"] = contentDatetime.strftime("%H%M%S.%f")

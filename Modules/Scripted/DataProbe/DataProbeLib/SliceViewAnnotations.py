@@ -51,41 +51,49 @@ class SliceAnnotations(VTKObservationMixin):
         self.popupGeometry = qt.QRect()
         self.cornerTexts = []
         # Bottom Left Corner Text
-        self.cornerTexts.append({
-            "1-Label": {"text": "", "category": "A"},
-            "2-Foreground": {"text": "", "category": "A"},
-            "3-Background": {"text": "", "category": "A"},
-        })
+        self.cornerTexts.append(
+            {
+                "1-Label": {"text": "", "category": "A"},
+                "2-Foreground": {"text": "", "category": "A"},
+                "3-Background": {"text": "", "category": "A"},
+            }
+        )
         # Bottom Right Corner Text
         # Not used - orientation figure may be drawn there
-        self.cornerTexts.append({
-            "1-TR": {"text": "", "category": "A"},
-            "2-TE": {"text": "", "category": "A"},
-        })
+        self.cornerTexts.append(
+            {
+                "1-TR": {"text": "", "category": "A"},
+                "2-TE": {"text": "", "category": "A"},
+            }
+        )
         # Top Left Corner Text
-        self.cornerTexts.append({
-            "1-PatientName": {"text": "", "category": "B"},
-            "2-PatientID": {"text": "", "category": "A"},
-            "3-PatientInfo": {"text": "", "category": "B"},
-            "4-Bg-SeriesDate": {"text": "", "category": "B"},
-            "5-Fg-SeriesDate": {"text": "", "category": "B"},
-            "6-Bg-SeriesTime": {"text": "", "category": "C"},
-            "7-Bg-SeriesTime": {"text": "", "category": "C"},
-            "8-Bg-SeriesDescription": {"text": "", "category": "C"},
-            "9-Fg-SeriesDescription": {"text": "", "category": "C"},
-        })
+        self.cornerTexts.append(
+            {
+                "1-PatientName": {"text": "", "category": "B"},
+                "2-PatientID": {"text": "", "category": "A"},
+                "3-PatientInfo": {"text": "", "category": "B"},
+                "4-Bg-SeriesDate": {"text": "", "category": "B"},
+                "5-Fg-SeriesDate": {"text": "", "category": "B"},
+                "6-Bg-SeriesTime": {"text": "", "category": "C"},
+                "7-Bg-SeriesTime": {"text": "", "category": "C"},
+                "8-Bg-SeriesDescription": {"text": "", "category": "C"},
+                "9-Fg-SeriesDescription": {"text": "", "category": "C"},
+            }
+        )
         # Top Right Corner Text
-        self.cornerTexts.append({
-            "1-Institution-Name": {"text": "", "category": "B"},
-            "2-Referring-Phisycian": {"text": "", "category": "B"},
-            "3-Manufacturer": {"text": "", "category": "C"},
-            "4-Model": {"text": "", "category": "C"},
-            "5-Patient-Position": {"text": "", "category": "A"},
-            "6-TR": {"text": "", "category": "A"},
-            "7-TE": {"text": "", "category": "A"},
-            "8-SlabReconstructionThickness": {"text": "", "category": "A"},
-            "9-SlabReconstructionType": {"text": "", "category": "A"},
-        })
+        self.cornerTexts.append(
+            {
+                "1-Institution-Name": {"text": "", "category": "B"},
+                "2-Referring-Phisycian": {"text": "", "category": "B"},
+                "3-Manufacturer": {"text": "", "category": "C"},
+                "4-Model": {"text": "", "category": "C"},
+                "5-Patient-Position": {"text": "", "category": "A"},
+                "6-TR": {"text": "", "category": "A"},
+                "7-TE": {"text": "", "category": "A"},
+                "8-SlabReconstructionThickness": {"text": "", "category": "A"},
+                "9-SlabReconstructionType": {"text": "", "category": "A"},
+            }
+        )
 
         #
         self.scene = slicer.mrmlScene
@@ -211,16 +219,16 @@ class SliceAnnotations(VTKObservationMixin):
             self.annotationsDisplayAmount = 2
 
         settings = qt.QSettings()
-        settings.setValue("DataProbe/sliceViewAnnotations.displayLevel",
-                          self.annotationsDisplayAmount)
+        settings.setValue("DataProbe/sliceViewAnnotations.displayLevel", self.annotationsDisplayAmount)
 
         self.updateSliceViewFromGUI()
 
     def onBackgroundLayerPersistenceCheckBox(self):
         self.backgroundDICOMAnnotationsPersistence = int(self.backgroundPersistenceCheckBox.checked)
         settings = qt.QSettings()
-        settings.setValue("DataProbe/sliceViewAnnotations.bgDICOMAnnotationsPersistence",
-                          self.backgroundDICOMAnnotationsPersistence)
+        settings.setValue(
+            "DataProbe/sliceViewAnnotations.bgDICOMAnnotationsPersistence", self.backgroundDICOMAnnotationsPersistence
+        )
         self.updateSliceViewFromGUI()
 
     def onCornerTextsActivationCheckBox(self):
@@ -231,12 +239,9 @@ class SliceAnnotations(VTKObservationMixin):
         self.updateSliceViewFromGUI()
 
         settings = qt.QSettings()
-        settings.setValue("DataProbe/sliceViewAnnotations.topLeft",
-                          self.topLeft)
-        settings.setValue("DataProbe/sliceViewAnnotations.topRight",
-                          self.topRight)
-        settings.setValue("DataProbe/sliceViewAnnotations.bottomLeft",
-                          self.bottomLeft)
+        settings.setValue("DataProbe/sliceViewAnnotations.topLeft", self.topLeft)
+        settings.setValue("DataProbe/sliceViewAnnotations.topRight", self.topRight)
+        settings.setValue("DataProbe/sliceViewAnnotations.bottomLeft", self.bottomLeft)
 
     def onFontFamilyRadioButton(self):
         # Updating font size and family
@@ -245,15 +250,13 @@ class SliceAnnotations(VTKObservationMixin):
         else:
             self.fontFamily = "Arial"
         settings = qt.QSettings()
-        settings.setValue("DataProbe/sliceViewAnnotations.fontFamily",
-                          self.fontFamily)
+        settings.setValue("DataProbe/sliceViewAnnotations.fontFamily", self.fontFamily)
         self.updateSliceViewFromGUI()
 
     def onFontSizeSpinBox(self):
         self.fontSize = self.fontSizeSpinBox.value
         settings = qt.QSettings()
-        settings.setValue("DataProbe/sliceViewAnnotations.fontSize",
-                          self.fontSize)
+        settings.setValue("DataProbe/sliceViewAnnotations.fontSize", self.fontSize)
         self.updateSliceViewFromGUI()
 
     def restoreDefaultValues(self):
@@ -291,8 +294,9 @@ class SliceAnnotations(VTKObservationMixin):
         settings.setValue("DataProbe/sliceViewAnnotations.bottomLeft", self.bottomLeft)
         settings.setValue("DataProbe/sliceViewAnnotations.fontFamily", self.fontFamily)
         settings.setValue("DataProbe/sliceViewAnnotations.fontSize", self.fontSize)
-        settings.setValue("DataProbe/sliceViewAnnotations.bgDICOMAnnotationsPersistence",
-                          self.backgroundDICOMAnnotationsPersistence)
+        settings.setValue(
+            "DataProbe/sliceViewAnnotations.bgDICOMAnnotationsPersistence", self.backgroundDICOMAnnotationsPersistence
+        )
 
         self.updateSliceViewFromGUI()
 
@@ -300,7 +304,9 @@ class SliceAnnotations(VTKObservationMixin):
         if self.parameterNode.GetParameter(self.sliceViewAnnotationsEnabledparameter) == "":
             # parameter does not exist - probably initializing
             return
-        self.sliceViewAnnotationsEnabled = int(self.parameterNode.GetParameter(self.sliceViewAnnotationsEnabledparameter))
+        self.sliceViewAnnotationsEnabled = int(
+            self.parameterNode.GetParameter(self.sliceViewAnnotationsEnabledparameter)
+        )
         self.updateSliceViewFromGUI()
 
     def updateEnabledButtons(self):
@@ -437,8 +443,9 @@ class SliceAnnotations(VTKObservationMixin):
                     backgroundVolumeName = backgroundVolume.GetName()
                     foregroundVolumeName = foregroundVolume.GetName()
                     self.cornerTexts[0]["3-Background"]["text"] = "B: " + backgroundVolumeName
-                    self.cornerTexts[0]["2-Foreground"]["text"] = "F: " + foregroundVolumeName + " (" + str(
-                        "%d" % (foregroundOpacity * 100)) + "%)"
+                    self.cornerTexts[0]["2-Foreground"]["text"] = (
+                        "F: " + foregroundVolumeName + " (" + str("%d" % (foregroundOpacity * 100)) + "%)"
+                    )
 
                 bgUids = backgroundVolume.GetAttribute("DICOM.instanceUIDs")
                 fgUids = foregroundVolume.GetAttribute("DICOM.instanceUIDs")
@@ -500,10 +507,12 @@ class SliceAnnotations(VTKObservationMixin):
             # Slab reconstruction is applied to both foreground and background
             if self.topRight and sliceNode.GetSlabReconstructionEnabled():
                 unitNode = slicer.app.applicationLogic().GetSelectionNode().GetUnitNode("length")
-                self.cornerTexts[3]["8-SlabReconstructionThickness"]["text"] = "Thickness: " + str(
-                    sliceNode.GetSlabReconstructionThickness()) + " " + unitNode.GetSuffix()
-                self.cornerTexts[3]["9-SlabReconstructionType"]["text"] = "Type: " + sliceNode.GetSlabReconstructionTypeAsString(
-                    sliceNode.GetSlabReconstructionType())
+                self.cornerTexts[3]["8-SlabReconstructionThickness"]["text"] = (
+                    "Thickness: " + str(sliceNode.GetSlabReconstructionThickness()) + " " + unitNode.GetSuffix()
+                )
+                self.cornerTexts[3]["9-SlabReconstructionType"]["text"] = (
+                    "Type: " + sliceNode.GetSlabReconstructionTypeAsString(sliceNode.GetSlabReconstructionType())
+                )
             else:
                 self.cornerTexts[3]["8-SlabReconstructionThickness"]["text"] = ""
                 self.cornerTexts[3]["9-SlabReconstructionType"]["text"] = ""
@@ -511,8 +520,9 @@ class SliceAnnotations(VTKObservationMixin):
             if (labelVolume is not None) and self.bottomLeft:
                 labelOpacity = sliceCompositeNode.GetLabelOpacity()
                 labelVolumeName = labelVolume.GetName()
-                self.cornerTexts[0]["1-Label"]["text"] = "L: " + labelVolumeName + " (" + str(
-                    "%d" % (labelOpacity * 100)) + "%)"
+                self.cornerTexts[0]["1-Label"]["text"] = (
+                    "L: " + labelVolumeName + " (" + str("%d" % (labelOpacity * 100)) + "%)"
+                )
 
             self.drawCornerAnnotations(sliceViewName)
 
@@ -528,46 +538,70 @@ class SliceAnnotations(VTKObservationMixin):
             # and remove the annotations
 
             if self.topLeft and viewHeight > 150:
-                if backgroundDicomDic["Patient Name"] != foregroundDicomDic["Patient Name"
-                                                                            ] or backgroundDicomDic["Patient ID"] != foregroundDicomDic["Patient ID"
-                                                                                                                                        ] or backgroundDicomDic["Patient Birth Date"] != foregroundDicomDic["Patient Birth Date"]:
+                if (
+                    backgroundDicomDic["Patient Name"] != foregroundDicomDic["Patient Name"]
+                    or backgroundDicomDic["Patient ID"] != foregroundDicomDic["Patient ID"]
+                    or backgroundDicomDic["Patient Birth Date"] != foregroundDicomDic["Patient Birth Date"]
+                ):
                     for key in self.cornerTexts[2]:
                         self.cornerTexts[2][key]["text"] = ""
                 else:
                     if "1-PatientName" in self.cornerTexts[2]:
-                        self.cornerTexts[2]["1-PatientName"]["text"] = backgroundDicomDic["Patient Name"].replace("^", ", ")
+                        self.cornerTexts[2]["1-PatientName"]["text"] = backgroundDicomDic["Patient Name"].replace(
+                            "^", ", "
+                        )
                     if "2-PatientID" in self.cornerTexts[2]:
                         self.cornerTexts[2]["2-PatientID"]["text"] = "ID: " + backgroundDicomDic["Patient ID"]
-                    backgroundDicomDic["Patient Birth Date"] = self.formatDICOMDate(backgroundDicomDic["Patient Birth Date"])
+                    backgroundDicomDic["Patient Birth Date"] = self.formatDICOMDate(
+                        backgroundDicomDic["Patient Birth Date"]
+                    )
                     if "3-PatientInfo" in self.cornerTexts[2]:
                         self.cornerTexts[2]["3-PatientInfo"]["text"] = self.makePatientInfo(backgroundDicomDic)
 
                     if backgroundDicomDic["Series Date"] != foregroundDicomDic["Series Date"]:
                         if "4-Bg-SeriesDate" in self.cornerTexts[2]:
-                            self.cornerTexts[2]["4-Bg-SeriesDate"]["text"] = "B: " + self.formatDICOMDate(backgroundDicomDic["Series Date"])
+                            self.cornerTexts[2]["4-Bg-SeriesDate"]["text"] = "B: " + self.formatDICOMDate(
+                                backgroundDicomDic["Series Date"]
+                            )
                         if "5-Fg-SeriesDate" in self.cornerTexts[2]:
-                            self.cornerTexts[2]["5-Fg-SeriesDate"]["text"] = "F: " + self.formatDICOMDate(foregroundDicomDic["Series Date"])
+                            self.cornerTexts[2]["5-Fg-SeriesDate"]["text"] = "F: " + self.formatDICOMDate(
+                                foregroundDicomDic["Series Date"]
+                            )
                     else:
                         if "4-Bg-SeriesDate" in self.cornerTexts[2]:
-                            self.cornerTexts[2]["4-Bg-SeriesDate"]["text"] = self.formatDICOMDate(backgroundDicomDic["Series Date"])
+                            self.cornerTexts[2]["4-Bg-SeriesDate"]["text"] = self.formatDICOMDate(
+                                backgroundDicomDic["Series Date"]
+                            )
 
                     if backgroundDicomDic["Series Time"] != foregroundDicomDic["Series Time"]:
                         if "6-Bg-SeriesTime" in self.cornerTexts[2]:
-                            self.cornerTexts[2]["6-Bg-SeriesTime"]["text"] = "B: " + self.formatDICOMTime(backgroundDicomDic["Series Time"])
+                            self.cornerTexts[2]["6-Bg-SeriesTime"]["text"] = "B: " + self.formatDICOMTime(
+                                backgroundDicomDic["Series Time"]
+                            )
                         if "7-Fg-SeriesTime" in self.cornerTexts[2]:
-                            self.cornerTexts[2]["7-Fg-SeriesTime"]["text"] = "F: " + self.formatDICOMTime(foregroundDicomDic["Series Time"])
+                            self.cornerTexts[2]["7-Fg-SeriesTime"]["text"] = "F: " + self.formatDICOMTime(
+                                foregroundDicomDic["Series Time"]
+                            )
                     else:
                         if "6-Bg-SeriesTime" in self.cornerTexts[2]:
-                            self.cornerTexts[2]["6-Bg-SeriesTime"]["text"] = self.formatDICOMTime(backgroundDicomDic["Series Time"])
+                            self.cornerTexts[2]["6-Bg-SeriesTime"]["text"] = self.formatDICOMTime(
+                                backgroundDicomDic["Series Time"]
+                            )
 
                     if backgroundDicomDic["Series Description"] != foregroundDicomDic["Series Description"]:
                         if "8-Bg-SeriesDescription" in self.cornerTexts[2]:
-                            self.cornerTexts[2]["8-Bg-SeriesDescription"]["text"] = "B: " + backgroundDicomDic["Series Description"]
+                            self.cornerTexts[2]["8-Bg-SeriesDescription"]["text"] = (
+                                "B: " + backgroundDicomDic["Series Description"]
+                            )
                         if "9-Fg-SeriesDescription" in self.cornerTexts[2]:
-                            self.cornerTexts[2]["9-Fg-SeriesDescription"]["text"] = "F: " + foregroundDicomDic["Series Description"]
+                            self.cornerTexts[2]["9-Fg-SeriesDescription"]["text"] = (
+                                "F: " + foregroundDicomDic["Series Description"]
+                            )
                     else:
                         if "8-Bg-SeriesDescription" in self.cornerTexts[2]:
-                            self.cornerTexts[2]["8-Bg-SeriesDescription"]["text"] = backgroundDicomDic["Series Description"]
+                            self.cornerTexts[2]["8-Bg-SeriesDescription"]["text"] = backgroundDicomDic[
+                                "Series Description"
+                            ]
 
         # Only Background or Only Foreground
         else:
@@ -586,7 +620,9 @@ class SliceAnnotations(VTKObservationMixin):
             # top right corner annotation would be hidden if view height is less than 260 pixels
             if self.topRight:
                 self.cornerTexts[3]["1-Institution-Name"]["text"] = dicomDic["Institution Name"]
-                self.cornerTexts[3]["2-Referring-Phisycian"]["text"] = dicomDic["Referring Physician Name"].replace("^", ", ")
+                self.cornerTexts[3]["2-Referring-Phisycian"]["text"] = dicomDic["Referring Physician Name"].replace(
+                    "^", ", "
+                )
                 self.cornerTexts[3]["3-Manufacturer"]["text"] = dicomDic["Manufacturer"]
                 self.cornerTexts[3]["4-Model"]["text"] = dicomDic["Model"]
                 self.cornerTexts[3]["5-Patient-Position"]["text"] = dicomDic["Patient Position"]
@@ -599,9 +635,7 @@ class SliceAnnotations(VTKObservationMixin):
     def makePatientInfo(dicomDic):
         # This will give an string of patient's birth date,
         # patient's age and sex
-        patientInfo = dicomDic["Patient Birth Date"
-                               ] + ", " + dicomDic["Patient Age"
-                                                   ] + ", " + dicomDic["Patient Sex"]
+        patientInfo = dicomDic["Patient Birth Date"] + ", " + dicomDic["Patient Age"] + ", " + dicomDic["Patient Sex"]
         return patientInfo
 
     @staticmethod

@@ -120,8 +120,14 @@ class PerformanceTestsWidget(ScriptedLoadableModuleWidget):
 
         renderingTimeMean = np.mean(renderingTimesSec)
         renderingTimeStd = np.std(renderingTimesSec)
-        result = ("%d x %d, fps = %.1f (%.1f +/- %.2f ms per frame) - see details in table '%s'"
-                  % (dims[0], dims[1], 1.0 / renderingTimeMean, 1000. * renderingTimeMean, 1000. * renderingTimeStd, resultTableNode.GetName()))
+        result = "%d x %d, fps = %.1f (%.1f +/- %.2f ms per frame) - see details in table '%s'" % (
+            dims[0],
+            dims[1],
+            1.0 / renderingTimeMean,
+            1000.0 * renderingTimeMean,
+            1000.0 * renderingTimeStd,
+            resultTableNode.GetName(),
+        )
         print(result)
         self.log.insertHtml("<i>%s</i>" % result)
         self.log.insertPlainText("\n")
@@ -144,10 +150,14 @@ class PerformanceTestsWidget(ScriptedLoadableModuleWidget):
         endPoint = (int(dims[0] * 0.6), int(dims[1] * 0.6))
         for i in range(iters):
             startTime = time.time()
-            slicer.util.clickAndDrag(firstSliceWidget, button=None, modifiers=["Shift"], start=startPoint, end=endPoint, steps=2)
+            slicer.util.clickAndDrag(
+                firstSliceWidget, button=None, modifiers=["Shift"], start=startPoint, end=endPoint, steps=2
+            )
             slicer.app.processEvents()
             endTime1 = time.time()
-            slicer.util.clickAndDrag(firstSliceWidget, button=None, modifiers=["Shift"], start=endPoint, end=startPoint, steps=2)
+            slicer.util.clickAndDrag(
+                firstSliceWidget, button=None, modifiers=["Shift"], start=endPoint, end=startPoint, steps=2
+            )
             slicer.app.processEvents()
             endTime2 = time.time()
             delta = ((endTime1 - startTime) + (endTime2 - endTime1)) / 2.0
@@ -163,12 +173,15 @@ class PerformanceTestsWidget(ScriptedLoadableModuleWidget):
     def memoryCallback(self):
         if self.sysInfoWindow.visible:
             self.sysInfo.RunMemoryCheck()
-            self.sysInfoWindow.append("p: %d of %d,  v: %d of %d" %
-                                      (self.sysInfo.GetAvailablePhysicalMemory(),
-                                       self.sysInfo.GetTotalPhysicalMemory(),
-                                       self.sysInfo.GetAvailableVirtualMemory(),
-                                       self.sysInfo.GetTotalVirtualMemory(),
-                                       ))
+            self.sysInfoWindow.append(
+                "p: %d of %d,  v: %d of %d"
+                % (
+                    self.sysInfo.GetAvailablePhysicalMemory(),
+                    self.sysInfo.GetTotalPhysicalMemory(),
+                    self.sysInfo.GetAvailableVirtualMemory(),
+                    self.sysInfo.GetTotalVirtualMemory(),
+                )
+            )
             qt.QTimer.singleShot(1000, self.memoryCallback)
 
     def memoryCheck(self):

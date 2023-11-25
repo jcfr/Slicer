@@ -34,46 +34,58 @@ class SegmentEditorIslandsEffect(AbstractScriptedSegmentEditorEffect):
         return qt.QIcon()
 
     def helpText(self):
-        return "<html>" + _("""Edit islands (connected components) in a segment<br>. To get more information
-about each operation, hover the mouse over the option and wait for the tooltip to appear.""")
+        return "<html>" + _(
+            """Edit islands (connected components) in a segment<br>. To get more information
+about each operation, hover the mouse over the option and wait for the tooltip to appear."""
+        )
 
     def setupOptionsFrame(self):
         self.operationRadioButtons = []
 
         self.keepLargestOptionRadioButton = qt.QRadioButton(_("Keep largest island"))
         self.keepLargestOptionRadioButton.setToolTip(
-            _("Keep only the largest island in selected segment, remove all other islands in the segment."))
+            _("Keep only the largest island in selected segment, remove all other islands in the segment.")
+        )
         self.operationRadioButtons.append(self.keepLargestOptionRadioButton)
         self.widgetToOperationNameMap[self.keepLargestOptionRadioButton] = KEEP_LARGEST_ISLAND
 
         self.keepSelectedOptionRadioButton = qt.QRadioButton(_("Keep selected island"))
         self.keepSelectedOptionRadioButton.setToolTip(
-            _("Click on an island in a slice view to keep that island and remove all other islands in selected segment."))
+            _(
+                "Click on an island in a slice view to keep that island and remove all other islands in selected segment."
+            )
+        )
         self.operationRadioButtons.append(self.keepSelectedOptionRadioButton)
         self.widgetToOperationNameMap[self.keepSelectedOptionRadioButton] = KEEP_SELECTED_ISLAND
 
         self.removeSmallOptionRadioButton = qt.QRadioButton(_("Remove small islands"))
         self.removeSmallOptionRadioButton.setToolTip(
-            _("Remove all islands from the selected segment that are smaller than the specified minimum size."))
+            _("Remove all islands from the selected segment that are smaller than the specified minimum size.")
+        )
         self.operationRadioButtons.append(self.removeSmallOptionRadioButton)
         self.widgetToOperationNameMap[self.removeSmallOptionRadioButton] = REMOVE_SMALL_ISLANDS
 
         self.removeSelectedOptionRadioButton = qt.QRadioButton(_("Remove selected island"))
         self.removeSelectedOptionRadioButton.setToolTip(
-            _("Click on an island in a slice view to remove it from selected segment."))
+            _("Click on an island in a slice view to remove it from selected segment.")
+        )
         self.operationRadioButtons.append(self.removeSelectedOptionRadioButton)
         self.widgetToOperationNameMap[self.removeSelectedOptionRadioButton] = REMOVE_SELECTED_ISLAND
 
         self.addSelectedOptionRadioButton = qt.QRadioButton(_("Add selected island"))
         self.addSelectedOptionRadioButton.setToolTip(
-            _("Click on a region in a slice view to add it to selected segment."))
+            _("Click on a region in a slice view to add it to selected segment.")
+        )
         self.operationRadioButtons.append(self.addSelectedOptionRadioButton)
         self.widgetToOperationNameMap[self.addSelectedOptionRadioButton] = ADD_SELECTED_ISLAND
 
         self.splitAllOptionRadioButton = qt.QRadioButton(_("Split islands to segments"))
         self.splitAllOptionRadioButton.setToolTip(
-            _("Create a new segment for each island of selected segment. Islands smaller than minimum size will be removed. "
-              "Segments will be ordered by island size."))
+            _(
+                "Create a new segment for each island of selected segment. Islands smaller than minimum size will be removed. "
+                "Segments will be ordered by island size."
+            )
+        )
         self.operationRadioButtons.append(self.splitAllOptionRadioButton)
         self.widgetToOperationNameMap[self.splitAllOptionRadioButton] = SPLIT_ISLANDS_TO_SEGMENTS
 
@@ -89,7 +101,9 @@ about each operation, hover the mouse over the option and wait for the tooltip t
         self.scriptedEffect.addOptionsWidget(operationLayout)
 
         self.minimumSizeSpinBox = qt.QSpinBox()
-        self.minimumSizeSpinBox.setToolTip(_("Islands consisting of less voxels than this minimum size, will be deleted."))
+        self.minimumSizeSpinBox.setToolTip(
+            _("Islands consisting of less voxels than this minimum size, will be deleted.")
+        )
         self.minimumSizeSpinBox.setMinimum(0)
         self.minimumSizeSpinBox.setMaximum(vtk.VTK_INT_MAX)
         self.minimumSizeSpinBox.setValue(1000)
@@ -103,7 +117,11 @@ about each operation, hover the mouse over the option and wait for the tooltip t
         for operationRadioButton in self.operationRadioButtons:
             operationRadioButton.connect(
                 "toggled(bool)",
-                lambda toggle, widget=self.widgetToOperationNameMap[operationRadioButton]: self.onOperationSelectionChanged(widget, toggle))
+                lambda toggle,
+                widget=self.widgetToOperationNameMap[operationRadioButton]: self.onOperationSelectionChanged(
+                    widget, toggle
+                ),
+            )
 
         self.minimumSizeSpinBox.connect("valueChanged(int)", self.updateMRMLFromGUI)
 
@@ -191,8 +209,12 @@ about each operation, hover the mouse over the option and wait for the tooltip t
             emptyLabelmap = slicer.vtkOrientedImageData()
             emptyLabelmap.ShallowCopy(threshold.GetOutput())
             emptyLabelmap.CopyDirections(selectedSegmentLabelmap)
-            self.scriptedEffect.modifySegmentByLabelmap(segmentationNode, selectedSegmentID, emptyLabelmap,
-                                                        slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet)
+            self.scriptedEffect.modifySegmentByLabelmap(
+                segmentationNode,
+                selectedSegmentID,
+                emptyLabelmap,
+                slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet,
+            )
 
             for i in range(labelValues.GetNumberOfTuples()):
                 if maxNumberOfSegments > 0 and i >= maxNumberOfSegments:
@@ -209,7 +231,10 @@ about each operation, hover the mouse over the option and wait for the tooltip t
                     segment.SetName(name)
                     segment.AddRepresentation(
                         slicer.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName(),
-                        selectedSegment.GetRepresentation(slicer.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName()))
+                        selectedSegment.GetRepresentation(
+                            slicer.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName()
+                        ),
+                    )
                     segmentation.AddSegment(segment)
                     segmentID = segmentation.GetSegmentIdBySegment(segment)
                     segment.SetLabelValue(segmentation.GetUniqueLabelValueForSharedLabelmap(selectedSegmentID))
@@ -241,7 +266,9 @@ about each operation, hover the mouse over the option and wait for the tooltip t
                 # We could use a single slicer.vtkSlicerSegmentationsModuleLogic.ImportLabelmapToSegmentationNode
                 # method call to import all the resulting segments at once but that would put all the imported segments
                 # in a new layer. By using modifySegmentByLabelmap, the number of layers will not increase.
-                self.scriptedEffect.modifySegmentByLabelmap(segmentationNode, segmentID, modifierImage, modificationMode)
+                self.scriptedEffect.modifySegmentByLabelmap(
+                    segmentationNode, segmentID, modifierImage, modificationMode
+                )
 
                 if not split and maxNumberOfSegments <= 0:
                     # all islands lumped into one segment, so we are done
@@ -304,9 +331,12 @@ about each operation, hover the mouse over the option and wait for the tooltip t
 
         if operationName == ADD_SELECTED_ISLAND:
             inputLabelImage = slicer.vtkOrientedImageData()
-            if not segmentationNode.GenerateMergedLabelmapForAllSegments(inputLabelImage,
-                                                                         vtkSegmentationCore.vtkSegmentation.EXTENT_UNION_OF_SEGMENTS_PADDED,
-                                                                         None, visibleSegmentIds):
+            if not segmentationNode.GenerateMergedLabelmapForAllSegments(
+                inputLabelImage,
+                vtkSegmentationCore.vtkSegmentation.EXTENT_UNION_OF_SEGMENTS_PADDED,
+                None,
+                visibleSegmentIds,
+            ):
                 logging.error("Failed to apply island operation: cannot get list of visible segments")
                 qt.QApplication.restoreOverrideCursor()
                 return abortEvent
@@ -341,7 +371,9 @@ about each operation, hover the mouse over the option and wait for the tooltip t
             seedPoints = vtk.vtkPoints()
             origin = inputLabelImage.GetOrigin()
             spacing = inputLabelImage.GetSpacing()
-            seedPoints.InsertNextPoint(origin[0] + ijk[0] * spacing[0], origin[1] + ijk[1] * spacing[1], origin[2] + ijk[2] * spacing[2])
+            seedPoints.InsertNextPoint(
+                origin[0] + ijk[0] * spacing[0], origin[1] + ijk[1] * spacing[1], origin[2] + ijk[2] * spacing[2]
+            )
             floodFillingFilter.SetSeedPoints(seedPoints)
             floodFillingFilter.ThresholdBetween(pixelValue, pixelValue)
 
@@ -351,7 +383,9 @@ about each operation, hover the mouse over the option and wait for the tooltip t
                 floodFillingFilter.Update()
                 modifierLabelmap = self.scriptedEffect.defaultModifierLabelmap()
                 modifierLabelmap.DeepCopy(floodFillingFilter.GetOutput())
-                self.scriptedEffect.modifySelectedSegmentByLabelmap(modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeAdd)
+                self.scriptedEffect.modifySelectedSegmentByLabelmap(
+                    modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeAdd
+                )
 
             elif pixelValue != 0:  # if clicked on empty part then there is nothing to remove or keep
                 if operationName == KEEP_SELECTED_ISLAND:
@@ -366,9 +400,13 @@ about each operation, hover the mouse over the option and wait for the tooltip t
                 modifierLabelmap.DeepCopy(floodFillingFilter.GetOutput())
 
                 if operationName == KEEP_SELECTED_ISLAND:
-                    self.scriptedEffect.modifySelectedSegmentByLabelmap(modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet)
+                    self.scriptedEffect.modifySelectedSegmentByLabelmap(
+                        modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet
+                    )
                 else:  # operationName == REMOVE_SELECTED_ISLAND:
-                    self.scriptedEffect.modifySelectedSegmentByLabelmap(modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeRemove)
+                    self.scriptedEffect.modifySelectedSegmentByLabelmap(
+                        modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeRemove
+                    )
 
         except IndexError:
             logging.error("Island processing failed")
@@ -388,7 +426,9 @@ about each operation, hover the mouse over the option and wait for the tooltip t
         for operationRadioButton in self.operationRadioButtons:
             operationRadioButton.blockSignals(True)
         operationName = self.scriptedEffect.parameter("Operation")
-        currentOperationRadioButton = list(self.widgetToOperationNameMap.keys())[list(self.widgetToOperationNameMap.values()).index(operationName)]
+        currentOperationRadioButton = list(self.widgetToOperationNameMap.keys())[
+            list(self.widgetToOperationNameMap.values()).index(operationName)
+        ]
         currentOperationRadioButton.setChecked(True)
         for operationRadioButton in self.operationRadioButtons:
             operationRadioButton.blockSignals(False)

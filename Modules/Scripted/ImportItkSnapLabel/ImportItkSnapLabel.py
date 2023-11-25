@@ -134,10 +134,16 @@ class ImportItkSnapLabelFileReader:
                 colorLine = colorLineRegex.search(line)
                 if colorLine:
                     fields = colorLine.groups()
-                    color = {"index": int(fields[0]),
-                             "r": int(fields[1]) / 255.0, "g": int(fields[2]) / 255.0, "b": int(fields[3]) / 255.0, "a": float(fields[4]),
-                             "labelVis": int(fields[5]) != 0, "meshVis": int(fields[6]) != 0,
-                             "name": fields[7]}
+                    color = {
+                        "index": int(fields[0]),
+                        "r": int(fields[1]) / 255.0,
+                        "g": int(fields[2]) / 255.0,
+                        "b": int(fields[3]) / 255.0,
+                        "a": float(fields[4]),
+                        "labelVis": int(fields[5]) != 0,
+                        "meshVis": int(fields[6]) != 0,
+                        "name": fields[7],
+                    }
                     colors.append(color)
                     continue
                 raise ValueError(_("Syntax error in line {line}").format(lineIndex))

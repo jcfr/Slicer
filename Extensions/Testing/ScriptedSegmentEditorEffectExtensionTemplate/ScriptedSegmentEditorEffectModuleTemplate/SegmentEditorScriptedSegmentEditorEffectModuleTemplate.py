@@ -21,7 +21,9 @@ class SegmentEditorScriptedSegmentEditorEffectModuleTemplate(ScriptedLoadableMod
         self.parent.hidden = True
         self.parent.helpText = _("This hidden module registers the segment editor effect")
         self.parent.helpText += self.getDefaultModuleDocumentationLink()
-        self.parent.acknowledgementText = _("Supported by NA-MIC, NAC, BIRN, NCIGT, and the Slicer Community. See https://www.slicer.org for details.")
+        self.parent.acknowledgementText = _(
+            "Supported by NA-MIC, NAC, BIRN, NCIGT, and the Slicer Community. See https://www.slicer.org for details."
+        )
         slicer.app.connect("startupCompleted()", self.registerEditorEffect)
 
     def registerEditorEffect(self):
@@ -79,8 +81,20 @@ class SegmentEditorScriptedSegmentEditorEffectModuleTemplateTest(ScriptedLoadabl
         # Segments are defined by a list of: name and a list of sphere [radius, posX, posY, posZ]
         segmentGeometries = [
             ["Tumor", [[10, -6, 30, 28]]],
-            ["Background", [[10, 0, 65, 22], [15, 1, -14, 30], [12, 0, 28, -7], [5, 0, 30, 54], [12, 31, 33, 27], [17, -42, 30, 27], [6, -2, -17, 71]]],
-            ["Air", [[10, 76, 73, 0], [15, -70, 74, 0]]]]
+            [
+                "Background",
+                [
+                    [10, 0, 65, 22],
+                    [15, 1, -14, 30],
+                    [12, 0, 28, -7],
+                    [5, 0, 30, 54],
+                    [12, 31, 33, 27],
+                    [17, -42, 30, 27],
+                    [6, -2, -17, 71],
+                ],
+            ],
+            ["Air", [[10, 76, 73, 0], [15, -70, 74, 0]]],
+        ]
         for segmentGeometry in segmentGeometries:
             segmentName = segmentGeometry[0]
             appender = vtk.vtkAppendPolyData()
@@ -92,7 +106,10 @@ class SegmentEditorScriptedSegmentEditorEffectModuleTemplateTest(ScriptedLoadabl
             segment = vtkSegmentationCore.vtkSegment()
             segment.SetName(segmentationNode.GetSegmentation().GenerateUniqueSegmentID(segmentName))
             appender.Update()
-            segment.AddRepresentation(vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName(), appender.GetOutput())
+            segment.AddRepresentation(
+                vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName(),
+                appender.GetOutput(),
+            )
             segmentationNode.GetSegmentation().AddSegment(segment)
 
         ##################################

@@ -24,8 +24,7 @@ class DICOMRequestHandler(BaseRequestHandler):
         """
         logger.debug(*args)
 
-    def __init__(self,
-                 logMessage:Optional[BaseRequestLoggingFunction]=None):
+    def __init__(self, logMessage: Optional[BaseRequestLoggingFunction] = None):
         """
         Initialize a new request handler instance.
         :param logMessage: An optional external handle for message logging.
@@ -45,7 +44,10 @@ class DICOMRequestHandler(BaseRequestHandler):
         return 0.5 if parsedURL.path.startswith(b"/dicom") else 0.0
 
     def handleRequest(
-        self, uri: bytes, requestBody: bytes, **_kwargs,
+        self,
+        uri: bytes,
+        requestBody: bytes,
+        **_kwargs,
     ) -> tuple[bytes, bytes]:
         """
         Dispatches various dicom requests
@@ -125,13 +127,17 @@ class DICOMRequestHandler(BaseRequestHandler):
                                     skipThisStudy = True
                                     break
                         except Exception as e:
-                            self.logMessage(f'Error while attempting to read instance {seriesInstances[0]} from file "{filename}": {e}')
+                            self.logMessage(
+                                f'Error while attempting to read instance {seriesInstances[0]} from file "{filename}": {e}'
+                            )
                             dataset = None
                         if dataset is not None:
                             try:
                                 modalitiesInStudy.add(dataset.Modality)
                             except AttributeError as e:
-                                self.logMessage(f"Modality information was not found in {filename} ({seriesInstances[0]})")
+                                self.logMessage(
+                                    f"Modality information was not found in {filename} ({seriesInstances[0]})"
+                                )
                     if skipThisStudy:
                         continue
                     if representativeSeriesDataset is None:
@@ -146,23 +152,28 @@ class DICOMRequestHandler(BaseRequestHandler):
                         studyDataset.SpecificCharacterSet = ["ISO_IR 100"]
                         studyDataset.StudyDate = dataset.StudyDate
                         studyDataset.StudyTime = dataset.StudyTime
-                        studyDataset.StudyDescription = dataset.StudyDescription if hasattr(studyDataset, "StudyDescription") else None
+                        studyDataset.StudyDescription = (
+                            dataset.StudyDescription if hasattr(studyDataset, "StudyDescription") else None
+                        )
                         studyDataset.StudyInstanceUID = dataset.StudyInstanceUID
                         studyDataset.AccessionNumber = dataset.AccessionNumber
                         studyDataset.InstanceAvailability = "ONLINE"
                         studyDataset.ModalitiesInStudy = list(modalitiesInStudy)
                         studyDataset.ReferringPhysicianName = dataset.ReferringPhysicianName
                         studyDataset[self.retrieveURLTag] = pydicom.dataelem.DataElement(
-                            0x00080190, "UR", "http://example.com")  # TODO: provide WADO-RS RetrieveURL
+                            0x00080190, "UR", "http://example.com"
+                        )  # TODO: provide WADO-RS RetrieveURL
                         studyDataset.PatientName = dataset.PatientName
                         studyDataset.PatientID = dataset.PatientID
                         studyDataset.PatientBirthDate = dataset.PatientBirthDate
                         studyDataset.PatientSex = dataset.PatientSex
                         studyDataset.StudyID = dataset.StudyID if hasattr(studyDataset, "StudyID") else None
                         studyDataset[self.numberOfStudyRelatedSeriesTag] = pydicom.dataelem.DataElement(
-                            self.numberOfStudyRelatedSeriesTag, "IS", str(numberOfStudyRelatedSeries))
+                            self.numberOfStudyRelatedSeriesTag, "IS", str(numberOfStudyRelatedSeries)
+                        )
                         studyDataset[self.numberOfStudyRelatedInstancesTag] = pydicom.dataelem.DataElement(
-                            self.numberOfStudyRelatedInstancesTag, "IS", str(numberOfStudyRelatedInstances))
+                            self.numberOfStudyRelatedInstancesTag, "IS", str(numberOfStudyRelatedInstances)
+                        )
 
                         # We got here, which means we have a valid study that matches query criteria and so it could be returned.
                         studyCount += 1
@@ -191,7 +202,9 @@ class DICOMRequestHandler(BaseRequestHandler):
                         filename = slicer.dicomDatabase.fileForInstance(instance)
                         dataset = pydicom.dcmread(filename, stop_before_pixels=True)
                     except Exception as e:
-                        self.logMessage(f'Error while attempting to read instance {instance} from file "{filename}": {e}')
+                        self.logMessage(
+                            f'Error while attempting to read instance {instance} from file "{filename}": {e}'
+                        )
                         continue
                     jsonDataset = dataset.to_json()
                     responseBody += jsonDataset.encode() + b","
@@ -227,7 +240,8 @@ class DICOMRequestHandler(BaseRequestHandler):
                 instanceDataset.SOPInstanceUID = dataset.SOPInstanceUID
                 instanceDataset.InstanceAvailability = "ONLINE"
                 instanceDataset[self.retrieveURLTag] = pydicom.dataelem.DataElement(
-                    0x00080190, "UR", "http://example.com")  # TODO: provide WADO-RS RetrieveURL
+                    0x00080190, "UR", "http://example.com"
+                )  # TODO: provide WADO-RS RetrieveURL
                 instanceDataset.StudyInstanceUID = dataset.StudyInstanceUID
                 instanceDataset.SeriesInstanceUID = dataset.SeriesInstanceUID
                 instanceDataset.InstanceNumber = dataset.InstanceNumber
@@ -279,7 +293,9 @@ class DICOMRequestHandler(BaseRequestHandler):
                     filename = slicer.dicomDatabase.fileForInstance(firstInstance)
                     dataset = pydicom.dcmread(filename, stop_before_pixels=True)
                 except Exception as e:
-                    self.logMessage(f'Error while attempting to read instance {firstInstance} from file "{filename}": {e}')
+                    self.logMessage(
+                        f'Error while attempting to read instance {firstInstance} from file "{filename}": {e}'
+                    )
                     continue
                 seriesDataset = pydicom.dataset.Dataset()
                 seriesDataset.SpecificCharacterSet = ["ISO_IR 100"]

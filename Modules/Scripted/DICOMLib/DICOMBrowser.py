@@ -61,9 +61,15 @@ class SlicerDICOMBrowser(VTKObservationMixin, qt.QWidget):
         self.dicomBrowser.connect("sendRequested(QStringList)", self.onSend)
 
         # Load when double-clicked on an item in the browser
-        self.dicomBrowser.dicomTableManager().connect("patientsDoubleClicked(QModelIndex)", self.patientStudySeriesDoubleClicked)
-        self.dicomBrowser.dicomTableManager().connect("studiesDoubleClicked(QModelIndex)", self.patientStudySeriesDoubleClicked)
-        self.dicomBrowser.dicomTableManager().connect("seriesDoubleClicked(QModelIndex)", self.patientStudySeriesDoubleClicked)
+        self.dicomBrowser.dicomTableManager().connect(
+            "patientsDoubleClicked(QModelIndex)", self.patientStudySeriesDoubleClicked
+        )
+        self.dicomBrowser.dicomTableManager().connect(
+            "studiesDoubleClicked(QModelIndex)", self.patientStudySeriesDoubleClicked
+        )
+        self.dicomBrowser.dicomTableManager().connect(
+            "seriesDoubleClicked(QModelIndex)", self.patientStudySeriesDoubleClicked
+        )
 
     def open(self):
         self.show()
@@ -402,8 +408,10 @@ class SlicerDICOMBrowser(VTKObservationMixin, qt.QWidget):
         messages = []
         if missingFileCount > 0:
             messages.append(
-                _("{missing_file_count} of {total_file_count} selected files listed in the database cannot be found on disk.").format(
-                    missing_file_count=missingFileCount, total_file_count=allFileCount))
+                _(
+                    "{missing_file_count} of {total_file_count} selected files listed in the database cannot be found on disk."
+                ).format(missing_file_count=missingFileCount, total_file_count=allFileCount)
+            )
 
         if missingFileCount < allFileCount:
             progressDialog = slicer.util.createProgressDialog(parent=self, value=0, maximum=100)
@@ -416,17 +424,26 @@ class SlicerDICOMBrowser(VTKObservationMixin, qt.QWidget):
                 cancelled = progressDialog.wasCanceled
                 return cancelled
 
-            loadablesByPlugin, loadEnabled = DICOMLib.getLoadablesFromFileLists(fileLists, selectedPlugins, messages,
-                                                                                lambda progressLabel, progressValue, progressDialog=progressDialog: progressCallback(progressDialog, progressLabel, progressValue),
-                                                                                self.pluginInstances)
+            loadablesByPlugin, loadEnabled = DICOMLib.getLoadablesFromFileLists(
+                fileLists,
+                selectedPlugins,
+                messages,
+                lambda progressLabel, progressValue, progressDialog=progressDialog: progressCallback(
+                    progressDialog, progressLabel, progressValue
+                ),
+                self.pluginInstances,
+            )
 
             progressDialog.close()
 
         if messages:
             slicer.util.warningDisplay(
                 _("Warning: {messages}").format(messages=" ".join(messages))
-                + "\n\n" + _("See python console for error message."),
-                windowTitle=_("DICOM"), parent=self)
+                + "\n\n"
+                + _("See python console for error message."),
+                windowTitle=_("DICOM"),
+                parent=self,
+            )
 
         return loadablesByPlugin, loadEnabled
 
@@ -489,7 +506,9 @@ class SlicerDICOMBrowser(VTKObservationMixin, qt.QWidget):
         if len(referencedFileLists):
             (self.referencedLoadables, loadEnabled) = self.getLoadablesFromFileLists(referencedFileLists)
 
-        automaticallyLoadReferences = int(slicer.util.settingsValue("DICOM/automaticallyLoadReferences", qt.QMessageBox.InvalidRole))
+        automaticallyLoadReferences = int(
+            slicer.util.settingsValue("DICOM/automaticallyLoadReferences", qt.QMessageBox.InvalidRole)
+        )
         if slicer.app.commandOptions().testingEnabled:
             automaticallyLoadReferences = qt.QMessageBox.No
         if loadEnabled and automaticallyLoadReferences == qt.QMessageBox.InvalidRole:
@@ -513,7 +532,9 @@ class SlicerDICOMBrowser(VTKObservationMixin, qt.QWidget):
             # each check box corresponds to a referenced loadable that was selected by examine;
             # if the user confirmed that reference should be loaded, add it to the self.loadablesByPlugin dictionary
             for plugin in self.referencedLoadables:
-                for loadable in [loadable_item for loadable_item in self.referencedLoadables[plugin] if loadable_item.selected]:
+                for loadable in [
+                    loadable_item for loadable_item in self.referencedLoadables[plugin] if loadable_item.selected
+                ]:
                     if referencesDialog.checkboxes[loadable].checked:
                         self.loadablesByPlugin[plugin].append(loadable)
                 self.loadablesByPlugin[plugin] = list(set(self.loadablesByPlugin[plugin]))
@@ -523,7 +544,9 @@ class SlicerDICOMBrowser(VTKObservationMixin, qt.QWidget):
 
     def addReferencesAndProceed(self):
         for plugin in self.referencedLoadables:
-            for loadable in [loadable_item for loadable_item in self.referencedLoadables[plugin] if loadable_item.selected]:
+            for loadable in [
+                loadable_item for loadable_item in self.referencedLoadables[plugin] if loadable_item.selected
+            ]:
                 self.loadablesByPlugin[plugin].append(loadable)
             self.loadablesByPlugin[plugin] = list(set(self.loadablesByPlugin[plugin]))
         self.proceedWithReferencedLoadablesSelection()
@@ -545,8 +568,13 @@ class SlicerDICOMBrowser(VTKObservationMixin, qt.QWidget):
         qt.QApplication.setOverrideCursor(qt.Qt.WaitCursor)
 
         messages = []
-        loadedNodeIDs = DICOMLib.loadLoadables(self.loadablesByPlugin, messages,
-                                               lambda progressLabel, progressValue, progressDialog=progressDialog: progressCallback(progressDialog, progressLabel, progressValue))
+        loadedNodeIDs = DICOMLib.loadLoadables(
+            self.loadablesByPlugin,
+            messages,
+            lambda progressLabel, progressValue, progressDialog=progressDialog: progressCallback(
+                progressDialog, progressLabel, progressValue
+            ),
+        )
 
         loadedFileParameters = {}
         loadedFileParameters["nodeIDs"] = loadedNodeIDs
@@ -568,8 +596,11 @@ class SlicerDICOMBrowser(VTKObservationMixin, qt.QWidget):
             for loadable in self.loadablesByPlugin[plugin]:
                 if loadable.selected and loadable.warning != "":
                     warningsInSelectedLoadables = True
-                    logging.warning(_("Warning in DICOM plugin {load_type} when examining loadable {name}: {message}").format(
-                        load_type=plugin.loadType, name=loadable.name, message=loadable.warning))
+                    logging.warning(
+                        _("Warning in DICOM plugin {load_type} when examining loadable {name}: {message}").format(
+                            load_type=plugin.loadType, name=loadable.name, message=loadable.warning
+                        )
+                    )
                     details += loadable.name + " [" + plugin.loadType + "]: " + loadable.warning + "\n"
         if warningsInSelectedLoadables:
             warning = _("Warnings detected during load.  Examine data in Advanced mode for details.  Load anyway?")
@@ -584,9 +615,11 @@ class SlicerDICOMBrowser(VTKObservationMixin, qt.QWidget):
 
 class DICOMReferencesDialog(qt.QMessageBox):
     WINDOW_TITLE = _("Referenced datasets found")
-    WINDOW_TEXT = _("The loaded DICOM objects contain references to other datasets you did not select for loading."
-                    " Please select Yes if you would like to load the following referenced datasets, No if you only want to load the"
-                    " originally selected series, or Cancel to abort loading.")
+    WINDOW_TEXT = _(
+        "The loaded DICOM objects contain references to other datasets you did not select for loading."
+        " Please select Yes if you would like to load the following referenced datasets, No if you only want to load the"
+        " originally selected series, or Cancel to abort loading."
+    )
 
     def __init__(self, parent, loadables):
         super().__init__(parent)

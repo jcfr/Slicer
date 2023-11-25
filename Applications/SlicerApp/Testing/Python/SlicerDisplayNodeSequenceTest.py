@@ -106,7 +106,10 @@ class SlicerDisplayNodeSequenceTestTest(ScriptedLoadableModuleTest):
         self.assertTrue(index_0_display_node.GetWindowLevelMax() == mrHead.GetDisplayNode().GetWindowLevelMax())
         self.assertTrue(index_0_display_node.GetLowerThreshold() == mrHead.GetDisplayNode().GetLowerThreshold())
         self.assertTrue(index_0_display_node.GetUpperThreshold() == mrHead.GetDisplayNode().GetUpperThreshold())
-        self.assertTrue(index_0_display_node.GetNumberOfWindowLevelPresets() == mrHead.GetDisplayNode().GetNumberOfWindowLevelPresets())
+        self.assertTrue(
+            index_0_display_node.GetNumberOfWindowLevelPresets()
+            == mrHead.GetDisplayNode().GetNumberOfWindowLevelPresets()
+        )
         for i in range(mrHead.GetDisplayNode().GetNumberOfWindowLevelPresets()):
             self.assertTrue(index_0_display_node.GetWindowPreset(i) == mrHead.GetDisplayNode().GetWindowPreset(i))
             self.assertTrue(index_0_display_node.GetLevelPreset(i) == mrHead.GetDisplayNode().GetLevelPreset(i))
@@ -117,7 +120,10 @@ class SlicerDisplayNodeSequenceTestTest(ScriptedLoadableModuleTest):
         self.assertTrue(index_1_display_node.GetWindowLevelMax() == mrHead2.GetDisplayNode().GetWindowLevelMax())
         self.assertTrue(index_1_display_node.GetLowerThreshold() == mrHead2.GetDisplayNode().GetLowerThreshold())
         self.assertTrue(index_1_display_node.GetUpperThreshold() == mrHead2.GetDisplayNode().GetUpperThreshold())
-        self.assertTrue(index_1_display_node.GetNumberOfWindowLevelPresets() == mrHead2.GetDisplayNode().GetNumberOfWindowLevelPresets())
+        self.assertTrue(
+            index_1_display_node.GetNumberOfWindowLevelPresets()
+            == mrHead2.GetDisplayNode().GetNumberOfWindowLevelPresets()
+        )
         for i in range(mrHead2.GetDisplayNode().GetNumberOfWindowLevelPresets()):
             self.assertTrue(index_1_display_node.GetWindowPreset(i) == mrHead2.GetDisplayNode().GetWindowPreset(i))
             self.assertTrue(index_1_display_node.GetLevelPreset(i) == mrHead2.GetDisplayNode().GetLevelPreset(i))

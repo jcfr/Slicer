@@ -45,7 +45,9 @@ class DICOMSendDialog(qt.QDialog):
         self.serverAETitleEdit.enabled = self.protocolSelectorCombobox.currentText == "DIMSE"
 
         self.serverAddressLineEdit = qt.QLineEdit()
-        self.serverAddressLineEdit.setToolTip("Address includes hostname and port number in standard URL format (hostname:port).")
+        self.serverAddressLineEdit.setToolTip(
+            "Address includes hostname and port number in standard URL format (hostname:port)."
+        )
         self.serverAddressLineEdit.text = self.settings.value("DICOM/Send/URL", "")
         self.dicomFormLayout.addRow("Destination Address: ", self.serverAddressLineEdit)
 
@@ -86,12 +88,14 @@ class DICOMSendDialog(qt.QDialog):
         try:
             with slicer.util.tryWithErrorDisplay("DICOM sending failed."):
                 okButton.enabled = False
-                DICOMLib.DICOMSender(self.files,
-                                     address,
-                                     protocol,
-                                     aeTitle=aeTitle,
-                                     progressCallback=self.onProgress,
-                                     auth=DICOMLib.DICOMUtils.getGlobalDICOMAuth())
+                DICOMLib.DICOMSender(
+                    self.files,
+                    address,
+                    protocol,
+                    aeTitle=aeTitle,
+                    progressCallback=self.onProgress,
+                    auth=DICOMLib.DICOMUtils.getGlobalDICOMAuth(),
+                )
                 logging.debug("DICOM sending of %s files succeeded" % len(self.files))
                 self.close()
         except Exception:

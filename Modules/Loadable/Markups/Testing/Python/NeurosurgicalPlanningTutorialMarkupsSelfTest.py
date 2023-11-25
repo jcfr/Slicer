@@ -20,7 +20,9 @@ class NeurosurgicalPlanningTutorialMarkupsSelfTest(ScriptedLoadableModule):
         self.parent.categories = ["Testing.TestCases"]
         self.parent.dependencies = ["Segmentations"]
         self.parent.contributors = ["Nicole Aucoin (BWH), Andras Lasso (PerkLab, Queen's)"]
-        self.parent.helpText = """This is a test case that exercises the fiducials used in the Neurosurgical Planning tutorial."""
+        self.parent.helpText = (
+            """This is a test case that exercises the fiducials used in the Neurosurgical Planning tutorial."""
+        )
         parent.acknowledgementText = """This file was originally developed by Nicole Aucoin, BWH
       and was partially funded by NIH grant 3P41RR013218-12S1. The test was updated to use Segment editor by
       Andras Lasso, PerkLab, Queen's University and was supported through the Applied Cancer Research Unit program
@@ -53,7 +55,9 @@ class NeurosurgicalPlanningTutorialMarkupsSelfTestWidget(ScriptedLoadableModuleW
         #
         self.enableScreenshotsFlagCheckBox = qt.QCheckBox()
         self.enableScreenshotsFlagCheckBox.checked = 0
-        self.enableScreenshotsFlagCheckBox.setToolTip("If checked, take screen shots for tutorials. Use Save Data to write them to disk.")
+        self.enableScreenshotsFlagCheckBox.setToolTip(
+            "If checked, take screen shots for tutorials. Use Save Data to write them to disk."
+        )
         parametersFormLayout.addRow("Enable Screenshots", self.enableScreenshotsFlagCheckBox)
 
         #
@@ -229,7 +233,9 @@ class NeurosurgicalPlanningTutorialMarkupsSelfTestTest(ScriptedLoadableModuleTes
         #
 
         # Create segmentation
-        segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", baselineVolume.GetName() + "-segmentation")
+        segmentationNode = slicer.mrmlScene.AddNewNodeByClass(
+            "vtkMRMLSegmentationNode", baselineVolume.GetName() + "-segmentation"
+        )
         segmentationNode.CreateDefaultDisplayNodes()
         segmentationNode.SetReferenceImageGeometryParameterFromVolumeNode(baselineVolume)
 
@@ -279,12 +285,18 @@ class NeurosurgicalPlanningTutorialMarkupsSelfTestTest(ScriptedLoadableModuleTes
             [-11, 73, sliceOffset],
             [-12, 85, sliceOffset],
             [-13, 91, sliceOffset],
-            [-15, 78, sliceOffset]]
+            [-15, 78, sliceOffset],
+        ]
         sliceWidget = lm.sliceWidget("Red")
         currentCoords = None
         for clickCoords in clickCoordsList:
             if currentCoords:
-                slicer.util.clickAndDrag(sliceWidget, start=logic.rasToDisplay(*currentCoords), end=logic.rasToDisplay(*clickCoords), steps=10)
+                slicer.util.clickAndDrag(
+                    sliceWidget,
+                    start=logic.rasToDisplay(*currentCoords),
+                    end=logic.rasToDisplay(*clickCoords),
+                    steps=10,
+                )
             currentCoords = clickCoords
 
         self.takeScreenshot("NeurosurgicalPlanning-PaintCystic", "Paint cystic part of tumor")
@@ -293,7 +305,12 @@ class NeurosurgicalPlanningTutorialMarkupsSelfTestTest(ScriptedLoadableModuleTes
         # paint in solid part of tumor
         #
         segmentEditorNode.SetSelectedSegmentID(region2SegmentId)
-        slicer.util.clickAndDrag(sliceWidget, start=logic.rasToDisplay(-0.5, 118.5, sliceOffset), end=logic.rasToDisplay(-7.4, 116, sliceOffset), steps=10)
+        slicer.util.clickAndDrag(
+            sliceWidget,
+            start=logic.rasToDisplay(-0.5, 118.5, sliceOffset),
+            end=logic.rasToDisplay(-7.4, 116, sliceOffset),
+            steps=10,
+        )
         self.takeScreenshot("NeurosurgicalPlanning-PaintSolid", "Paint solid part of tumor")
 
         #
@@ -305,12 +322,18 @@ class NeurosurgicalPlanningTutorialMarkupsSelfTestTest(ScriptedLoadableModuleTes
             [30, 50, sliceOffset],
             [30, 145, sliceOffset],
             [-40, 145, sliceOffset],
-            [-40, 50, sliceOffset]]
+            [-40, 50, sliceOffset],
+        ]
         sliceWidget = lm.sliceWidget("Red")
         currentCoords = None
         for clickCoords in clickCoordsList:
             if currentCoords:
-                slicer.util.clickAndDrag(sliceWidget, start=logic.rasToDisplay(*currentCoords), end=logic.rasToDisplay(*clickCoords), steps=30)
+                slicer.util.clickAndDrag(
+                    sliceWidget,
+                    start=logic.rasToDisplay(*currentCoords),
+                    end=logic.rasToDisplay(*clickCoords),
+                    steps=30,
+                )
             currentCoords = clickCoords
         self.takeScreenshot("NeurosurgicalPlanning-PaintAround", "Paint around tumor")
 
@@ -354,7 +377,12 @@ class NeurosurgicalPlanningTutorialMarkupsSelfTestTest(ScriptedLoadableModuleTes
         segmentEditorWidget.setActiveEffectByName("Islands")
         effect = segmentEditorWidget.activeEffect()
         effect.setParameter("Operation", "KEEP_SELECTED_ISLAND")
-        slicer.util.clickAndDrag(sliceWidget, start=logic.rasToDisplay(25.3, 5.8, sliceOffset), end=logic.rasToDisplay(25.3, 5.8, sliceOffset), steps=1)
+        slicer.util.clickAndDrag(
+            sliceWidget,
+            start=logic.rasToDisplay(25.3, 5.8, sliceOffset),
+            end=logic.rasToDisplay(25.3, 5.8, sliceOffset),
+            steps=1,
+        )
         self.takeScreenshot("NeurosurgicalPlanning-SaveIsland", "Ventricles save island")
 
         #

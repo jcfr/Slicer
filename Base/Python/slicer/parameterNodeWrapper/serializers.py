@@ -282,8 +282,7 @@ class StringSerializer(Serializer):
     @staticmethod
     def create(type_):
         if StringSerializer.canSerialize(type_):
-            return ValidatedSerializer(StringSerializer(),
-                                       [NotNone(), IsInstance(type_)])
+            return ValidatedSerializer(StringSerializer(), [NotNone(), IsInstance(type_)])
         return None
 
     def default(self):
@@ -311,14 +310,19 @@ class PathSerializer(Serializer):
 
     @staticmethod
     def canSerialize(type_) -> bool:
-        return type_ in (pathlib.Path, pathlib.PosixPath, pathlib.WindowsPath,
-                         pathlib.PurePath, pathlib.PurePosixPath, pathlib.PureWindowsPath)
+        return type_ in (
+            pathlib.Path,
+            pathlib.PosixPath,
+            pathlib.WindowsPath,
+            pathlib.PurePath,
+            pathlib.PurePosixPath,
+            pathlib.PureWindowsPath,
+        )
 
     @staticmethod
     def create(type_):
         if PathSerializer.canSerialize(type_):
-            return ValidatedSerializer(PathSerializer(type_),
-                                       [NotNone(), IsInstance(type_)])
+            return ValidatedSerializer(PathSerializer(type_), [NotNone(), IsInstance(type_)])
         return None
 
     def __init__(self, pathtype):
@@ -355,8 +359,7 @@ class BoolSerializer(Serializer):
     @staticmethod
     def create(type_):
         if BoolSerializer.canSerialize(type_):
-            return ValidatedSerializer(BoolSerializer(),
-                                       [NotNone(), IsInstance(type_)])
+            return ValidatedSerializer(BoolSerializer(), [NotNone(), IsInstance(type_)])
         return None
 
     def default(self):
@@ -389,8 +392,7 @@ class NodeSerializer(Serializer):
     @staticmethod
     def create(type_):
         if NodeSerializer.canSerialize(type_):
-            return ValidatedSerializer(NodeSerializer(),
-                                       [IsInstance(type_)])
+            return ValidatedSerializer(NodeSerializer(), [IsInstance(type_)])
         return None
 
     def default(self):
@@ -599,8 +601,10 @@ class ListSerializer(Serializer):
         def paramName(index):
             return self._paramName(name, index)
 
-        ret = [self._elementSerializer.read(parameterNode, paramName(index))
-               for index in range(self._len(parameterNode, name))]
+        ret = [
+            self._elementSerializer.read(parameterNode, paramName(index))
+            for index in range(self._len(parameterNode, name))
+        ]
         return ObservedList(parameterNode, self, name, ret)
 
     def remove(self, parameterNode, name: str) -> None:
@@ -668,8 +672,10 @@ class TupleSerializer(Serializer):
                 serializer.write(parameterNode, self._paramName(name, index), value)
 
     def read(self, parameterNode, name: str) -> None:
-        return tuple(serializer.read(parameterNode, self._paramName(name, index))
-                     for index, serializer in enumerate(self._serializers))
+        return tuple(
+            serializer.read(parameterNode, self._paramName(name, index))
+            for index, serializer in enumerate(self._serializers)
+        )
 
     def remove(self, parameterNode, name: str) -> None:
         with slicer.util.NodeModify(parameterNode):
@@ -783,8 +789,10 @@ class DictSerializer(Serializer):
         if DictSerializer.canSerialize(type_):
             args = typing.get_args(type_)
             if len(args) not in (0, 2):
-                raise Exception("Unsure how to handle a typed dictionary without exactly 0 or 2 types."
-                                " Note that zero types will be dict[typing.Any, typing.Any]")
+                raise Exception(
+                    "Unsure how to handle a typed dictionary without exactly 0 or 2 types."
+                    " Note that zero types will be dict[typing.Any, typing.Any]"
+                )
             if len(args) == 0:
                 args = [typing.Any, typing.Any]
             serializers = [createSerializerFromAnnotatedType(arg) for arg in args]
@@ -795,8 +803,7 @@ class DictSerializer(Serializer):
         return dict()
 
     def __init__(self, keySerializer, valueSerializer) -> None:
-        self._serializer = ListSerializer(
-            TupleSerializer([keySerializer, valueSerializer]))
+        self._serializer = ListSerializer(TupleSerializer([keySerializer, valueSerializer]))
 
     def isIn(self, parameterNode, name: str) -> bool:
         return self._serializer.isIn(parameterNode, name)

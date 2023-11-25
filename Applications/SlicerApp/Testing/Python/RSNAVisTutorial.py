@@ -53,7 +53,12 @@ class RSNAVisTutorialWidget(ScriptedLoadableModuleWidget):
         formLayout = qt.QFormLayout(testsCollapsibleButton)
 
         # test buttons
-        tests = (("Part 1: DICOM", self.onPart1DICOM), ("Part 2: Head", self.onPart2Head), ("Part 3: Liver", self.onPart3Liver), ("Part 4: Lung", self.onPart4Lung))
+        tests = (
+            ("Part 1: DICOM", self.onPart1DICOM),
+            ("Part 2: Head", self.onPart2Head),
+            ("Part 3: Liver", self.onPart3Liver),
+            ("Part 4: Lung", self.onPart4Lung),
+        )
         for text, slot in tests:
             testButton = qt.QPushButton(text)
             testButton.toolTip = "Run the test."
@@ -73,7 +78,9 @@ class RSNAVisTutorialWidget(ScriptedLoadableModuleWidget):
         #
         self.enableScreenshotsFlagCheckBox = qt.QCheckBox()
         self.enableScreenshotsFlagCheckBox.checked = 0
-        self.enableScreenshotsFlagCheckBox.setToolTip("If checked, take screen shots for tutorials. Use Save Data to write them to disk.")
+        self.enableScreenshotsFlagCheckBox.setToolTip(
+            "If checked, take screen shots for tutorials. Use Save Data to write them to disk."
+        )
         screenShotsFormLayout.addRow("Enable Screenshots", self.enableScreenshotsFlagCheckBox)
 
         #
@@ -193,7 +200,8 @@ class RSNAVisTutorialTest(ScriptedLoadableModuleTest):
         dicomFilesDirectory = SampleData.downloadFromURL(
             fileNames="dataset1_Thorax_Abdomen.zip",
             uris=TESTING_DATA_URL + "SHA256/17a4199aad03a373dab27dc17e5bfcf84fc194d0a30975b4073e5b595d43a56a",
-            checksums="SHA256:17a4199aad03a373dab27dc17e5bfcf84fc194d0a30975b4073e5b595d43a56a")[0]
+            checksums="SHA256:17a4199aad03a373dab27dc17e5bfcf84fc194d0a30975b4073e5b595d43a56a",
+        )[0]
 
         try:
             self.delayDisplay("Switching to temp database directory")
@@ -313,7 +321,8 @@ class RSNAVisTutorialTest(ScriptedLoadableModuleTest):
             fileNames="Head_Scene.mrb",
             loadFiles=True,
             uris=TESTING_DATA_URL + "SHA256/6785e481925c912a5a3940e9c9b71935df93a78a871e10f66ab71f8478229e68",
-            checksums="SHA256:6785e481925c912a5a3940e9c9b71935df93a78a871e10f66ab71f8478229e68")
+            checksums="SHA256:6785e481925c912a5a3940e9c9b71935df93a78a871e10f66ab71f8478229e68",
+        )
 
         self.takeScreenshot("Head-Downloaded", "Finished with download and loading", -1)
 
@@ -377,7 +386,9 @@ class RSNAVisTutorialTest(ScriptedLoadableModuleTest):
 
             for offset in range(-40, -20, 2):
                 greenController.setSliceOffsetValue(offset)
-            self.takeScreenshot("Head-ScrollCoronalWhiteMatter", "Scroll through coronal slices to show white matter", -1)
+            self.takeScreenshot(
+                "Head-ScrollCoronalWhiteMatter", "Scroll through coronal slices to show white matter", -1
+            )
 
             hemispheric_white_matter = slicer.util.getNode(pattern="hemispheric_white_matter.vtk")
             hemispheric_white_matter.GetDisplayNode().SetVisibility(0)
@@ -413,7 +424,8 @@ class RSNAVisTutorialTest(ScriptedLoadableModuleTest):
             fileNames="LiverSegments_Scene.mrb",
             loadFiles=True,
             uris=TESTING_DATA_URL + "SHA256/ff797140c13a5988a7b72920adf0d2dab390a9babeab9161d5c52613328249f7",
-            checksums="SHA256:ff797140c13a5988a7b72920adf0d2dab390a9babeab9161d5c52613328249f7")
+            checksums="SHA256:ff797140c13a5988a7b72920adf0d2dab390a9babeab9161d5c52613328249f7",
+        )
 
         self.takeScreenshot("Liver-Loaded", "Loaded Liver scene", -1)
 
@@ -486,7 +498,8 @@ class RSNAVisTutorialTest(ScriptedLoadableModuleTest):
             fileNames="LungSegments_Scene.mrb",
             loadFiles=True,
             uris=TESTING_DATA_URL + "SHA256/89ffc6cabd76a17dfa6beb404a5901a4b4e4b4f2f4ee46c2d5f4d34459f554a1",
-            checksums="SHA256:89ffc6cabd76a17dfa6beb404a5901a4b4e4b4f2f4ee46c2d5f4d34459f554a1")
+            checksums="SHA256:89ffc6cabd76a17dfa6beb404a5901a4b4e4b4f2f4ee46c2d5f4d34459f554a1",
+        )
 
         self.takeScreenshot("Lung-Loaded", "Finished with download and loading", -1)
 

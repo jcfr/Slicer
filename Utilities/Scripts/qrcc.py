@@ -77,14 +77,16 @@ def compileResources(in_path, out_file, args):
 def main(argv):
     parser = argparse.ArgumentParser(description="PythonQt Resource Compiler")
 
-    parser.add_argument("--rcc", default="rcc",
-                        help="location of the Qt resource compiler executable")
-    parser.add_argument("-o", "--output", dest="out_path", metavar="PATH",
-                        default="-",
-                        help="location to which to write the output Python"
-                             " script (default=stdout)")
-    parser.add_argument("in_path", metavar="resource_script",
-                        help="input resource script to compile")
+    parser.add_argument("--rcc", default="rcc", help="location of the Qt resource compiler executable")
+    parser.add_argument(
+        "-o",
+        "--output",
+        dest="out_path",
+        metavar="PATH",
+        default="-",
+        help="location to which to write the output Python" " script (default=stdout)",
+    )
+    parser.add_argument("in_path", metavar="resource_script", help="input resource script to compile")
 
     args = parser.parse_args(argv)
 

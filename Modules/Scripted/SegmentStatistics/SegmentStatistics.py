@@ -22,8 +22,11 @@ class SegmentStatistics(ScriptedLoadableModule):
         self.parent.title = _("Segment Statistics")
         self.parent.categories = [translate("qSlicerAbstractCoreModule", "Quantification")]
         self.parent.dependencies = ["SubjectHierarchy"]
-        self.parent.contributors = ["Andras Lasso (PerkLab), Christian Bauer (University of Iowa), Steve Pieper (Isomics)"]
-        self.parent.helpText = _("""
+        self.parent.contributors = [
+            "Andras Lasso (PerkLab), Christian Bauer (University of Iowa), Steve Pieper (Isomics)"
+        ]
+        self.parent.helpText = _(
+            """
 Use this module to calculate counts and volumes for segments plus statistics on the grayscale background volume.
 Computed fields:
 Segment labelmap statistics (LM): voxel count, volume mm3, volume cm3.
@@ -33,11 +36,14 @@ min, max, mean, stdev (intensity statistics).
 Requires segment labelmap representation and selection of a scalar volume
 Closed surface statistics (CS): surface mm2, volume mm3, volume cm3 (computed from closed surface).
 Requires segment closed surface representation.
-""")
+"""
+        )
         self.parent.helpText += parent.defaultDocumentationLink
-        self.parent.acknowledgementText = _("""
+        self.parent.acknowledgementText = _(
+            """
 Supported by NA-MIC, NAC, BIRN, NCIGT, and the Slicer Community. See https://www.slicer.org for details.
-""")
+"""
+        )
 
     def setup(self):
         # Register subject hierarchy plugin
@@ -180,8 +186,9 @@ class SegmentStatisticsWidget(ScriptedLoadableModuleWidget):
             self.parameterNode.RemoveObserver(self.parameterNodeObserver)
 
     def onNodeSelectionChanged(self):
-        self.applyButton.enabled = (self.segmentationSelector.currentNode() is not None and
-                                    self.parameterNodeSelector.currentNode() is not None)
+        self.applyButton.enabled = (
+            self.segmentationSelector.currentNode() is not None and self.parameterNodeSelector.currentNode() is not None
+        )
         if self.segmentationSelector.currentNode():
             self.outputTableSelector.baseName = self.segmentationSelector.currentNode().GetName() + " statistics"
 
@@ -202,7 +209,9 @@ class SegmentStatisticsWidget(ScriptedLoadableModuleWidget):
                 self.logic.getParameterNode().SetParameter("ScalarVolume", self.scalarSelector.currentNode().GetID())
             else:
                 self.logic.getParameterNode().UnsetParameter("ScalarVolume")
-            self.logic.getParameterNode().SetParameter("MeasurementsTable", self.outputTableSelector.currentNode().GetID())
+            self.logic.getParameterNode().SetParameter(
+                "MeasurementsTable", self.outputTableSelector.currentNode().GetID()
+            )
             # Compute statistics
             self.logic.computeStatistics()
             self.logic.exportToTable(self.outputTableSelector.currentNode())
@@ -251,8 +260,9 @@ class SegmentStatisticsWidget(ScriptedLoadableModuleWidget):
         self.parameterNode = self.parameterNodeSelector.currentNode()
         if self.parameterNode:
             self.logic.setParameterNode(self.parameterNode)
-            self.parameterNodeObserver = self.parameterNode.AddObserver(vtk.vtkCommand.ModifiedEvent,
-                                                                        self.updateGuiFromParameterNode)
+            self.parameterNodeObserver = self.parameterNode.AddObserver(
+                vtk.vtkCommand.ModifiedEvent, self.updateGuiFromParameterNode
+            )
         self.updateGuiFromParameterNode()
 
     def updateGuiFromParameterNode(self, caller=None, event=None):
@@ -288,8 +298,7 @@ class SegmentStatisticsParameterEditorDialog(qt.QDialog):
         """Executes a modal dialog to edit a segment statistics parameter node if a pluginName is specified, only
         options for this plugin are displayed"
         """
-        dialog = SegmentStatisticsParameterEditorDialog(parent=None, parameterNode=parameterNode,
-                                                        pluginName=pluginName)
+        dialog = SegmentStatisticsParameterEditorDialog(parent=None, parameterNode=parameterNode, pluginName=pluginName)
         return dialog.exec_()
 
     def __init__(self, parent=None, parameterNode=None, pluginName=None):
@@ -361,8 +370,11 @@ class SegmentStatisticsLogic(ScriptedLoadableModuleLogic):
     https://github.com/Slicer/Slicer/blob/main/Base/Python/slicer/ScriptedLoadableModule.py
     """
 
-    registeredPlugins = [LabelmapSegmentStatisticsPlugin, ScalarVolumeSegmentStatisticsPlugin,
-                         ClosedSurfaceSegmentStatisticsPlugin]
+    registeredPlugins = [
+        LabelmapSegmentStatisticsPlugin,
+        ScalarVolumeSegmentStatisticsPlugin,
+        ClosedSurfaceSegmentStatisticsPlugin,
+    ]
 
     @staticmethod
     def registerPlugin(plugin):
@@ -371,13 +383,17 @@ class SegmentStatisticsLogic(ScriptedLoadableModuleLogic):
             return
         for key in plugin.keys:
             if key.count(".") > 0:
-                logging.warning("Plugin keys should not contain extra '.' as it might mix pluginname.measurementkey in "
-                                "the parameter node")
+                logging.warning(
+                    "Plugin keys should not contain extra '.' as it might mix pluginname.measurementkey in "
+                    "the parameter node"
+                )
         if plugin.__class__ not in SegmentStatisticsLogic.registeredPlugins:
             SegmentStatisticsLogic.registeredPlugins.append(plugin.__class__)
         else:
-            logging.warning("SegmentStatisticsLogic.registerPlugin will not register plugin because \
-                       another plugin with the same name has already been registered")
+            logging.warning(
+                "SegmentStatisticsLogic.registerPlugin will not register plugin because \
+                       another plugin with the same name has already been registered"
+            )
 
     def __init__(self, parent=None):
         ScriptedLoadableModuleLogic.__init__(self, parent)
@@ -584,9 +600,12 @@ class SegmentStatisticsLogic(ScriptedLoadableModuleLogic):
         statistics = self.getStatistics()
         for key in keys:
             # create table column appropriate for data type; currently supported: float, int, long, string
-            measurements = [statistics[segmentID, key] for segmentID in statistics["SegmentIDs"] if
-                            (segmentID, key) in statistics]
-            if len(measurements) == 0:  # there were not measurements and therefore use the default "string" representation
+            measurements = [
+                statistics[segmentID, key] for segmentID in statistics["SegmentIDs"] if (segmentID, key) in statistics
+            ]
+            if (
+                len(measurements) == 0
+            ):  # there were not measurements and therefore use the default "string" representation
                 col = table.AddColumn()
             elif isinstance(measurements[0], int):
                 col = table.AddColumn(vtk.vtkLongArray())
@@ -616,7 +635,9 @@ class SegmentStatisticsLogic(ScriptedLoadableModuleLogic):
             col.SetName(columnName)
             if plugin:
                 table.SetColumnProperty(columnName, "Plugin", plugin.name)
-                longColumnName += "<br>" + _("Computed by {pluginName} Statistics plugin").format(pluginName=plugin.name)
+                longColumnName += "<br>" + _("Computed by {pluginName} Statistics plugin").format(
+                    pluginName=plugin.name
+                )
             table.SetColumnLongName(columnName, longColumnName)
             measurementInfo = statistics["MeasurementInfo"][key] if key in statistics["MeasurementInfo"] else {}
             if measurementInfo:
@@ -721,8 +742,15 @@ class SegmentStatisticsTest(ScriptedLoadableModuleTest):
         segmentationNode.SetReferenceImageGeometryParameterFromVolumeNode(sourceVolumeNode)
 
         # Geometry for each segment is defined by: radius, posX, posY, posZ
-        segmentGeometries = [[10, -6, 30, 28], [20, 0, 65, 32], [15, 1, -14, 30], [12, 0, 28, -7], [5, 0, 30, 64],
-                             [12, 31, 33, 27], [17, -42, 30, 27]]
+        segmentGeometries = [
+            [10, -6, 30, 28],
+            [20, 0, 65, 32],
+            [15, 1, -14, 30],
+            [12, 0, 28, -7],
+            [5, 0, 30, 64],
+            [12, 31, 33, 27],
+            [17, -42, 30, 27],
+        ]
         for segmentGeometry in segmentGeometries:
             sphereSource = vtk.vtkSphereSource()
             sphereSource.SetRadius(segmentGeometry[0])
@@ -777,8 +805,15 @@ class SegmentStatisticsTest(ScriptedLoadableModuleTest):
         segmentationNode.SetReferenceImageGeometryParameterFromVolumeNode(sourceVolumeNode)
 
         # Geometry for each segment is defined by: radius, posX, posY, posZ
-        segmentGeometries = [[10, -6, 30, 28], [20, 0, 65, 32], [15, 1, -14, 30], [12, 0, 28, -7], [5, 0, 30, 64],
-                             [12, 31, 33, 27], [17, -42, 30, 27]]
+        segmentGeometries = [
+            [10, -6, 30, 28],
+            [20, 0, 65, 32],
+            [15, 1, -14, 30],
+            [12, 0, 28, -7],
+            [5, 0, 30, 64],
+            [12, 31, 33, 27],
+            [17, -42, 30, 27],
+        ]
         for segmentGeometry in segmentGeometries:
             sphereSource = vtk.vtkSphereSource()
             sphereSource.SetRadius(segmentGeometry[0])
@@ -831,9 +866,10 @@ class SegmentStatisticsTest(ScriptedLoadableModuleTest):
             sphereSource.Update()
             segment = segmentationNode.GetSegmentation().GetNthSegment(i)
             segment.RemoveAllRepresentations()
-            closedSurfaceName = vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName()
-            segment.AddRepresentation(closedSurfaceName,
-                                      sphereSource.GetOutput())
+            closedSurfaceName = (
+                vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName()
+            )
+            segment.AddRepresentation(closedSurfaceName, sphereSource.GetOutput())
         segmentationNode.EndModify(wasModified)
         self.assertEqual(segStatLogic.getStatistics()["Test", "LabelmapSegmentStatisticsPlugin.voxel_count"], 2948)
         self.assertEqual(segStatLogic.getStatistics()["Test_1", "LabelmapSegmentStatisticsPlugin.voxel_count"], 23281)

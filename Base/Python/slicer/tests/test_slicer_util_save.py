@@ -124,8 +124,11 @@ class SlicerUtilSaveTests(unittest.TestCase):
         import shutil
 
         filename = slicer.app.temporaryPath + "/SlicerUtilSaveTestsTerminology.json"
-        shutil.copy(slicer.modules.terminologies.logic().GetModuleShareDirectory()
-                    + "/SegmentationCategoryTypeModifier-SlicerGeneralAnatomy.term.json", filename)
+        shutil.copy(
+            slicer.modules.terminologies.logic().GetModuleShareDirectory()
+            + "/SegmentationCategoryTypeModifier-SlicerGeneralAnatomy.term.json",
+            filename,
+        )
         # Load
         self.assertEqual(slicer.app.ioManager().fileType(filename), "TerminologyFile")
         loadedTerminology = slicer.util.loadNodeFromFile(filename)

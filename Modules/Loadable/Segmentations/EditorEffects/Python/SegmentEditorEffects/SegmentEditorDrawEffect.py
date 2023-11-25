@@ -35,13 +35,15 @@ class SegmentEditorDrawEffect(AbstractScriptedSegmentEditorLabelEffect):
         return qt.QIcon()
 
     def helpText(self):
-        return "<html>" + _("""Draw segment outline in slice viewers<br>.
+        return "<html>" + _(
+            """Draw segment outline in slice viewers<br>.
 <p><ul style="margin: 0">
 <li><b>Left-click:</b> add point.
 <li><b>Left-button drag-and-drop:</b> add multiple points.
 <li><b>x:</b> delete last point.
 <li><b>Double-left-click</b> or <b>right-click</b> or <b>a</b> or <b>enter</b>: apply outline.
-</ul><p>""")
+</ul><p>"""
+        )
 
     def deactivate(self):
         # Clear draw pipelines
@@ -63,12 +65,17 @@ class SegmentEditorDrawEffect(AbstractScriptedSegmentEditorLabelEffect):
         if pipeline is None:
             return abortEvent
 
-        anyModifierKeyPressed = callerInteractor.GetShiftKey() or callerInteractor.GetControlKey() or callerInteractor.GetAltKey()
+        anyModifierKeyPressed = (
+            callerInteractor.GetShiftKey() or callerInteractor.GetControlKey() or callerInteractor.GetAltKey()
+        )
 
         if eventId == vtk.vtkCommand.LeftButtonPressEvent and not anyModifierKeyPressed:
             # Make sure the user wants to do the operation, even if the segment is not visible
             confirmedEditingAllowed = self.scriptedEffect.confirmCurrentSegmentVisible()
-            if confirmedEditingAllowed == self.scriptedEffect.NotConfirmed or confirmedEditingAllowed == self.scriptedEffect.ConfirmedWithDialog:
+            if (
+                confirmedEditingAllowed == self.scriptedEffect.NotConfirmed
+                or confirmedEditingAllowed == self.scriptedEffect.ConfirmedWithDialog
+            ):
                 # ConfirmedWithDialog cancels the operation because the user had to move the mouse to click on the popup,
                 # which would interfere with the drawn shape. The dialog is not displayed again for the same segment.
 
@@ -94,9 +101,10 @@ class SegmentEditorDrawEffect(AbstractScriptedSegmentEditorLabelEffect):
             sliceNode = viewWidget.sliceLogic().GetSliceNode()
             pipeline.lastInsertSliceNodeMTime = sliceNode.GetMTime()
             abortEvent = True
-        elif ((eventId == vtk.vtkCommand.RightButtonReleaseEvent and pipeline.actionState == "finishing")
-              or (eventId == vtk.vtkCommand.LeftButtonDoubleClickEvent and not anyModifierKeyPressed)):
-            abortEvent = (pipeline.rasPoints.GetNumberOfPoints() > 1)
+        elif (eventId == vtk.vtkCommand.RightButtonReleaseEvent and pipeline.actionState == "finishing") or (
+            eventId == vtk.vtkCommand.LeftButtonDoubleClickEvent and not anyModifierKeyPressed
+        ):
+            abortEvent = pipeline.rasPoints.GetNumberOfPoints() > 1
             sliceNode = viewWidget.sliceLogic().GetSliceNode()
             if abs(pipeline.lastInsertSliceNodeMTime - sliceNode.GetMTime()) < 2:
                 pipeline.apply()
@@ -304,7 +312,9 @@ class DrawPipeline:
         self.resetPolyData()
         if lineExists:
             self.scriptedEffect.saveStateForUndo()
-            self.scriptedEffect.modifySelectedSegmentByLabelmap(modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeAdd)
+            self.scriptedEffect.modifySelectedSegmentByLabelmap(
+                modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeAdd
+            )
 
     def resetPolyData(self):
         # Return the polyline to initial state with no points

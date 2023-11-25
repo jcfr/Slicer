@@ -142,17 +142,23 @@ def _createModule(name, globals, docstring):
 # -----------------------------------------------------------------------------
 # Create slicer.modules and slicer.moduleNames
 
-_createModule("slicer.modules", globals(),
-              """This object provides an access to all instantiated Slicer modules.
+_createModule(
+    "slicer.modules",
+    globals(),
+    """This object provides an access to all instantiated Slicer modules.
 
 For more details, see the generated Slicer API documentation.
-""")
+""",
+)
 
-_createModule("slicer.moduleNames", globals(),
-              """This object provides an access to all instantiated Slicer module names.
+_createModule(
+    "slicer.moduleNames",
+    globals(),
+    """This object provides an access to all instantiated Slicer module names.
 
 For more details, see the generated Slicer API documentation.
-""")
+""",
+)
 
 # -----------------------------------------------------------------------------
 # Importing VTK is required for loading its Python modules and ensuring seamless instantiation

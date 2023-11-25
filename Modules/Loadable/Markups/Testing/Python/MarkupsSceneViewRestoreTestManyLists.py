@@ -44,13 +44,28 @@ sv.RestoreScene()
 
 numFidNodesAfterRestore = slicer.mrmlScene.GetNumberOfNodesByClass("vtkMRMLMarkupsFiducialNode")
 if numFidNodesAfterRestore != numFidNodesBeforeStore:
-    print("After restoring the scene, expected ", numFidNodesBeforeStore, " control points nodes, but have ", numFidNodesAfterRestore)
-    exceptionMessage = "After restoring the scene, expected " + str(numFidNodesBeforeStore) + " control points nodes, but have " + str(numFidNodesAfterRestore)
+    print(
+        "After restoring the scene, expected ",
+        numFidNodesBeforeStore,
+        " control points nodes, but have ",
+        numFidNodesAfterRestore,
+    )
+    exceptionMessage = (
+        "After restoring the scene, expected "
+        + str(numFidNodesBeforeStore)
+        + " control points nodes, but have "
+        + str(numFidNodesAfterRestore)
+    )
     raise Exception(exceptionMessage)
 
 fid1AfterRestore = slicer.mrmlScene.GetFirstNodeByName("FidNode1")
 numFidsInList1AfterRestore = fid1AfterRestore.GetNumberOfControlPoints()
-print("After restore, list with name FidNode1 has id ", fid1AfterRestore.GetID(), " and num fids = ", numFidsInList1AfterRestore)
+print(
+    "After restore, list with name FidNode1 has id ",
+    fid1AfterRestore.GetID(),
+    " and num fids = ",
+    numFidsInList1AfterRestore,
+)
 if numFidsInList1AfterRestore != numFidsInList1:
     exceptionMessage = "After restoring list 1, id = " + fid1AfterRestore.GetID()
     exceptionMessage += ", expected " + str(numFidsInList1) + " but got "
@@ -59,7 +74,12 @@ if numFidsInList1AfterRestore != numFidsInList1:
 
 fid2AfterRestore = slicer.mrmlScene.GetFirstNodeByName("FidNode2")
 numFidsInList2AfterRestore = fid2AfterRestore.GetNumberOfControlPoints()
-print("After restore, list with name FidNode2 has id ", fid2AfterRestore.GetID(), " and num fids = ", numFidsInList2AfterRestore)
+print(
+    "After restore, list with name FidNode2 has id ",
+    fid2AfterRestore.GetID(),
+    " and num fids = ",
+    numFidsInList2AfterRestore,
+)
 if numFidsInList2AfterRestore != numFidsInList2:
     exceptionMessage = "After restoring list 2,  id = " + fid2AfterRestore.GetID()
     exceptionMessage += ", expected " + str(numFidsInList2) + " but got "

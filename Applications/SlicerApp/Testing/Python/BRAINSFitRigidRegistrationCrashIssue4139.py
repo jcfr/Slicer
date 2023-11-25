@@ -19,7 +19,9 @@ class BRAINSFitRigidRegistrationCrashIssue4139(ScriptedLoadableModule):
         self.parent.title = "BRAINSFit Rigid Registration vtkITKTransformConverter crash (Issue 4139)"
         self.parent.categories = ["Testing.TestCases"]
         self.parent.dependencies = []
-        self.parent.contributors = ["Jean-Christophe Fillion-Robin (Kitware)"]  # replace with "Firstname Lastname (Organization)"
+        self.parent.contributors = [
+            "Jean-Christophe Fillion-Robin (Kitware)"
+        ]  # replace with "Firstname Lastname (Organization)"
         self.parent.helpText = """This test has been added to check that
     Slicer does not crash in vtkITKTransformConverter after completing BRAINSFit rigid registration.
 

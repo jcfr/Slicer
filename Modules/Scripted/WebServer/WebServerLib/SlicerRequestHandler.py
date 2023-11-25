@@ -54,7 +54,10 @@ class SlicerRequestHandler(BaseRequestHandler):
         return 0.5 if route.startswith(b"/slicer") else 0.0
 
     def handleRequest(
-        self, method: str, uri: bytes, requestBody: bytes,
+        self,
+        method: str,
+        uri: bytes,
+        requestBody: bytes,
     ) -> tuple[bytes, bytes]:
         """Handle a slicer api request.
         TODO: better routing (add routing plugins)
@@ -487,7 +490,8 @@ class SlicerRequestHandler(BaseRequestHandler):
         # space directions: (0,1,0) (0,0,-1) (-1.2999954223632812,0,0)
         # space origin: (86.644897460937486,-133.92860412597656,116.78569793701172)
 
-        nrrdHeader = """NRRD0004
+        nrrdHeader = (
+            """NRRD0004
 # Complete NRRD file format specification at:
 # http://teem.sourceforge.net/nrrd/format.html
 type: %%scalarType%%
@@ -500,7 +504,11 @@ endian: little
 encoding: raw
 space origin: %%origin%%
 
-""".replace("%%scalarType%%", scalarType).replace("%%sizes%%", sizes).replace("%%directions%%", directions).replace("%%origin%%", origin)
+""".replace("%%scalarType%%", scalarType)
+            .replace("%%sizes%%", sizes)
+            .replace("%%directions%%", directions)
+            .replace("%%origin%%", origin)
+        )
 
         nrrdData = nrrdHeader.encode() + volumeArray.tobytes()
         return nrrdData, b"application/octet-stream"
@@ -547,7 +555,8 @@ space origin: %%origin%%
         # space directions: (0,1,0) (0,0,-1) (-1.2999954223632812,0,0)
         # space origin: (86.644897460937486,-133.92860412597656,116.78569793701172)
 
-        nrrdHeader = """NRRD0004
+        nrrdHeader = (
+            """NRRD0004
 # Complete NRRD file format specification at:
 # http://teem.sourceforge.net/nrrd/format.html
 type: float
@@ -560,7 +569,10 @@ endian: little
 encoding: raw
 space origin: %%origin%%
 
-""".replace("%%sizes%%", sizes).replace("%%directions%%", directions).replace("%%origin%%", origin)
+""".replace("%%sizes%%", sizes)
+            .replace("%%directions%%", directions)
+            .replace("%%origin%%", origin)
+        )
 
         nrrdData = nrrdHeader.encode() + lpsArray.tobytes()
         return nrrdData, b"application/octet-stream"
@@ -582,10 +594,12 @@ space origin: %%origin%%
                 position = [0] * 3
                 markupsNode.GetNthControlPointPosition(markupIndex, position)
                 position
-                node["markups"].append({
-                    "label": markupsNode.GetNthControlPointLabel(markupIndex),
-                    "position": position,
-                })
+                node["markups"].append(
+                    {
+                        "label": markupsNode.GetNthControlPointLabel(markupIndex),
+                        "position": position,
+                    }
+                )
             fiducials[markupsNode.GetID()] = node
         return (json.dumps(fiducials).encode()), b"application/json"
 
@@ -678,7 +692,8 @@ space origin: %%origin%%
         loadedUIDs = DICOMUtils.importFromDICOMWeb(
             dicomWebEndpoint=request["dicomWEBPrefix"] + "/" + request["dicomWEBStore"],
             studyInstanceUID=request["studyUID"],
-            accessToken=request["accessToken"])
+            accessToken=request["accessToken"],
+        )
 
         files = []
         for studyUID in loadedUIDs:
@@ -944,9 +959,7 @@ space origin: %%origin%%
             sliceNode.GetSliceToRAS().DeepCopy(otherSliceNode.GetSliceToRAS())
             fov = sliceNode.GetFieldOfView()
             otherFOV = otherSliceNode.GetFieldOfView()
-            sliceNode.SetFieldOfView(otherFOV[0],
-                                     otherFOV[0] * fov[1] / fov[0],
-                                     fov[2])
+            sliceNode.SetFieldOfView(otherFOV[0], otherFOV[0] * fov[1] / fov[0], fov[2])
 
         if orientation:
             sliceNode = sliceLogic.GetSliceNode()
@@ -1179,7 +1192,9 @@ space origin: %%origin%%
         try:
             self.progressWindow = slicer.util.createProgressDialog()
             self.sampleDataLogic.logMessage = self.reportProgress
-            filenames = self.sampleDataLogic.downloadFromURL(nodeNames=nodeName, fileNames=filename, uris=downloadUrl, loadFiles=False)
+            filenames = self.sampleDataLogic.downloadFromURL(
+                nodeNames=nodeName, fileNames=filename, uris=downloadUrl, loadFiles=False
+            )
         finally:
             self.progressWindow.close()
 

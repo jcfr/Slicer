@@ -57,8 +57,7 @@ def run(executable, arguments=[], verbose=True, shell=False, drop_cache=False):
     arguments.insert(0, executable)
     if shell:
         arguments = " ".join([pipes.quote(arg) for arg in arguments])
-    p = subprocess.Popen(args=arguments, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE, shell=shell)
+    p = subprocess.Popen(args=arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
     stdout, stderr = p.communicate()
 
     if p.returncode != EXIT_SUCCESS:

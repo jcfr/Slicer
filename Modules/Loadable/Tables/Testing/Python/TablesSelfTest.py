@@ -167,11 +167,15 @@ class TablesSelfTestTest(ScriptedLoadableModuleTest):
         #############
         self.delayDisplay("Test delete row/column")
 
-        tableView.selectionModel().select(tableModel.index(1, 1), qt.QItemSelectionModel.Select)  # Select second item in second column
+        tableView.selectionModel().select(
+            tableModel.index(1, 1), qt.QItemSelectionModel.Select
+        )  # Select second item in second column
         deleteColumnButton.click()
         self.assertTrue(tableNode.GetNumberOfColumns() == initialNumberOfColumns)
 
-        tableView.selectionModel().select(tableModel.index(4, 0), qt.QItemSelectionModel.Select)  # Select 5th item in first column
+        tableView.selectionModel().select(
+            tableModel.index(4, 0), qt.QItemSelectionModel.Select
+        )  # Select 5th item in first column
         deleteRowButton.click()
         self.assertTrue(tableNode.GetNumberOfRows() == initialNumberOfRows)
 
@@ -217,7 +221,9 @@ class TablesSelfTestTest(ScriptedLoadableModuleTest):
 
         # Check if first and second column content is the same
         for rowIndex in range(5):
-            self.assertEqual(tableModel.data(tableModel.index(rowIndex, 0)), tableModel.data(tableModel.index(rowIndex, 1)))
+            self.assertEqual(
+                tableModel.data(tableModel.index(rowIndex, 0)), tableModel.data(tableModel.index(rowIndex, 1))
+            )
 
     # ------------------------------------------------------------------------------
     def section_CliTableInputOutput(self):

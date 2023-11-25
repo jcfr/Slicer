@@ -26,7 +26,8 @@ class Endoscopy(ScriptedLoadableModule):
         self.parent.categories = [translate("qSlicerAbstractCoreModule", "Endoscopy")]
         self.parent.dependencies = []
         self.parent.contributors = ["Steve Pieper (Isomics)"]
-        self.parent.helpText = _("""
+        self.parent.helpText = _(
+            """
 Create a path model as a spline interpolation of a set of fiducial points.
 Pick the Camera to be modified by the path and the Fiducial List defining the control points.
 Clicking "Create path" will make a path model and enable the flythrough panel.
@@ -34,13 +35,16 @@ You can manually scroll through the path with the Frame slider. The Play/Pause b
 The Frame Skip slider speeds up the animation by skipping points on the path.
 The Frame Delay slider slows down the animation by adding more time between frames.
 The View Angle provides is used to approximate the optics of an endoscopy system.
-""")
+"""
+        )
         self.parent.helpText += self.getDefaultModuleDocumentationLink()
-        self.parent.acknowledgementText = _("""
+        self.parent.acknowledgementText = _(
+            """
 This work is supported by PAR-07-249: R01CA131718 NA-MIC Virtual Colonoscopy
 (See <a>https://www.na-mic.org/Wiki/index.php/NA-MIC_NCBC_Collaboration:NA-MIC_virtual_colonoscopy</a>)
 NA-MIC, NAC, BIRN, NCIGT, and the Slicer Community.
-""")
+"""
+        )
 
 
 #
@@ -200,7 +204,9 @@ class EndoscopyWidget(ScriptedLoadableModuleWidget):
         if newCameraNode:
             newCamera = newCameraNode.GetCamera()
             # Add CameraNode ModifiedEvent observer
-            self.cameraNodeObserverTag = newCameraNode.AddObserver(vtk.vtkCommand.ModifiedEvent, self.onCameraNodeModified)
+            self.cameraNodeObserverTag = newCameraNode.AddObserver(
+                vtk.vtkCommand.ModifiedEvent, self.onCameraNodeModified
+            )
             # Add Camera ModifiedEvent observer
             self.cameraObserverTag = newCamera.AddObserver(vtk.vtkCommand.ModifiedEvent, self.onCameraNodeModified)
 
@@ -369,7 +375,9 @@ class EndoscopyComputePath:
                 self.fids.SetNumberOfPointsPerInterpolatingSegment(pointsPerSegment)
             # Get equidistant points
             resampledPoints = vtk.vtkPoints()
-            slicer.vtkMRMLMarkupsCurveNode.ResamplePoints(self.fids.GetCurvePointsWorld(), resampledPoints, self.dl, self.fids.GetCurveClosed())
+            slicer.vtkMRMLMarkupsCurveNode.ResamplePoints(
+                self.fids.GetCurvePointsWorld(), resampledPoints, self.dl, self.fids.GetCurveClosed()
+            )
             # Restore original number of pointsPerSegment
             if originalPointsPerSegment < pointsPerSegment:
                 self.fids.SetNumberOfPointsPerInterpolatingSegment(originalPointsPerSegment)
@@ -439,10 +447,12 @@ class EndoscopyComputePath:
             self.path.append(p)
 
     def point(self, segment, t):
-        return (self.h00(t) * self.p[segment] +
-                self.h10(t) * self.m[segment] +
-                self.h01(t) * self.p[segment + 1] +
-                self.h11(t) * self.m[segment + 1])
+        return (
+            self.h00(t) * self.p[segment]
+            + self.h10(t) * self.m[segment]
+            + self.h01(t) * self.p[segment + 1]
+            + self.h11(t) * self.m[segment + 1]
+        )
 
     def step(self, segment, t, dl):
         """Take a step of dl and return the path point and new t
@@ -537,7 +547,9 @@ class EndoscopyPathModel:
         if not cursor:
             if self.cursorType == "markups":
                 # Markups cursor
-                cursor = scene.AddNewNodeByClass("vtkMRMLMarkupsFiducialNode", scene.GenerateUniqueName("Cursor-%s" % fids.GetName()))
+                cursor = scene.AddNewNodeByClass(
+                    "vtkMRMLMarkupsFiducialNode", scene.GenerateUniqueName("Cursor-%s" % fids.GetName())
+                )
                 cursor.CreateDefaultDisplayNodes()
                 cursor.GetDisplayNode().SetSelectedColor(1, 0, 0)  # red
                 cursor.GetDisplayNode().SetSliceProjection(True)
@@ -545,7 +557,9 @@ class EndoscopyPathModel:
                 cursor.SetNthControlPointLocked(0, True)
             else:
                 # Model cursor
-                cursor = scene.AddNewNodeByClass("vtkMRMLMarkupsModelNode", scene.GenerateUniqueName("Cursor-%s" % fids.GetName()))
+                cursor = scene.AddNewNodeByClass(
+                    "vtkMRMLMarkupsModelNode", scene.GenerateUniqueName("Cursor-%s" % fids.GetName())
+                )
                 cursor.CreateDefaultDisplayNodes()
                 cursor.GetDisplayNode().SetColor(1, 0, 0)  # red
                 cursor.GetDisplayNode().BackfaceCullingOn()  # so that the camera can see through the cursor from inside
@@ -559,7 +573,9 @@ class EndoscopyPathModel:
         # Transform node
         transform = model.GetNodeReference("CameraTransform")
         if not transform:
-            transform = scene.AddNewNodeByClass("vtkMRMLLinearTransformNode", scene.GenerateUniqueName("Transform-%s" % fids.GetName()))
+            transform = scene.AddNewNodeByClass(
+                "vtkMRMLLinearTransformNode", scene.GenerateUniqueName("Transform-%s" % fids.GetName())
+            )
             model.SetNodeReferenceID("CameraTransform", transform.GetID())
         cursor.SetAndObserveTransformNodeID(transform.GetID())
 
@@ -580,7 +596,9 @@ class EndoscopyPathModel:
         from numpy.linalg import svd
 
         points = np.reshape(points, (np.shape(points)[0], -1))  # Collapse trialing dimensions
-        assert points.shape[0] <= points.shape[1], f"There are only {points.shape[1]} points in {points.shape[0]} dimensions."
+        assert (
+            points.shape[0] <= points.shape[1]
+        ), f"There are only {points.shape[1]} points in {points.shape[0]} dimensions."
         ctr = points.mean(axis=1)
         x = points - ctr[:, np.newaxis]
         M = np.dot(x, x.T)  # Could also use np.cov(x) here.

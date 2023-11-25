@@ -86,8 +86,7 @@ class String(Token):
 
     # ---------------------------------------------------------------------------
     def __repr__(self):
-        return "String(prefix=%(prefix)r, suffix=%(suffix)r," \
-               " text=%(text)r, indent=%(indent)r)" % self.__dict__
+        return "String(prefix=%(prefix)r, suffix=%(suffix)r," " text=%(text)r, indent=%(indent)r)" % self.__dict__
 
     # ---------------------------------------------------------------------------
     def __str__(self):
@@ -121,8 +120,7 @@ class Comment(Token):
 
     # ---------------------------------------------------------------------------
     def __repr__(self):
-        return "Comment(prefix=%(prefix)r, suffix=%(suffix)r," \
-               " text=%(text)r, indent=%(indent)r)" % self.__dict__
+        return "Comment(prefix=%(prefix)r, suffix=%(suffix)r," " text=%(text)r, indent=%(indent)r)" % self.__dict__
 
     # ---------------------------------------------------------------------------
     def __str__(self):
@@ -164,9 +162,11 @@ class Command(Token):
 
     # ---------------------------------------------------------------------------
     def __repr__(self):
-        return "Command(text=%(text)r, prefix=%(prefix)r," \
-               " suffix=%(suffix)r, arguments=%(arguments)r," \
-               " indent=%(indent)r)" % self.__dict__
+        return (
+            "Command(text=%(text)r, prefix=%(prefix)r,"
+            " suffix=%(suffix)r, arguments=%(arguments)r,"
+            " indent=%(indent)r)" % self.__dict__
+        )
 
     # ---------------------------------------------------------------------------
     def __str__(self):
@@ -325,8 +325,7 @@ class CMakeScript:
 
         i = match.end()
         suffix = e.strip()
-        token = Comment(prefix=self._content[:i], suffix=suffix,
-                        text=self._content[i:n], indent=indent)
+        token = Comment(prefix=self._content[:i], suffix=suffix, text=self._content[i:n], indent=indent)
 
         self._content = self._content[n + len(suffix) :]
 
@@ -348,8 +347,7 @@ class CMakeScript:
 
             if self._content[0] == ")":
                 self._content = self._content[1:]
-                return Command(text=command, arguments=arguments, indent=indent,
-                               prefix=prefix, suffix=argIndent + ")")
+                return Command(text=command, arguments=arguments, indent=indent, prefix=prefix, suffix=argIndent + ")")
             elif self._is(self._reComment):
                 arguments.append(self._parseComment(self._match, argIndent))
 

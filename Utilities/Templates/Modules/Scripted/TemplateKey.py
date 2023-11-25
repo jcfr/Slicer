@@ -33,18 +33,24 @@ class TemplateKey(ScriptedLoadableModule):
         # TODO: set categories (folders where the module shows up in the module selector)
         self.parent.categories = [translate("qSlicerAbstractCoreModule", "Examples")]
         self.parent.dependencies = []  # TODO: add here list of module names that this module requires
-        self.parent.contributors = ["John Doe (AnyWare Corp.)"]  # TODO: replace with "Firstname Lastname (Organization)"
+        self.parent.contributors = [
+            "John Doe (AnyWare Corp.)"
+        ]  # TODO: replace with "Firstname Lastname (Organization)"
         # TODO: update with short description of the module and a link to online module documentation
         # _() function marks text as translatable to other languages
-        self.parent.helpText = _("""
+        self.parent.helpText = _(
+            """
 This is an example of scripted loadable module bundled in an extension.
 See more information in <a href="https://github.com/organization/projectname#TemplateKey">module documentation</a>.
-""")
+"""
+        )
         # TODO: replace with organization, grant and thanks
-        self.parent.acknowledgementText = _("""
+        self.parent.acknowledgementText = _(
+            """
 This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc., Andras Lasso, PerkLab,
 and Steve Pieper, Isomics, Inc. and was partially funded by NIH grant 3P41RR013218-12S1.
-""")
+"""
+        )
 
         # Additional initialization step after application startup is complete
         slicer.app.connect("startupCompleted()", registerSampleData)
@@ -243,14 +249,23 @@ class TemplateKeyWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
         """Run processing when user clicks "Apply" button."""
         with slicer.util.tryWithErrorDisplay(_("Failed to compute results."), waitCursor=True):
             # Compute output
-            self.logic.process(self.ui.inputSelector.currentNode(), self.ui.outputSelector.currentNode(),
-                               self.ui.imageThresholdSliderWidget.value, self.ui.invertOutputCheckBox.checked)
+            self.logic.process(
+                self.ui.inputSelector.currentNode(),
+                self.ui.outputSelector.currentNode(),
+                self.ui.imageThresholdSliderWidget.value,
+                self.ui.invertOutputCheckBox.checked,
+            )
 
             # Compute inverted output (if needed)
             if self.ui.invertedOutputSelector.currentNode():
                 # If additional output volume is selected then result with inverted threshold is written there
-                self.logic.process(self.ui.inputSelector.currentNode(), self.ui.invertedOutputSelector.currentNode(),
-                                   self.ui.imageThresholdSliderWidget.value, not self.ui.invertOutputCheckBox.checked, showResult=False)
+                self.logic.process(
+                    self.ui.inputSelector.currentNode(),
+                    self.ui.invertedOutputSelector.currentNode(),
+                    self.ui.imageThresholdSliderWidget.value,
+                    not self.ui.invertOutputCheckBox.checked,
+                    showResult=False,
+                )
 
 
 #
@@ -275,12 +290,14 @@ class TemplateKeyLogic(ScriptedLoadableModuleLogic):
     def getParameterNode(self):
         return TemplateKeyParameterNode(super().getParameterNode())
 
-    def process(self,
-                inputVolume: vtkMRMLScalarVolumeNode,
-                outputVolume: vtkMRMLScalarVolumeNode,
-                imageThreshold: float,
-                invert: bool = False,
-                showResult: bool = True) -> None:
+    def process(
+        self,
+        inputVolume: vtkMRMLScalarVolumeNode,
+        outputVolume: vtkMRMLScalarVolumeNode,
+        imageThreshold: float,
+        invert: bool = False,
+        showResult: bool = True,
+    ) -> None:
         """
         Run the processing algorithm.
         Can be used without GUI widget.
@@ -306,7 +323,9 @@ class TemplateKeyLogic(ScriptedLoadableModuleLogic):
             "ThresholdValue": imageThreshold,
             "ThresholdType": "Above" if invert else "Below",
         }
-        cliNode = slicer.cli.run(slicer.modules.thresholdscalarvolume, None, cliParams, wait_for_completion=True, update_display=showResult)
+        cliNode = slicer.cli.run(
+            slicer.modules.thresholdscalarvolume, None, cliParams, wait_for_completion=True, update_display=showResult
+        )
         # We don't need the CLI module node anymore, remove it to not clutter the scene with it
         slicer.mrmlScene.RemoveNode(cliNode)
 

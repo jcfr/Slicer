@@ -13,30 +13,67 @@ class LabelmapSegmentStatisticsPlugin(SegmentStatisticsPluginBase):
     def __init__(self):
         super().__init__()
         self.name = "Labelmap"
-        self.obbKeys = ["obb_origin_ras", "obb_diameter_mm", "obb_direction_ras_x", "obb_direction_ras_y", "obb_direction_ras_z"]
+        self.obbKeys = [
+            "obb_origin_ras",
+            "obb_diameter_mm",
+            "obb_direction_ras_x",
+            "obb_direction_ras_y",
+            "obb_direction_ras_z",
+        ]
         self.principalAxisKeys = ["principal_axis_x", "principal_axis_y", "principal_axis_z"]
-        self.shapeKeys = [
-            "centroid_ras", "feret_diameter_mm", "surface_area_mm2", "roundness", "flatness", "elongation",
-            "principal_moments",
-        ] + self.principalAxisKeys + self.obbKeys
+        self.shapeKeys = (
+            [
+                "centroid_ras",
+                "feret_diameter_mm",
+                "surface_area_mm2",
+                "roundness",
+                "flatness",
+                "elongation",
+                "principal_moments",
+            ]
+            + self.principalAxisKeys
+            + self.obbKeys
+        )
 
-        self.defaultKeys = ["voxel_count", "volume_mm3", "volume_cm3"]  # Don't calculate label shape statistics by default since they take longer to compute
+        self.defaultKeys = [
+            "voxel_count",
+            "volume_mm3",
+            "volume_cm3",
+        ]  # Don't calculate label shape statistics by default since they take longer to compute
         self.keys = self.defaultKeys + self.shapeKeys
         self.keyToShapeStatisticNames = {
-            "centroid_ras": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(vtkITK.vtkITKLabelShapeStatistics.Centroid),
-            "feret_diameter_mm": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(vtkITK.vtkITKLabelShapeStatistics.FeretDiameter),
-            "surface_area_mm2": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(vtkITK.vtkITKLabelShapeStatistics.Perimeter),
-            "roundness": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(vtkITK.vtkITKLabelShapeStatistics.Roundness),
-            "flatness": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(vtkITK.vtkITKLabelShapeStatistics.Flatness),
-            "elongation": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(vtkITK.vtkITKLabelShapeStatistics.Elongation),
-            "oriented_bounding_box": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(vtkITK.vtkITKLabelShapeStatistics.OrientedBoundingBox),
+            "centroid_ras": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(
+                vtkITK.vtkITKLabelShapeStatistics.Centroid
+            ),
+            "feret_diameter_mm": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(
+                vtkITK.vtkITKLabelShapeStatistics.FeretDiameter
+            ),
+            "surface_area_mm2": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(
+                vtkITK.vtkITKLabelShapeStatistics.Perimeter
+            ),
+            "roundness": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(
+                vtkITK.vtkITKLabelShapeStatistics.Roundness
+            ),
+            "flatness": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(
+                vtkITK.vtkITKLabelShapeStatistics.Flatness
+            ),
+            "elongation": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(
+                vtkITK.vtkITKLabelShapeStatistics.Elongation
+            ),
+            "oriented_bounding_box": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(
+                vtkITK.vtkITKLabelShapeStatistics.OrientedBoundingBox
+            ),
             "obb_origin_ras": "OrientedBoundingBoxOrigin",
             "obb_diameter_mm": "OrientedBoundingBoxSize",
             "obb_direction_ras_x": "OrientedBoundingBoxDirectionX",
             "obb_direction_ras_y": "OrientedBoundingBoxDirectionY",
             "obb_direction_ras_z": "OrientedBoundingBoxDirectionZ",
-            "principal_moments": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(vtkITK.vtkITKLabelShapeStatistics.PrincipalMoments),
-            "principal_axes": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(vtkITK.vtkITKLabelShapeStatistics.PrincipalAxes),
+            "principal_moments": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(
+                vtkITK.vtkITKLabelShapeStatistics.PrincipalMoments
+            ),
+            "principal_axes": vtkITK.vtkITKLabelShapeStatistics.GetShapeStatisticAsString(
+                vtkITK.vtkITKLabelShapeStatistics.PrincipalAxes
+            ),
             "principal_axis_x": "PrincipalAxisX",
             "principal_axis_y": "PrincipalAxisY",
             "principal_axis_z": "PrincipalAxisZ",
@@ -54,15 +91,14 @@ class LabelmapSegmentStatisticsPlugin(SegmentStatisticsPluginBase):
             return {}
 
         containsLabelmapRepresentation = segmentationNode.GetSegmentation().ContainsRepresentation(
-            vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName())
+            vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName()
+        )
         if not containsLabelmapRepresentation:
             return {}
 
         segmentLabelmap = slicer.vtkOrientedImageData()
         segmentationNode.GetBinaryLabelmapRepresentation(segmentID, segmentLabelmap)
-        if (not segmentLabelmap
-            or not segmentLabelmap.GetPointData()
-                or not segmentLabelmap.GetPointData().GetScalars()):
+        if not segmentLabelmap or not segmentLabelmap.GetPointData() or not segmentLabelmap.GetPointData().GetScalars():
             # No input label data
             return {}
 
@@ -160,12 +196,16 @@ class LabelmapSegmentStatisticsPlugin(SegmentStatisticsPluginBase):
             shapeStat.SetInputData(thresh.GetOutput())
             shapeStat.SetDirections(directions)
             for shapeKey in statFilterOptions:
-                shapeStat.SetComputeShapeStatistic(self.keyToShapeStatisticNames[shapeKey], shapeKey in requestedOptions)
+                shapeStat.SetComputeShapeStatistic(
+                    self.keyToShapeStatisticNames[shapeKey], shapeKey in requestedOptions
+                )
             shapeStat.Update()
 
             # If segmentation node is transformed, apply that transform to get RAS coordinates
             transformSegmentToRas = vtk.vtkGeneralTransform()
-            slicer.vtkMRMLTransformNode.GetTransformBetweenNodes(segmentationNode.GetParentTransformNode(), None, transformSegmentToRas)
+            slicer.vtkMRMLTransformNode.GetTransformBetweenNodes(
+                segmentationNode.GetParentTransformNode(), None, transformSegmentToRas
+            )
 
             statTable = shapeStat.GetOutput()
             if "centroid_ras" in requestedKeys:
@@ -399,88 +439,143 @@ class LabelmapSegmentStatisticsPlugin(SegmentStatisticsPluginBase):
         # DCM has "Number of needles" etc., so probably "Number of voxels"
         # should be added too. Need to discuss with @dclunie. For now, a
         # QIICR private scheme placeholder.
-        info["voxel_count"] = \
-            self.createMeasurementInfo(name="Voxel count", description=_("Number of voxels"), units="voxels",
-                                       quantityDicomCode=self.createCodedEntry("nvoxels", "99QIICR", _("Number of voxels"), True),
-                                       unitsDicomCode=self.createCodedEntry("voxels", "UCUM", _("voxels"), True))
+        info["voxel_count"] = self.createMeasurementInfo(
+            name="Voxel count",
+            description=_("Number of voxels"),
+            units="voxels",
+            quantityDicomCode=self.createCodedEntry("nvoxels", "99QIICR", _("Number of voxels"), True),
+            unitsDicomCode=self.createCodedEntry("voxels", "UCUM", _("voxels"), True),
+        )
 
-        info["volume_mm3"] = \
-            self.createMeasurementInfo(name="Volume mm3", description=_("Volume in mm3"), units="mm3",
-                                       quantityDicomCode=self.createCodedEntry("118565006", "SCT", _("Volume"), True),
-                                       unitsDicomCode=self.createCodedEntry("mm3", "UCUM", _("cubic millimeter"), True))
+        info["volume_mm3"] = self.createMeasurementInfo(
+            name="Volume mm3",
+            description=_("Volume in mm3"),
+            units="mm3",
+            quantityDicomCode=self.createCodedEntry("118565006", "SCT", _("Volume"), True),
+            unitsDicomCode=self.createCodedEntry("mm3", "UCUM", _("cubic millimeter"), True),
+        )
 
-        info["volume_cm3"] = \
-            self.createMeasurementInfo(name="Volume cm3", description=_("Volume in cm3"), units="cm3",
-                                       quantityDicomCode=self.createCodedEntry("118565006", "SCT", _("Volume"), True),
-                                       unitsDicomCode=self.createCodedEntry("cm3", "UCUM", _("cubic centimeter"), True),
-                                       measurementMethodDicomCode=self.createCodedEntry("126030", "DCM",
-                                                                                        _("Sum of segmented voxel volumes"), True))
+        info["volume_cm3"] = self.createMeasurementInfo(
+            name="Volume cm3",
+            description=_("Volume in cm3"),
+            units="cm3",
+            quantityDicomCode=self.createCodedEntry("118565006", "SCT", _("Volume"), True),
+            unitsDicomCode=self.createCodedEntry("cm3", "UCUM", _("cubic centimeter"), True),
+            measurementMethodDicomCode=self.createCodedEntry(
+                "126030", "DCM", _("Sum of segmented voxel volumes"), True
+            ),
+        )
 
-        info["centroid_ras"] = \
-            self.createMeasurementInfo(name="Centroid", description=_("Location of the centroid in RAS"), units="", componentNames=["r", "a", "s"])
+        info["centroid_ras"] = self.createMeasurementInfo(
+            name="Centroid", description=_("Location of the centroid in RAS"), units="", componentNames=["r", "a", "s"]
+        )
 
-        info["feret_diameter_mm"] = \
-            self.createMeasurementInfo(name="Feret diameter mm", description=_("Feret diameter in mm"), units="mm")
+        info["feret_diameter_mm"] = self.createMeasurementInfo(
+            name="Feret diameter mm", description=_("Feret diameter in mm"), units="mm"
+        )
 
-        info["surface_area_mm2"] = \
-            self.createMeasurementInfo(name="Surface mm2", description=_("Surface area in mm2"), units="mm2",
-                                       quantityDicomCode=self.createCodedEntry("000247", "99CHEMINF", _("Surface area"), True),
-                                       unitsDicomCode=self.createCodedEntry("mm2", "UCUM", _("square millimeter"), True))
+        info["surface_area_mm2"] = self.createMeasurementInfo(
+            name="Surface mm2",
+            description=_("Surface area in mm2"),
+            units="mm2",
+            quantityDicomCode=self.createCodedEntry("000247", "99CHEMINF", _("Surface area"), True),
+            unitsDicomCode=self.createCodedEntry("mm2", "UCUM", _("square millimeter"), True),
+        )
 
-        info["roundness"] = \
-            self.createMeasurementInfo(name="Roundness",
-                                       description=_("Segment roundness. Calculated from ratio of the area of the hypersphere by the actual area. "
-                                                     "Value of 1 represents a spherical structure"), units="")
+        info["roundness"] = self.createMeasurementInfo(
+            name="Roundness",
+            description=_(
+                "Segment roundness. Calculated from ratio of the area of the hypersphere by the actual area. "
+                "Value of 1 represents a spherical structure"
+            ),
+            units="",
+        )
 
-        info["flatness"] = \
-            self.createMeasurementInfo(name="Flatness",
-                                       description=_("Segment flatness. Calculated from square root of the ratio of the second smallest principal moment by "
-                                                     "the smallest. Value of 0 represents a flat structure.") + " ( https://hdl.handle.net/1926/584 )",
-                                       units="")
+        info["flatness"] = self.createMeasurementInfo(
+            name="Flatness",
+            description=_(
+                "Segment flatness. Calculated from square root of the ratio of the second smallest principal moment by "
+                "the smallest. Value of 0 represents a flat structure."
+            )
+            + " ( https://hdl.handle.net/1926/584 )",
+            units="",
+        )
 
-        info["elongation"] = \
-            self.createMeasurementInfo(name="Elongation",
-                                       description=_("Segment elongation. Calculated from square root of the ratio of the second largest principal moment "
-                                                     "by the second smallest.") + " ( https://hdl.handle.net/1926/584 )",
-                                       units="")
+        info["elongation"] = self.createMeasurementInfo(
+            name="Elongation",
+            description=_(
+                "Segment elongation. Calculated from square root of the ratio of the second largest principal moment "
+                "by the second smallest."
+            )
+            + " ( https://hdl.handle.net/1926/584 )",
+            units="",
+        )
 
-        info["oriented_bounding_box"] = \
-            self.createMeasurementInfo(name="Oriented bounding box", description=_("Oriented bounding box"), units="")
+        info["oriented_bounding_box"] = self.createMeasurementInfo(
+            name="Oriented bounding box", description=_("Oriented bounding box"), units=""
+        )
 
-        info["obb_origin_ras"] = \
-            self.createMeasurementInfo(name="OBB origin", description=_("Oriented bounding box origin in RAS coordinates"), units="",
-                                       componentNames=["r", "a", "s"])
+        info["obb_origin_ras"] = self.createMeasurementInfo(
+            name="OBB origin",
+            description=_("Oriented bounding box origin in RAS coordinates"),
+            units="",
+            componentNames=["r", "a", "s"],
+        )
 
-        info["obb_diameter_mm"] = \
-            self.createMeasurementInfo(name="OBB diameter", description=_("Oriented bounding box diameter in mm"), units="mm",
-                                       componentNames=["x", "y", "z"])
+        info["obb_diameter_mm"] = self.createMeasurementInfo(
+            name="OBB diameter",
+            description=_("Oriented bounding box diameter in mm"),
+            units="mm",
+            componentNames=["x", "y", "z"],
+        )
 
-        info["obb_direction_ras_x"] = \
-            self.createMeasurementInfo(name="OBB X direction", description=_("Oriented bounding box X direction in RAS coordinates"), units="",
-                                       componentNames=["r", "a", "s"])
+        info["obb_direction_ras_x"] = self.createMeasurementInfo(
+            name="OBB X direction",
+            description=_("Oriented bounding box X direction in RAS coordinates"),
+            units="",
+            componentNames=["r", "a", "s"],
+        )
 
-        info["obb_direction_ras_y"] = \
-            self.createMeasurementInfo(name="OBB Y direction", description=_("Oriented bounding box Y direction in RAS coordinates"), units="",
-                                       componentNames=["r", "a", "s"])
+        info["obb_direction_ras_y"] = self.createMeasurementInfo(
+            name="OBB Y direction",
+            description=_("Oriented bounding box Y direction in RAS coordinates"),
+            units="",
+            componentNames=["r", "a", "s"],
+        )
 
-        info["obb_direction_ras_z"] = \
-            self.createMeasurementInfo(name="OBB Z direction", description=_("Oriented bounding box Z direction in RAS coordinates"), units="",
-                                       componentNames=["r", "a", "s"])
+        info["obb_direction_ras_z"] = self.createMeasurementInfo(
+            name="OBB Z direction",
+            description=_("Oriented bounding box Z direction in RAS coordinates"),
+            units="",
+            componentNames=["r", "a", "s"],
+        )
 
-        info["principal_moments"] = \
-            self.createMeasurementInfo(name="Principal moments", description=_("Principal moments of inertia for x, y and z axes"),
-                                       units="", componentNames=["x", "y", "z"])
+        info["principal_moments"] = self.createMeasurementInfo(
+            name="Principal moments",
+            description=_("Principal moments of inertia for x, y and z axes"),
+            units="",
+            componentNames=["x", "y", "z"],
+        )
 
-        info["principal_axis_x"] = \
-            self.createMeasurementInfo(name="Principal X axis", description=_("Principal X axis of rotation in RAS coordinates"), units="",
-                                       componentNames=["r", "a", "s"])
+        info["principal_axis_x"] = self.createMeasurementInfo(
+            name="Principal X axis",
+            description=_("Principal X axis of rotation in RAS coordinates"),
+            units="",
+            componentNames=["r", "a", "s"],
+        )
 
-        info["principal_axis_y"] = \
-            self.createMeasurementInfo(name="Principal Y axis", description=_("Principal Y axis of rotation in RAS coordinates"), units="",
-                                       componentNames=["r", "a", "s"])
+        info["principal_axis_y"] = self.createMeasurementInfo(
+            name="Principal Y axis",
+            description=_("Principal Y axis of rotation in RAS coordinates"),
+            units="",
+            componentNames=["r", "a", "s"],
+        )
 
-        info["principal_axis_z"] = \
-            self.createMeasurementInfo(name="Principal Z axis", description=_("Principal Z axis of rotation in RAS coordinates"), units="",
-                                       componentNames=["r", "a", "s"])
+        info["principal_axis_z"] = self.createMeasurementInfo(
+            name="Principal Z axis",
+            description=_("Principal Z axis of rotation in RAS coordinates"),
+            units="",
+            componentNames=["r", "a", "s"],
+        )
 
         return info[key] if key in info else None

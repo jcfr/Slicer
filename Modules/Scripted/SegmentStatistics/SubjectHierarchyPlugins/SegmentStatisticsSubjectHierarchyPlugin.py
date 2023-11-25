@@ -96,7 +96,9 @@ class SegmentStatisticsSubjectHierarchyPlugin(AbstractScriptedSubjectHierarchyPl
         statisticsWidget.segmentationSelector.setCurrentNode(segmentationNode)
 
         # Get source volume from segmentation
-        sourceVolume = segmentationNode.GetNodeReference(slicer.vtkMRMLSegmentationNode.GetReferenceImageGeometryReferenceRole())
+        sourceVolume = segmentationNode.GetNodeReference(
+            slicer.vtkMRMLSegmentationNode.GetReferenceImageGeometryReferenceRole()
+        )
         if sourceVolume is not None:
             statisticsWidget.scalarSelector.setCurrentNode(sourceVolume)
 

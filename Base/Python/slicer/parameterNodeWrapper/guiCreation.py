@@ -223,8 +223,12 @@ class PathGuiCreator(GuiCreator):
     @staticmethod
     def representationValue(datatype) -> int:
         if unannotatedType(datatype) in (
-            pathlib.Path, pathlib.PosixPath, pathlib.WindowsPath,
-            pathlib.PurePath, pathlib.PurePosixPath, pathlib.PureWindowsPath,
+            pathlib.Path,
+            pathlib.PosixPath,
+            pathlib.WindowsPath,
+            pathlib.PurePath,
+            pathlib.PurePosixPath,
+            pathlib.PureWindowsPath,
         ):
             return CanRepresentButIgnoringValidators
         return CannotRepresent

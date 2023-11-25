@@ -81,17 +81,24 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
         readersComboBox = qt.QComboBox()
         for approach in DICOMScalarVolumePluginClass.readerApproaches():
             readersComboBox.addItem(approach)
-        readersComboBox.toolTip = _("Preferred back end.  Archetype was used by default in Slicer before June of 2017."
-                                    " Change this setting if data that previously loaded stops working (and report an issue).")
+        readersComboBox.toolTip = _(
+            "Preferred back end.  Archetype was used by default in Slicer before June of 2017."
+            " Change this setting if data that previously loaded stops working (and report an issue)."
+        )
         formLayout.addRow(_("DICOM reader approach:"), readersComboBox)
         panel.registerProperty(
-            "DICOM/ScalarVolume/ReaderApproach", readersComboBox,
-            "currentIndex", str(qt.SIGNAL("currentIndexChanged(int)")))
+            "DICOM/ScalarVolume/ReaderApproach",
+            readersComboBox,
+            "currentIndex",
+            str(qt.SIGNAL("currentIndexChanged(int)")),
+        )
 
         importFormatsComboBox = ctk.ctkComboBox()
-        importFormatsComboBox.toolTip = _("Enable adding non-linear transform to regularize images acquired irregular geometry:"
-                                          " non-rectilinear grid (such as tilted gantry CT acquisitions) and non-uniform slice spacing."
-                                          " If no regularization is applied then image may appear distorted if it was acquired with irregular geometry.")
+        importFormatsComboBox.toolTip = _(
+            "Enable adding non-linear transform to regularize images acquired irregular geometry:"
+            " non-rectilinear grid (such as tilted gantry CT acquisitions) and non-uniform slice spacing."
+            " If no regularization is applied then image may appear distorted if it was acquired with irregular geometry."
+        )
 
         importFormatsComboBox.addItem(_("default (apply regularization transform)"), "default")
         importFormatsComboBox.addItem(_("none"), "none")
@@ -101,22 +108,34 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
         importFormatsComboBox.currentIndex = 0
         formLayout.addRow(_("Acquisition geometry regularization:"), importFormatsComboBox)
         panel.registerProperty(
-            "DICOM/ScalarVolume/AcquisitionGeometryRegularization", importFormatsComboBox,
-            "currentUserDataAsString", str(qt.SIGNAL("currentIndexChanged(int)")),
-            _("DICOM examination settings"), ctk.ctkSettingsPanel.OptionRequireRestart)
+            "DICOM/ScalarVolume/AcquisitionGeometryRegularization",
+            importFormatsComboBox,
+            "currentUserDataAsString",
+            str(qt.SIGNAL("currentIndexChanged(int)")),
+            _("DICOM examination settings"),
+            ctk.ctkSettingsPanel.OptionRequireRestart,
+        )
         # DICOM examination settings are cached so we need to restart to make sure changes take effect
 
         allowLoadingByTimeCheckBox = qt.QCheckBox()
-        allowLoadingByTimeCheckBox.toolTip = _("Offer loading of individual slices or group of slices"
-                                               " that were acquired at a specific time (content or trigger time)."
-                                               " If this option is enabled then a large number of loadable items may be"
-                                               " displayed in the Advanced section of DICOM browser.")
+        allowLoadingByTimeCheckBox.toolTip = _(
+            "Offer loading of individual slices or group of slices"
+            " that were acquired at a specific time (content or trigger time)."
+            " If this option is enabled then a large number of loadable items may be"
+            " displayed in the Advanced section of DICOM browser."
+        )
         formLayout.addRow(_("Allow loading subseries by time:"), allowLoadingByTimeCheckBox)
-        allowLoadingByTimeMapper = ctk.ctkBooleanMapper(allowLoadingByTimeCheckBox, "checked", str(qt.SIGNAL("toggled(bool)")))
+        allowLoadingByTimeMapper = ctk.ctkBooleanMapper(
+            allowLoadingByTimeCheckBox, "checked", str(qt.SIGNAL("toggled(bool)"))
+        )
         panel.registerProperty(
-            "DICOM/ScalarVolume/AllowLoadingByTime", allowLoadingByTimeMapper,
-            "valueAsInt", str(qt.SIGNAL("valueAsIntChanged(int)")),
-            _("DICOM examination settings"), ctk.ctkSettingsPanel.OptionRequireRestart)
+            "DICOM/ScalarVolume/AllowLoadingByTime",
+            allowLoadingByTimeMapper,
+            "valueAsInt",
+            str(qt.SIGNAL("valueAsIntChanged(int)")),
+            _("DICOM examination settings"),
+            ctk.ctkSettingsPanel.OptionRequireRestart,
+        )
         # DICOM examination settings are cached so we need to restart to make sure changes take effect
 
     @staticmethod
@@ -133,7 +152,8 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
         image2 = volumeNode2.GetImageData()
         if image1.GetScalarType() != image2.GetScalarType():
             comparison += _("First volume is {imageScalarType1}, but second is {imageScalarType2}").format(
-                imageScalarType1=image1.GetScalarTypeAsString(), imageScalarType2=image2.GetScalarTypeAsString())
+                imageScalarType1=image1.GetScalarTypeAsString(), imageScalarType2=image2.GetScalarTypeAsString()
+            )
         array1 = slicer.util.array(volumeNode1.GetID())
         array2 = slicer.util.array(volumeNode2.GetID())
         if not numpy.all(array1 == array2):
@@ -197,7 +217,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
         allFilesLoadable = DICOMLoadable()
         allFilesLoadable.files = files
         allFilesLoadable.name = self.cleanNodeName(seriesName)
-        allFilesLoadable.tooltip = _("{count} files, first file: {filename}").format(count=len(allFilesLoadable.files), filename=allFilesLoadable.files[0])
+        allFilesLoadable.tooltip = _("{count} files, first file: {filename}").format(
+            count=len(allFilesLoadable.files), filename=allFilesLoadable.files[0]
+        )
         allFilesLoadable.selected = True
         # add it to the list of loadables later, if pixel data is available in at least one file
 
@@ -304,7 +326,8 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
                         loadable.name = seriesName + f" - {tag} {value}"
                     loadable.name = self.cleanNodeName(loadable.name)
                     loadable.tooltip = _("{count} files, grouped by {tag} = {value}. First file: {filename}").format(
-                        count=len(loadable.files), tag=tag, value=value, filename=loadable.files[0])
+                        count=len(loadable.files), tag=tag, value=value, filename=loadable.files[0]
+                    )
                     loadable.selected = False
                     loadables.append(loadable)
                     if len(subseriesValues[tag]) == 2:
@@ -325,14 +348,20 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
                 if slicer.dicomDatabase.fileValue(file, self.tags["sopClassUID"]) == "1.2.840.10008.5.1.4.1.1.66.4":
                     excludedLoadable = True
                     if "DICOMSegmentationPlugin" not in slicer.modules.dicomPlugins:
-                        logging.warning("Please install Quantitative Reporting extension to enable loading of DICOM Segmentation objects")
+                        logging.warning(
+                            "Please install Quantitative Reporting extension to enable loading of DICOM Segmentation objects"
+                        )
                 elif slicer.dicomDatabase.fileValue(file, self.tags["sopClassUID"]) == "1.2.840.10008.5.1.4.1.1.481.3":
                     excludedLoadable = True
                     if "DicomRtImportExportPlugin" not in slicer.modules.dicomPlugins:
-                        logging.warning("Please install SlicerRT extension to enable loading of DICOM RT Structure Set objects")
+                        logging.warning(
+                            "Please install SlicerRT extension to enable loading of DICOM RT Structure Set objects"
+                        )
             if len(newFiles) > 0 and not excludedLoadable:
                 loadable.files = newFiles
-                loadable.grayscale = ("MONOCHROME" in slicer.dicomDatabase.fileValue(newFiles[0], self.tags["photometricInterpretation"]))
+                loadable.grayscale = "MONOCHROME" in slicer.dicomDatabase.fileValue(
+                    newFiles[0], self.tags["photometricInterpretation"]
+                )
                 newLoadables.append(loadable)
             elif excludedLoadable:
                 continue
@@ -340,9 +369,13 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
                 # here all files in have no pixel data, so they might be
                 # secondary capture images which will read, so let's pass
                 # them through with a warning and low confidence
-                loadable.warning += _("There is no pixel data attribute for the DICOM objects, but they might be readable as secondary capture images.")
+                loadable.warning += _(
+                    "There is no pixel data attribute for the DICOM objects, but they might be readable as secondary capture images."
+                )
                 loadable.confidence = 0.2
-                loadable.grayscale = ("MONOCHROME" in slicer.dicomDatabase.fileValue(loadable.files[0], self.tags["photometricInterpretation"]))
+                loadable.grayscale = "MONOCHROME" in slicer.dicomDatabase.fileValue(
+                    loadable.files[0], self.tags["photometricInterpretation"]
+                )
                 newLoadables.append(loadable)
         loadables = newLoadables
 
@@ -352,7 +385,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
         # then adjust confidence values based on warnings
         #
         for loadable in loadables:
-            loadable.files, distances, loadable.warning = DICOMUtils.getSortedImageFiles(loadable.files, self.spacingEpsilon)
+            loadable.files, distances, loadable.warning = DICOMUtils.getSortedImageFiles(
+                loadable.files, self.spacingEpsilon
+            )
 
         loadablesBetterThanAllFiles = []
         if allFilesLoadable.warning != "":
@@ -522,7 +557,14 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
                 windowWidth = float(slicer.dicomDatabase.fileValue(file, self.tags["windowWidth"]))
                 displayNode = volumeNode.GetDisplayNode()
                 if displayNode:
-                    logging.info("Window/level found in DICOM tags (center=" + str(windowCenter) + ", width=" + str(windowWidth) + ") has been applied to volume " + volumeNode.GetName())
+                    logging.info(
+                        "Window/level found in DICOM tags (center="
+                        + str(windowCenter)
+                        + ", width="
+                        + str(windowWidth)
+                        + ") has been applied to volume "
+                        + volumeNode.GetName()
+                    )
                     displayNode.AddWindowLevelPreset(windowWidth, windowCenter)
                     displayNode.SetWindowLevelFromPreset(0)
                 else:
@@ -537,7 +579,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
             if modality == "PT":
                 displayNode = volumeNode.GetDisplayNode()
                 if displayNode:
-                    displayNode.SetAndObserveColorNodeID(slicer.modules.colors.logic().GetPETColorNodeID(slicer.vtkMRMLPETProceduralColorNode.PETheat))
+                    displayNode.SetAndObserveColorNodeID(
+                        slicer.modules.colors.logic().GetPETColorNodeID(slicer.vtkMRMLPETProceduralColorNode.PETheat)
+                    )
 
             # initialize quantity and units codes
             (quantity, units) = self.mapSOPClassUIDToDICOMQuantityAndUnits(sopClassUID)
@@ -552,7 +596,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
         self.setVolumeNodeProperties(volumeNode, loadable)
         volumeNode = self.loadFilesWithSeriesReader("GDCM", loadable.files, loadable.name + "-gdcm", loadable.grayscale)
         self.setVolumeNodeProperties(volumeNode, loadable)
-        volumeNode = self.loadFilesWithSeriesReader("DCMTK", loadable.files, loadable.name + "-dcmtk", loadable.grayscale)
+        volumeNode = self.loadFilesWithSeriesReader(
+            "DCMTK", loadable.files, loadable.name + "-dcmtk", loadable.grayscale
+        )
         self.setVolumeNodeProperties(volumeNode, loadable)
 
         return volumeNode
@@ -571,7 +617,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
             if not volumeNode:
                 volumeNode = self.loadFilesWithSeriesReader("DCMTK", loadable.files, loadable.name, loadable.grayscale)
         else:
-            volumeNode = self.loadFilesWithSeriesReader(readerApproach, loadable.files, loadable.name, loadable.grayscale)
+            volumeNode = self.loadFilesWithSeriesReader(
+                readerApproach, loadable.files, loadable.name, loadable.grayscale
+            )
         # third, transfer data from the dicom instances into the appropriate Slicer data containers
         self.setVolumeNodeProperties(volumeNode, loadable)
 
@@ -582,9 +630,11 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
 
         if volumeNode:
             self.acquisitionModeling = self.AcquisitionModeling()
-            self.acquisitionModeling.createAcquisitionTransform(volumeNode,
-                                                                addAcquisitionTransformIfNeeded=self.acquisitionGeometryRegularizationEnabled(),
-                                                                hardenAcquisitionTransform=self.hardenAcquisitionGeometryRegularization())
+            self.acquisitionModeling.createAcquisitionTransform(
+                volumeNode,
+                addAcquisitionTransformIfNeeded=self.acquisitionGeometryRegularizationEnabled(),
+                hardenAcquisitionTransform=self.hardenAcquisitionGeometryRegularization(),
+            )
 
         return volumeNode
 
@@ -608,7 +658,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
         exportable.confidence = 0.5  # There could be more specialized volume types
 
         # Define required tags and default values
-        exportable.setTag("SeriesDescription", "No series description")  # no_tr (all these are DICOM tag names, not displayed to user)
+        exportable.setTag(
+            "SeriesDescription", "No series description"
+        )  # no_tr (all these are DICOM tag names, not displayed to user)
         exportable.setTag("Modality", "CT")
         exportable.setTag("Manufacturer", "Unknown manufacturer")
         exportable.setTag("Model", "Unknown model")
@@ -635,7 +687,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
                 return error
             volumeNode = shNode.GetItemDataNode(exportable.subjectHierarchyItemID)
             if volumeNode is None or not volumeNode.IsA("vtkMRMLScalarVolumeNode"):
-                error = _("Series '{itemName}' cannot be exported").format(itemName=shNode.GetItemName(exportable.subjectHierarchyItemID))
+                error = _("Series '{itemName}' cannot be exported").format(
+                    itemName=shNode.GetItemName(exportable.subjectHierarchyItemID)
+                )
                 logging.error(error)
                 return error
 
@@ -665,13 +719,19 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
             tags = {}
             tags["Patient Name"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientNameTagName())
             tags["Patient ID"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientIDTagName())
-            tags["Patient Birth Date"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientBirthDateTagName())
+            tags["Patient Birth Date"] = exportable.tag(
+                slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientBirthDateTagName()
+            )
             tags["Patient Sex"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientSexTagName())
-            tags["Patient Comments"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientCommentsTagName())
+            tags["Patient Comments"] = exportable.tag(
+                slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientCommentsTagName()
+            )
             tags["Study ID"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyIDTagName())
             tags["Study Date"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyDateTagName())
             tags["Study Time"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyTimeTagName())
-            tags["Study Description"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyDescriptionTagName())
+            tags["Study Description"] = exportable.tag(
+                slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyDescriptionTagName()
+            )
             tags["Modality"] = exportable.tag("Modality")
             tags["Manufacturer"] = exportable.tag("Manufacturer")
             tags["Model"] = exportable.tag("Model")
@@ -720,7 +780,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
                     # This seriesInstanceUID is already found in the database
                     if len(seriesInstanceUID) > 25:
                         seriesInstanceUID = seriesInstanceUID[:20] + "..."
-                    error = _("A series already exists in the database by SeriesInstanceUID {seriesInstanceUID}.").format(seriesInstanceUID=seriesInstanceUID)
+                    error = _(
+                        "A series already exists in the database by SeriesInstanceUID {seriesInstanceUID}."
+                    ).format(seriesInstanceUID=seriesInstanceUID)
                     logging.error(error)
                     return error
 
@@ -758,8 +820,10 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
             columns, rows, slices = volumeNode.GetImageData().GetDimensions()
             cornerShape = (slices, 2, 2, 3)
             if not (sourceCorners.shape == cornerShape and targetCorners.shape == cornerShape):
-                raise Exception("Corner shapes do not match volume dimensions %s, %s, %s" %
-                                (sourceCorners.shape, targetCorners.shape, cornerShape))
+                raise Exception(
+                    "Corner shapes do not match volume dimensions %s, %s, %s"
+                    % (sourceCorners.shape, targetCorners.shape, cornerShape)
+                )
 
             # create the grid transform node
             gridTransform = slicer.vtkMRMLGridTransformNode()
@@ -793,7 +857,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
             for sliceIndex in range(slices):
                 for row in range(2):
                     for column in range(2):
-                        displacements[sliceIndex][row][column] = targetCorners[sliceIndex][row][column] - sourceCorners[sliceIndex][row][column]
+                        displacements[sliceIndex][row][column] = (
+                            targetCorners[sliceIndex][row][column] - sourceCorners[sliceIndex][row][column]
+                        )
 
         def sliceCornersFromDICOM(self, volumeNode):
             """Calculate the RAS position of each of the four corners of each
@@ -837,7 +903,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
                 position *= lpsToRAS
                 rowOrientation *= lpsToRAS
                 columnOrientation *= lpsToRAS
-                rowVector = columns * spacing[1] * rowOrientation  # dicom PixelSpacing is between rows first, then columns
+                rowVector = (
+                    columns * spacing[1] * rowOrientation
+                )  # dicom PixelSpacing is between rows first, then columns
                 columnVector = rows * spacing[0] * columnOrientation
                 # apply the transform to the four corners
                 for column in range(2):
@@ -858,7 +926,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
             for sliceIndex in range(slices):
                 for column in range(2):
                     for row in range(2):
-                        corners[sliceIndex][row][column] = numpy.array(ijkToRAS.MultiplyPoint([column * columns, row * rows, sliceIndex, 1])[:3])
+                        corners[sliceIndex][row][column] = numpy.array(
+                            ijkToRAS.MultiplyPoint([column * columns, row * rows, sliceIndex, 1])[:3]
+                        )
             return corners
 
         def cornersToWorld(self, volumeNode, corners):
@@ -874,7 +944,9 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
                         volumeNode.TransformPointToWorld(corners[slice, row, column], worldCorners[slice, row, column])
             return worldCorners
 
-        def createAcquisitionTransform(self, volumeNode, addAcquisitionTransformIfNeeded=True, hardenAcquisitionTransform=False):
+        def createAcquisitionTransform(
+            self, volumeNode, addAcquisitionTransformIfNeeded=True, hardenAcquisitionTransform=False
+        ):
             """Creates the actual transform if needed.
             Slice corners are cached for inspection by tests
             """
@@ -898,8 +970,10 @@ class DICOMScalarVolumePluginClass(DICOMPlugin):
                 else:
                     logging.warning(warningText + "  Regularization transform is not added, as the option is disabled.")
             elif maxError > 0 and maxError > self.zeroEpsilon:
-                logging.debug("Irregular volume geometry detected, but maximum error is within tolerance" +
-                              f" (maximum error of {maxError:g} mm, tolerance threshold is {self.cornerEpsilon:g} mm).")
+                logging.debug(
+                    "Irregular volume geometry detected, but maximum error is within tolerance"
+                    + f" (maximum error of {maxError:g} mm, tolerance threshold is {self.cornerEpsilon:g} mm)."
+                )
 
 
 #

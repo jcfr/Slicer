@@ -54,7 +54,12 @@ class JRC2013VisWidget(ScriptedLoadableModuleWidget):
         formLayout = qt.QFormLayout(testsCollapsibleButton)
 
         # test buttons
-        tests = (("Part 1: DICOM", self.onPart1DICOM), ("Part 2: Head", self.onPart2Head), ("Part 3: Liver", self.onPart3Liver), ("Part 4: Lung", self.onPart4Lung))
+        tests = (
+            ("Part 1: DICOM", self.onPart1DICOM),
+            ("Part 2: Head", self.onPart2Head),
+            ("Part 3: Liver", self.onPart3Liver),
+            ("Part 4: Lung", self.onPart4Lung),
+        )
         for text, slot in tests:
             testButton = qt.QPushButton(text)
             testButton.toolTip = "Run the test."
@@ -102,7 +107,8 @@ class JRC2013VisWidget(ScriptedLoadableModuleWidget):
                 SampleData.downloadFromURL(
                     fileNames="Dcmtk-db.zip",
                     uris=TESTING_DATA_URL + "MD5/6bfb01cf5ffb8e3af9b1c0c9556f0c6b45f0ec40305a9539ed7a9f0dcfe378e3",
-                    checksums="SHA256:6bfb01cf5ffb8e3af9b1c0c9556f0c6b45f0ec40305a9539ed7a9f0dcfe378e3")[0]
+                    checksums="SHA256:6bfb01cf5ffb8e3af9b1c0c9556f0c6b45f0ec40305a9539ed7a9f0dcfe378e3",
+                )[0]
 
             import subprocess
 
@@ -188,7 +194,8 @@ class JRC2013VisTest(ScriptedLoadableModuleTest):
         dicomFilesDirectory = SampleData.downloadFromURL(
             fileNames="Dcmtk-db.zip",
             uris=TESTING_DATA_URL + "MD5/7a43d121a51a631ab0df02071e5ba6ed",
-            checksums="MD5:7a43d121a51a631ab0df02071e5ba6ed")[0]
+            checksums="MD5:7a43d121a51a631ab0df02071e5ba6ed",
+        )[0]
 
         try:
             self.delayDisplay("Switching to temp database directory")
@@ -323,7 +330,8 @@ class JRC2013VisTest(ScriptedLoadableModuleTest):
             fileNames="3DHeadData.mrb",
             loadFiles=True,
             uris=TESTING_DATA_URL + "SHA256/e2c7944095dd92be7961bed37f3c8f49e6f40c7f31d4fe865753b6efddae7993",
-            checksums="SHA256:e2c7944095dd92be7961bed37f3c8f49e6f40c7f31d4fe865753b6efddae7993")
+            checksums="SHA256:e2c7944095dd92be7961bed37f3c8f49e6f40c7f31d4fe865753b6efddae7993",
+        )
         self.delayDisplay("Finished with download and loading\n")
 
         try:
@@ -397,7 +405,8 @@ class JRC2013VisTest(ScriptedLoadableModuleTest):
             fileNames="LiverData.mrb",
             loadFiles=True,
             uris=TESTING_DATA_URL + "SHA256/a39075d3e87f80bbf8eba1e0222ee68c60036e57c3db830db08f3022f424e221",
-            checksums="SHA256:a39075d3e87f80bbf8eba1e0222ee68c60036e57c3db830db08f3022f424e221")
+            checksums="SHA256:a39075d3e87f80bbf8eba1e0222ee68c60036e57c3db830db08f3022f424e221",
+        )
         self.delayDisplay("Finished with download and loading\n")
 
         try:
@@ -467,7 +476,8 @@ class JRC2013VisTest(ScriptedLoadableModuleTest):
             fileNames="LungData.mrb",
             loadFiles=True,
             uris=TESTING_DATA_URL + "SHA256/9da091065aa42edbba2d436a2ef21a093792e8a76455c28e5b80590b04f5a73e",
-            checksums="SHA256:9da091065aa42edbba2d436a2ef21a093792e8a76455c28e5b80590b04f5a73e")
+            checksums="SHA256:9da091065aa42edbba2d436a2ef21a093792e8a76455c28e5b80590b04f5a73e",
+        )
         self.delayDisplay("Finished with download and loading\n")
 
         try:

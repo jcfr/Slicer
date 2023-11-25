@@ -60,21 +60,31 @@ class SegmentationsModuleTest1(unittest.TestCase):
         self.secondSegmentationNode = None
         self.sphereSegment = None
         self.sphereSegmentName = "Sphere"
-        self.closedSurfaceReprName = vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName()
-        self.binaryLabelmapReprName = vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName()
+        self.closedSurfaceReprName = (
+            vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName()
+        )
+        self.binaryLabelmapReprName = (
+            vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName()
+        )
 
     # ------------------------------------------------------------------------------
     def TestSection_RetrieveInputData(self):
         try:
             slicer.util.downloadAndExtractArchive(
                 TESTING_DATA_URL + "SHA256/b902f635ef2059cd3b4ba854c000b388e4a9e817a651f28be05c22511a317ec7",
-                self.dataZipFilePath, self.segmentationsModuleTestDir,
-                checksum="SHA256:b902f635ef2059cd3b4ba854c000b388e4a9e817a651f28be05c22511a317ec7")
+                self.dataZipFilePath,
+                self.segmentationsModuleTestDir,
+                checksum="SHA256:b902f635ef2059cd3b4ba854c000b388e4a9e817a651f28be05c22511a317ec7",
+            )
 
-            numOfFilesInDataDirTest = len([name for name in os.listdir(self.dataDir) if os.path.isfile(self.dataDir + "/" + name)])
+            numOfFilesInDataDirTest = len(
+                [name for name in os.listdir(self.dataDir) if os.path.isfile(self.dataDir + "/" + name)]
+            )
             self.assertEqual(numOfFilesInDataDirTest, self.expectedNumOfFilesInDataDir)
             self.assertTrue(os.access(self.dataSegDir, os.F_OK))
-            numOfFilesInDataSegDirTest = len([name for name in os.listdir(self.dataSegDir) if os.path.isfile(self.dataSegDir + "/" + name)])
+            numOfFilesInDataSegDirTest = len(
+                [name for name in os.listdir(self.dataSegDir) if os.path.isfile(self.dataSegDir + "/" + name)]
+            )
             self.assertEqual(numOfFilesInDataSegDirTest, self.expectedNumOfFilesInDataSegDir)
 
         except Exception as e:
@@ -248,7 +258,9 @@ class SegmentationsModuleTest1(unittest.TestCase):
         self.inputSegmentationNode.GetSegmentation().CreateRepresentation(self.binaryLabelmapReprName)
 
         # Copy segment to input segmentation
-        self.inputSegmentationNode.GetSegmentation().CopySegmentFromSegmentation(self.secondSegmentationNode.GetSegmentation(), self.sphereSegmentName)
+        self.inputSegmentationNode.GetSegmentation().CopySegmentFromSegmentation(
+            self.secondSegmentationNode.GetSegmentation(), self.sphereSegmentName
+        )
         self.assertEqual(self.inputSegmentationNode.GetSegmentation().GetNumberOfSegments(), 3)
 
         # Check merged labelmap
@@ -275,7 +287,9 @@ class SegmentationsModuleTest1(unittest.TestCase):
         self.assertEqual(imageStatResult.GetScalarComponentAsDouble(1, 0, 0, 0), 39705288)
         self.assertEqual(imageStatResult.GetScalarComponentAsDouble(2, 0, 0, 0), 890883)
         self.assertEqual(imageStatResult.GetScalarComponentAsDouble(3, 0, 0, 0), 7545940)
-        self.assertEqual(imageStatResult.GetScalarComponentAsDouble(4, 0, 0, 0), 0)  # Built from color table and color four is removed in previous test section
+        self.assertEqual(
+            imageStatResult.GetScalarComponentAsDouble(4, 0, 0, 0), 0
+        )  # Built from color table and color four is removed in previous test section
 
     # ------------------------------------------------------------------------------
     def TestSection_ImportExportSegment(self):
@@ -301,7 +315,9 @@ class SegmentationsModuleTest1(unittest.TestCase):
         bodyLabelmapNode = slicer.vtkMRMLLabelMapVolumeNode()
         bodyLabelmapNode.SetName("BodyLabelmap")
         slicer.mrmlScene.AddNode(bodyLabelmapNode)
-        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentToRepresentationNode(bodySegment, bodyLabelmapNode)
+        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentToRepresentationNode(
+            bodySegment, bodyLabelmapNode
+        )
         self.assertTrue(result)
         bodyImageData = bodyLabelmapNode.GetImageData()
         self.assertIsNotNone(bodyImageData)
@@ -316,7 +332,9 @@ class SegmentationsModuleTest1(unittest.TestCase):
         allSegmentsLabelmapNode = slicer.vtkMRMLLabelMapVolumeNode()
         allSegmentsLabelmapNode.SetName("AllSegmentsLabelmap")
         slicer.mrmlScene.AddNode(allSegmentsLabelmapNode)
-        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportAllSegmentsToLabelmapNode(self.inputSegmentationNode, allSegmentsLabelmapNode)
+        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportAllSegmentsToLabelmapNode(
+            self.inputSegmentationNode, allSegmentsLabelmapNode
+        )
         self.assertTrue(result)
         allSegmentsImageData = allSegmentsLabelmapNode.GetImageData()
         self.assertIsNotNone(allSegmentsImageData)
@@ -343,17 +361,25 @@ class SegmentationsModuleTest1(unittest.TestCase):
         self.assertIsNotNone(modelSegment.GetRepresentation(self.closedSurfaceReprName))
 
         # Import multi-label labelmap to segmentation
-        multiLabelImportSegmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", "MultiLabelImport")
+        multiLabelImportSegmentationNode = slicer.mrmlScene.AddNewNodeByClass(
+            "vtkMRMLSegmentationNode", "MultiLabelImport"
+        )
         multiLabelImportSegmentationNode.GetSegmentation().SetSourceRepresentationName(self.binaryLabelmapReprName)
-        result = slicer.vtkSlicerSegmentationsModuleLogic.ImportLabelmapToSegmentationNode(allSegmentsLabelmapNode, multiLabelImportSegmentationNode)
+        result = slicer.vtkSlicerSegmentationsModuleLogic.ImportLabelmapToSegmentationNode(
+            allSegmentsLabelmapNode, multiLabelImportSegmentationNode
+        )
         self.assertTrue(result)
         self.assertEqual(multiLabelImportSegmentationNode.GetSegmentation().GetNumberOfSegments(), 3)
 
         # Import labelmap into single segment
-        singleLabelImportSegmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", "SingleLabelImport")
+        singleLabelImportSegmentationNode = slicer.mrmlScene.AddNewNodeByClass(
+            "vtkMRMLSegmentationNode", "SingleLabelImport"
+        )
         singleLabelImportSegmentationNode.GetSegmentation().SetSourceRepresentationName(self.binaryLabelmapReprName)
         # Should not import multi-label labelmap to segment
-        nullSegment = slicer.vtkSlicerSegmentationsModuleLogic.CreateSegmentFromLabelmapVolumeNode(allSegmentsLabelmapNode)
+        nullSegment = slicer.vtkSlicerSegmentationsModuleLogic.CreateSegmentFromLabelmapVolumeNode(
+            allSegmentsLabelmapNode
+        )
         self.assertIsNone(nullSegment)
         logging.info("(This error message is a result of testing an impossible scenario, it is supposed to appear)")
         # Make labelmap single-label and import again
@@ -366,7 +392,9 @@ class SegmentationsModuleTest1(unittest.TestCase):
         threshold.SetInputData(allSegmentsLabelmapNode.GetImageData())
         threshold.Update()
         allSegmentsLabelmapNode.GetImageData().ShallowCopy(threshold.GetOutput())
-        labelSegment = slicer.vtkSlicerSegmentationsModuleLogic.CreateSegmentFromLabelmapVolumeNode(allSegmentsLabelmapNode)
+        labelSegment = slicer.vtkSlicerSegmentationsModuleLogic.CreateSegmentFromLabelmapVolumeNode(
+            allSegmentsLabelmapNode
+        )
         labelSegment.UnRegister(None)  # Need to release ownership
         self.assertIsNotNone(labelSegment)
         self.assertIsNotNone(labelSegment.GetRepresentation(self.binaryLabelmapReprName))
@@ -389,7 +417,9 @@ class SegmentationsModuleTest1(unittest.TestCase):
         bodyModelNodeTransformed.SetName("BodyModelTransformed")
         slicer.mrmlScene.AddNode(bodyModelNodeTransformed)
         bodySegment = self.inputSegmentationNode.GetSegmentation().GetSegment(self.bodySegmentName)
-        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentToRepresentationNode(bodySegment, bodyModelNodeTransformed)
+        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentToRepresentationNode(
+            bodySegment, bodyModelNodeTransformed
+        )
         self.assertTrue(result)
         self.assertIsNotNone(bodyModelNodeTransformed.GetParentTransformNode())
 
@@ -397,7 +427,9 @@ class SegmentationsModuleTest1(unittest.TestCase):
         bodyLabelmapNodeTransformed = slicer.vtkMRMLLabelMapVolumeNode()
         bodyLabelmapNodeTransformed.SetName("BodyLabelmapTransformed")
         slicer.mrmlScene.AddNode(bodyLabelmapNodeTransformed)
-        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentToRepresentationNode(bodySegment, bodyLabelmapNodeTransformed)
+        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentToRepresentationNode(
+            bodySegment, bodyLabelmapNodeTransformed
+        )
         self.assertTrue(result)
         self.assertIsNotNone(bodyLabelmapNodeTransformed.GetParentTransformNode())
 
@@ -406,13 +438,21 @@ class SegmentationsModuleTest1(unittest.TestCase):
         slicer.mrmlScene.AddNode(modelTransformedImportSegmentationTransformNode)
         modelTransformedImportSegmentationTransform = vtk.vtkTransform()
         modelTransformedImportSegmentationTransform.Translate(-500.0, 0.0, 0.0)
-        modelTransformedImportSegmentationTransformNode.ApplyTransformMatrix(modelTransformedImportSegmentationTransform.GetMatrix())
+        modelTransformedImportSegmentationTransformNode.ApplyTransformMatrix(
+            modelTransformedImportSegmentationTransform.GetMatrix()
+        )
 
         # Import transformed model to segment in transformed segmentation
-        modelTransformedImportSegmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", "ModelImportTransformed")
+        modelTransformedImportSegmentationNode = slicer.mrmlScene.AddNewNodeByClass(
+            "vtkMRMLSegmentationNode", "ModelImportTransformed"
+        )
         modelTransformedImportSegmentationNode.GetSegmentation().SetSourceRepresentationName(self.closedSurfaceReprName)
-        modelTransformedImportSegmentationNode.SetAndObserveTransformNodeID(modelTransformedImportSegmentationTransformNode.GetID())
-        modelSegmentTranformed = slicer.vtkSlicerSegmentationsModuleLogic.CreateSegmentFromModelNode(bodyModelNodeTransformed, modelTransformedImportSegmentationNode)
+        modelTransformedImportSegmentationNode.SetAndObserveTransformNodeID(
+            modelTransformedImportSegmentationTransformNode.GetID()
+        )
+        modelSegmentTranformed = slicer.vtkSlicerSegmentationsModuleLogic.CreateSegmentFromModelNode(
+            bodyModelNodeTransformed, modelTransformedImportSegmentationNode
+        )
         modelSegmentTranformed.UnRegister(None)  # Need to release ownership
         self.assertIsNotNone(modelSegmentTranformed)
         modelSegmentTransformedPolyData = modelSegmentTranformed.GetRepresentation(self.closedSurfaceReprName)
@@ -439,7 +479,9 @@ class SegmentationsModuleTest1(unittest.TestCase):
         # Export body segment to volume node
         bodySegment = self.inputSegmentationNode.GetSegmentation().GetSegment(self.bodySegmentName)
         bodyLabelmapNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode", "BodyLabelmap")
-        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentToRepresentationNode(bodySegment, bodyLabelmapNode)
+        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentToRepresentationNode(
+            bodySegment, bodyLabelmapNode
+        )
         self.assertTrue(result)
         bodyImageData = bodyLabelmapNode.GetImageData()
         self.assertIsNotNone(bodyImageData)
@@ -453,7 +495,9 @@ class SegmentationsModuleTest1(unittest.TestCase):
         # Export tumor segment to volume node
         tumorSegment = self.inputSegmentationNode.GetSegmentation().GetSegment(self.tumorSegmentName)
         tumorLabelmapNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode", "TumorLabelmap")
-        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentToRepresentationNode(tumorSegment, tumorLabelmapNode)
+        result = slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentToRepresentationNode(
+            tumorSegment, tumorLabelmapNode
+        )
         self.assertTrue(result)
         tumorImageData = tumorLabelmapNode.GetImageData()
         self.assertIsNotNone(tumorImageData)
@@ -465,14 +509,18 @@ class SegmentationsModuleTest1(unittest.TestCase):
         self.assertEqual(imageStat.GetMax()[0], 1)
 
         # Import single-label labelmap to segmentation
-        singleLabelImportSegmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", "SingleLabelImport")
+        singleLabelImportSegmentationNode = slicer.mrmlScene.AddNewNodeByClass(
+            "vtkMRMLSegmentationNode", "SingleLabelImport"
+        )
         singleLabelImportSegmentationNode.GetSegmentation().SetSourceRepresentationName(self.binaryLabelmapReprName)
 
         bodySegmentID = singleLabelImportSegmentationNode.GetSegmentation().AddEmptySegment("BodyLabelmap")
         bodySegmentIDArray = vtk.vtkStringArray()
         bodySegmentIDArray.SetNumberOfValues(1)
         bodySegmentIDArray.SetValue(0, bodySegmentID)
-        result = slicer.vtkSlicerSegmentationsModuleLogic.ImportLabelmapToSegmentationNode(bodyLabelmapNode, singleLabelImportSegmentationNode, bodySegmentIDArray)
+        result = slicer.vtkSlicerSegmentationsModuleLogic.ImportLabelmapToSegmentationNode(
+            bodyLabelmapNode, singleLabelImportSegmentationNode, bodySegmentIDArray
+        )
 
         self.assertTrue(result)
         self.assertEqual(singleLabelImportSegmentationNode.GetSegmentation().GetNumberOfSegments(), 1)
@@ -481,7 +529,9 @@ class SegmentationsModuleTest1(unittest.TestCase):
         tumorSegmentIDArray = vtk.vtkStringArray()
         tumorSegmentIDArray.SetNumberOfValues(1)
         tumorSegmentIDArray.SetValue(0, tumorSegmentID)
-        result = slicer.vtkSlicerSegmentationsModuleLogic.ImportLabelmapToSegmentationNode(tumorLabelmapNode, singleLabelImportSegmentationNode, tumorSegmentIDArray)
+        result = slicer.vtkSlicerSegmentationsModuleLogic.ImportLabelmapToSegmentationNode(
+            tumorLabelmapNode, singleLabelImportSegmentationNode, tumorSegmentIDArray
+        )
         self.assertTrue(result)
         self.assertEqual(singleLabelImportSegmentationNode.GetSegmentation().GetNumberOfSegments(), 2)
 
@@ -542,7 +592,9 @@ class SegmentationsModuleTest1(unittest.TestCase):
         # Remove segment
         self.inputSegmentationNode.GetSegmentation().RemoveSegment(bodySegment)
         qt.QApplication.processEvents()
-        logging.info("(The error messages below are results of testing invalidity of objects, they are supposed to appear)")
+        logging.info(
+            "(The error messages below are results of testing invalidity of objects, they are supposed to appear)"
+        )
         self.assertEqual(shNode.GetItemChildWithName(segmentationShItemID, "Body"), 0)
         self.assertEqual(self.inputSegmentationNode.GetSegmentation().GetNumberOfSegments(), 2)
 

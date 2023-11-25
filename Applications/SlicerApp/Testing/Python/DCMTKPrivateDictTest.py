@@ -16,5 +16,4 @@ for line in dump:
             break
 
 if not found_private_tag:
-    raise Exception("Could not find 'DiffusionBFactor' "
-                    "private tag reading file '%s' using 'dcmdump' !" % dcmfile)
+    raise Exception("Could not find 'DiffusionBFactor' " "private tag reading file '%s' using 'dcmdump' !" % dcmfile)

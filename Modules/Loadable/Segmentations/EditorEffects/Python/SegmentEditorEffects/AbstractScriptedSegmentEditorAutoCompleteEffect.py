@@ -174,11 +174,18 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
                 # selected segment was deleted, cancel segmentation
                 logging.debug("Segmentation operation is cancelled because an input segment was deleted")
                 self.onCancel()
-                slicer.util.showStatusMessage(_("Segmentation operation is cancelled because an input segment was deleted."), 3000)
+                slicer.util.showStatusMessage(
+                    _("Segmentation operation is cancelled because an input segment was deleted."), 3000
+                )
                 return
-            segmentLabelmap = segment.GetRepresentation(vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName())
-            if segmentID in self.selectedSegmentModifiedTimes \
-                    and segmentLabelmap and segmentLabelmap.GetMTime() == self.selectedSegmentModifiedTimes[segmentID]:
+            segmentLabelmap = segment.GetRepresentation(
+                vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName()
+            )
+            if (
+                segmentID in self.selectedSegmentModifiedTimes
+                and segmentLabelmap
+                and segmentLabelmap.GetMTime() == self.selectedSegmentModifiedTimes[segmentID]
+            ):
                 # this segment has not changed since last update
                 continue
             if segmentLabelmap:
@@ -227,15 +234,20 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
                 vtkSegmentationCore.vtkSegmentation.SegmentAdded,
                 vtkSegmentationCore.vtkSegmentation.SegmentRemoved,
                 vtkSegmentationCore.vtkSegmentation.SegmentModified,
-                vtkSegmentationCore.vtkSegmentation.SourceRepresentationModified]
+                vtkSegmentationCore.vtkSegmentation.SourceRepresentationModified,
+            ]
             for eventId in observedEvents:
-                self.segmentationNodeObserverTags.append(self.observedSegmentation.AddObserver(eventId, self.onSegmentationModified))
+                self.segmentationNodeObserverTags.append(
+                    self.observedSegmentation.AddObserver(eventId, self.onSegmentationModified)
+                )
 
     def getPreviewNode(self):
         previewNode = self.scriptedEffect.parameterSetNode().GetNodeReference(ResultPreviewNodeReferenceRole)
-        if (previewNode
-                and self.scriptedEffect.parameterDefined("SegmentationResultPreviewOwnerEffect")
-                and self.scriptedEffect.parameter("SegmentationResultPreviewOwnerEffect") != self.scriptedEffect.name):
+        if (
+            previewNode
+            and self.scriptedEffect.parameterDefined("SegmentationResultPreviewOwnerEffect")
+            and self.scriptedEffect.parameter("SegmentationResultPreviewOwnerEffect") != self.scriptedEffect.name
+        ):
             # another effect owns this preview node
             return None
         return previewNode
@@ -283,7 +295,9 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
             return
         self.previewComputationInProgress = True
 
-        slicer.util.showStatusMessage(_("Running {effectName} auto-complete...").format(effectName=self.scriptedEffect.name), 2000)
+        slicer.util.showStatusMessage(
+            _("Running {effectName} auto-complete...").format(effectName=self.scriptedEffect.name), 2000
+        )
         try:
             with slicer.util.tryWithErrorDisplay(_("Segmentation operation failed:"), waitCursor=True):
                 self.preview()
@@ -321,7 +335,8 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
         self.scriptedEffect.saveStateForUndo()
 
         previewContainsClosedSurfaceRepresentation = previewNode.GetSegmentation().ContainsRepresentation(
-            slicer.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName())
+            slicer.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName()
+        )
 
         # Move segments from preview into current segmentation
         segmentIDs = vtk.vtkStringArray()
@@ -330,8 +345,12 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
             segmentID = segmentIDs.GetValue(index)
             previewSegmentLabelmap = slicer.vtkOrientedImageData()
             previewNode.GetBinaryLabelmapRepresentation(segmentID, previewSegmentLabelmap)
-            self.scriptedEffect.modifySegmentByLabelmap(segmentationNode, segmentID, previewSegmentLabelmap,
-                                                        slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet)
+            self.scriptedEffect.modifySegmentByLabelmap(
+                segmentationNode,
+                segmentID,
+                previewSegmentLabelmap,
+                slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet,
+            )
             if segmentationDisplayNode is not None and self.isBackgroundLabelmap(previewSegmentLabelmap):
                 # Automatically hide result segments that are background (all eight corners are non-zero)
                 segmentationDisplayNode.SetSegmentVisibility(segmentID, False)
@@ -377,7 +396,8 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
         if not previewNode:
             return False
         containsClosedSurfaceRepresentation = previewNode.GetSegmentation().ContainsRepresentation(
-            slicer.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName())
+            slicer.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName()
+        )
         return containsClosedSurfaceRepresentation
 
     def effectiveExtentChanged(self):
@@ -395,10 +415,13 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
         # The effective extent for the current input segments
         effectiveGeometryImage = slicer.vtkOrientedImageData()
         effectiveGeometryString = segmentationNode.GetSegmentation().DetermineCommonLabelmapGeometry(
-            vtkSegmentationCore.vtkSegmentation.EXTENT_UNION_OF_EFFECTIVE_SEGMENTS, self.selectedSegmentIds)
+            vtkSegmentationCore.vtkSegmentation.EXTENT_UNION_OF_EFFECTIVE_SEGMENTS, self.selectedSegmentIds
+        )
         if effectiveGeometryString is None:
             return True
-        vtkSegmentationCore.vtkSegmentationConverter.DeserializeImageGeometry(effectiveGeometryString, effectiveGeometryImage)
+        vtkSegmentationCore.vtkSegmentationConverter.DeserializeImageGeometry(
+            effectiveGeometryString, effectiveGeometryImage
+        )
 
         masterImageData = self.scriptedEffect.sourceVolumeImageData()
         masterImageExtent = masterImageData.GetExtent()
@@ -410,12 +433,32 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
 
         # Determine if the current merged labelmap extent has less than a 3 voxel margin around the effective segment extent
         # (limited by the source image extent)
-        return ((masterImageExtent[0] != currentLabelExtent[0] and currentLabelExtent[0] > effectiveLabelExtent[0] - self.minimumExtentMargin) or
-                (masterImageExtent[1] != currentLabelExtent[1] and currentLabelExtent[1] < effectiveLabelExtent[1] + self.minimumExtentMargin) or
-                (masterImageExtent[2] != currentLabelExtent[2] and currentLabelExtent[2] > effectiveLabelExtent[2] - self.minimumExtentMargin) or
-                (masterImageExtent[3] != currentLabelExtent[3] and currentLabelExtent[3] < effectiveLabelExtent[3] + self.minimumExtentMargin) or
-                (masterImageExtent[4] != currentLabelExtent[4] and currentLabelExtent[4] > effectiveLabelExtent[4] - self.minimumExtentMargin) or
-                (masterImageExtent[5] != currentLabelExtent[5] and currentLabelExtent[5] < effectiveLabelExtent[5] + self.minimumExtentMargin))
+        return (
+            (
+                masterImageExtent[0] != currentLabelExtent[0]
+                and currentLabelExtent[0] > effectiveLabelExtent[0] - self.minimumExtentMargin
+            )
+            or (
+                masterImageExtent[1] != currentLabelExtent[1]
+                and currentLabelExtent[1] < effectiveLabelExtent[1] + self.minimumExtentMargin
+            )
+            or (
+                masterImageExtent[2] != currentLabelExtent[2]
+                and currentLabelExtent[2] > effectiveLabelExtent[2] - self.minimumExtentMargin
+            )
+            or (
+                masterImageExtent[3] != currentLabelExtent[3]
+                and currentLabelExtent[3] < effectiveLabelExtent[3] + self.minimumExtentMargin
+            )
+            or (
+                masterImageExtent[4] != currentLabelExtent[4]
+                and currentLabelExtent[4] > effectiveLabelExtent[4] - self.minimumExtentMargin
+            )
+            or (
+                masterImageExtent[5] != currentLabelExtent[5]
+                and currentLabelExtent[5] < effectiveLabelExtent[5] + self.minimumExtentMargin
+            )
+        )
 
     def preview(self):
         # Get source volume image data
@@ -443,34 +486,56 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
             if self.minimumNumberOfSegments != self.minimumNumberOfSegmentsWithEditableArea:
                 editableAreaSpecified = (
                     self.scriptedEffect.parameterSetNode().GetSourceVolumeIntensityMask()
-                    or self.scriptedEffect.parameterSetNode().GetMaskMode() != slicer.vtkMRMLSegmentationNode.EditAllowedEverywhere)
-                if editableAreaSpecified and self.selectedSegmentIds.GetNumberOfValues() < self.minimumNumberOfSegmentsWithEditableArea:
-                    logging.error(f"Auto-complete operation failed: at least {self.minimumNumberOfSegmentsWithEditableArea} visible segments are required when editable area is defined")
+                    or self.scriptedEffect.parameterSetNode().GetMaskMode()
+                    != slicer.vtkMRMLSegmentationNode.EditAllowedEverywhere
+                )
+                if (
+                    editableAreaSpecified
+                    and self.selectedSegmentIds.GetNumberOfValues() < self.minimumNumberOfSegmentsWithEditableArea
+                ):
+                    logging.error(
+                        f"Auto-complete operation failed: at least {self.minimumNumberOfSegmentsWithEditableArea} visible segments are required when editable area is defined"
+                    )
                     raise RuntimeError(
                         _("Minimum {minimumNumberOfSegments} visible segments are required.").format(
-                            minimumNumberOfSegments=self.minimumNumberOfSegmentsWithEditableArea))
-                elif (not editableAreaSpecified) and self.selectedSegmentIds.GetNumberOfValues() < self.minimumNumberOfSegments:
-                    logging.error(f"Auto-complete operation skipped: at least {self.minimumNumberOfSegmentsWithEditableArea} visible segments or setting of editable area is required")
+                            minimumNumberOfSegments=self.minimumNumberOfSegmentsWithEditableArea
+                        )
+                    )
+                elif (
+                    not editableAreaSpecified
+                ) and self.selectedSegmentIds.GetNumberOfValues() < self.minimumNumberOfSegments:
+                    logging.error(
+                        f"Auto-complete operation skipped: at least {self.minimumNumberOfSegmentsWithEditableArea} visible segments or setting of editable area is required"
+                    )
                     raise RuntimeError(
-                        _("Minimum {minimumNumberOfSegments} visible segments (or specification of editable area or intensity range) is required.").format(
-                            minimumNumberOfSegments=self.minimumNumberOfSegments))
+                        _(
+                            "Minimum {minimumNumberOfSegments} visible segments (or specification of editable area or intensity range) is required."
+                        ).format(minimumNumberOfSegments=self.minimumNumberOfSegments)
+                    )
             elif self.selectedSegmentIds.GetNumberOfValues() < self.minimumNumberOfSegments:
                 # Same number of input segments required regardless of editable area
-                logging.error(f"Auto-complete operation failed: at least {self.minimumNumberOfSegments} visible segments are required")
+                logging.error(
+                    f"Auto-complete operation failed: at least {self.minimumNumberOfSegments} visible segments are required"
+                )
                 self.selectedSegmentIds = None
                 raise RuntimeError(
                     _("Minimum {minimumNumberOfSegments} visible segments are required.").format(
-                        minimumNumberOfSegments=self.minimumNumberOfSegments))
+                        minimumNumberOfSegments=self.minimumNumberOfSegments
+                    )
+                )
 
             # Compute merged labelmap extent (effective extent slightly expanded)
             if not self.mergedLabelmapGeometryImage:
                 self.mergedLabelmapGeometryImage = slicer.vtkOrientedImageData()
             commonGeometryString = segmentationNode.GetSegmentation().DetermineCommonLabelmapGeometry(
-                vtkSegmentationCore.vtkSegmentation.EXTENT_UNION_OF_EFFECTIVE_SEGMENTS, self.selectedSegmentIds)
+                vtkSegmentationCore.vtkSegmentation.EXTENT_UNION_OF_EFFECTIVE_SEGMENTS, self.selectedSegmentIds
+            )
             if not commonGeometryString:
                 logging.info("Auto-complete operation skipped: all visible segments are empty")
                 return
-            vtkSegmentationCore.vtkSegmentationConverter.DeserializeImageGeometry(commonGeometryString, self.mergedLabelmapGeometryImage)
+            vtkSegmentationCore.vtkSegmentationConverter.DeserializeImageGeometry(
+                commonGeometryString, self.mergedLabelmapGeometryImage
+            )
 
             masterImageData = self.scriptedEffect.sourceVolumeImageData()
             masterImageExtent = masterImageData.GetExtent()
@@ -480,14 +545,16 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
             margin = [
                 int(max(3, self.extentGrowthRatio * (labelsEffectiveExtent[1] - labelsEffectiveExtent[0]))),
                 int(max(3, self.extentGrowthRatio * (labelsEffectiveExtent[3] - labelsEffectiveExtent[2]))),
-                int(max(3, self.extentGrowthRatio * (labelsEffectiveExtent[5] - labelsEffectiveExtent[4])))]
+                int(max(3, self.extentGrowthRatio * (labelsEffectiveExtent[5] - labelsEffectiveExtent[4]))),
+            ]
             labelsExpandedExtent = [
                 max(masterImageExtent[0], labelsEffectiveExtent[0] - margin[0]),
                 min(masterImageExtent[1], labelsEffectiveExtent[1] + margin[0]),
                 max(masterImageExtent[2], labelsEffectiveExtent[2] - margin[1]),
                 min(masterImageExtent[3], labelsEffectiveExtent[3] + margin[1]),
                 max(masterImageExtent[4], labelsEffectiveExtent[4] - margin[2]),
-                min(masterImageExtent[5], labelsEffectiveExtent[5] + margin[2])]
+                min(masterImageExtent[5], labelsEffectiveExtent[5] + margin[2]),
+            ]
             print("masterImageExtent = " + repr(masterImageExtent))
             print("labelsEffectiveExtent = " + repr(labelsEffectiveExtent))
             print("labelsExpandedExtent = " + repr(labelsExpandedExtent))
@@ -499,17 +566,20 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
             previewNode.GetDisplayNode().SetVisibility2DOutline(False)
             if segmentationNode.GetParentTransformNode():
                 previewNode.SetAndObserveTransformNodeID(segmentationNode.GetParentTransformNode().GetID())
-            self.scriptedEffect.parameterSetNode().SetNodeReferenceID(ResultPreviewNodeReferenceRole, previewNode.GetID())
+            self.scriptedEffect.parameterSetNode().SetNodeReferenceID(
+                ResultPreviewNodeReferenceRole, previewNode.GetID()
+            )
             self.scriptedEffect.setCommonParameter("SegmentationResultPreviewOwnerEffect", self.scriptedEffect.name)
             self.setPreviewOpacity(0.6)
 
             # Disable smoothing for closed surface generation to make it fast
             previewNode.GetSegmentation().SetConversionParameter(
-                slicer.vtkBinaryLabelmapToClosedSurfaceConversionRule.GetSmoothingFactorParameterName(),
-                "-0.5")
+                slicer.vtkBinaryLabelmapToClosedSurfaceConversionRule.GetSmoothingFactorParameterName(), "-0.5"
+            )
 
             inputContainsClosedSurfaceRepresentation = segmentationNode.GetSegmentation().ContainsRepresentation(
-                slicer.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName())
+                slicer.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName()
+            )
 
             self.setPreviewShow3D(inputContainsClosedSurfaceRepresentation)
 
@@ -526,15 +596,25 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
             if self.clippedMaskImageDataRequired:
                 self.clippedMaskImageData = slicer.vtkOrientedImageData()
                 intensityBasedMasking = self.scriptedEffect.parameterSetNode().GetSourceVolumeIntensityMask()
-                maskSegmentID = self.scriptedEffect.parameterSetNode().GetMaskSegmentID() if self.scriptedEffect.parameterSetNode().GetMaskSegmentID() else ""
-                intensityRange = self.scriptedEffect.parameterSetNode().GetSourceVolumeIntensityMaskRange() if intensityBasedMasking else None
-                success = segmentationNode.GenerateEditMask(self.clippedMaskImageData,
-                                                            self.scriptedEffect.parameterSetNode().GetMaskMode(),
-                                                            self.clippedMasterImageData,  # reference geometry
-                                                            "",  # edited segment ID
-                                                            maskSegmentID,
-                                                            self.clippedMasterImageData if intensityBasedMasking else None,
-                                                            intensityRange)
+                maskSegmentID = (
+                    self.scriptedEffect.parameterSetNode().GetMaskSegmentID()
+                    if self.scriptedEffect.parameterSetNode().GetMaskSegmentID()
+                    else ""
+                )
+                intensityRange = (
+                    self.scriptedEffect.parameterSetNode().GetSourceVolumeIntensityMaskRange()
+                    if intensityBasedMasking
+                    else None
+                )
+                success = segmentationNode.GenerateEditMask(
+                    self.clippedMaskImageData,
+                    self.scriptedEffect.parameterSetNode().GetMaskMode(),
+                    self.clippedMasterImageData,  # reference geometry
+                    "",  # edited segment ID
+                    maskSegmentID,
+                    self.clippedMasterImageData if intensityBasedMasking else None,
+                    intensityRange,
+                )
                 if not success:
                     logging.error("Failed to create edit mask")
                     self.clippedMaskImageData = None
@@ -547,7 +627,10 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
         mergedImage = slicer.vtkOrientedImageData()
         segmentationNode.GenerateMergedLabelmapForAllSegments(
             mergedImage,
-            vtkSegmentationCore.vtkSegmentation.EXTENT_UNION_OF_EFFECTIVE_SEGMENTS, self.mergedLabelmapGeometryImage, self.selectedSegmentIds)
+            vtkSegmentationCore.vtkSegmentation.EXTENT_UNION_OF_EFFECTIVE_SEGMENTS,
+            self.mergedLabelmapGeometryImage,
+            self.selectedSegmentIds,
+        )
 
         outputLabelmap = slicer.vtkOrientedImageData()
         self.computePreviewLabelmap(mergedImage, outputLabelmap)
@@ -569,11 +652,16 @@ class AbstractScriptedSegmentEditorAutoCompleteEffect(AbstractScriptedSegmentEdi
                 previewNode.GetSegmentation().AddSegment(previewSegment, segmentID)
 
             labelValue = index + 1  # n-th segment label value = n + 1 (background label value is 0)
-            previewSegment.AddRepresentation(vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName(), outputLabelmap)
+            previewSegment.AddRepresentation(
+                vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName(),
+                outputLabelmap,
+            )
             previewSegment.SetLabelValue(labelValue)
 
             # Automatically hide result segments that are background (all eight corners are non-zero)
-            previewNode.GetDisplayNode().SetSegmentVisibility3D(segmentID, not self.isBackgroundLabelmap(outputLabelmap, labelValue))
+            previewNode.GetDisplayNode().SetSegmentVisibility3D(
+                segmentID, not self.isBackgroundLabelmap(outputLabelmap, labelValue)
+            )
 
         # If the preview was reset, we need to restore the visibility options
         self.setPreviewOpacity(previewOpacity)

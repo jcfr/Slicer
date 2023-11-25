@@ -495,8 +495,7 @@ def getRemote(repo, urls, create=None):
             raise TypeError("name of remote to create must be a string")
 
         if hasattr(repo.remotes, create):
-            raise Exception("cannot create remote '%s':"
-                            " a remote with that name already exists" % create)
+            raise Exception("cannot create remote '%s':" " a remote with that name already exists" % create)
 
         return repo.create_remote(create, urls[0])
 

@@ -64,7 +64,9 @@ class AddStorableDataAfterSceneViewTestWidget(ScriptedLoadableModuleWidget):
         #
         self.enableScreenshotsFlagCheckBox = qt.QCheckBox()
         self.enableScreenshotsFlagCheckBox.checked = 0
-        self.enableScreenshotsFlagCheckBox.setToolTip("If checked, take screen shots for tutorials. Use Save Data to write them to disk.")
+        self.enableScreenshotsFlagCheckBox.setToolTip(
+            "If checked, take screen shots for tutorials. Use Save Data to write them to disk."
+        )
         parametersFormLayout.addRow("Enable Screenshots", self.enableScreenshotsFlagCheckBox)
 
         #
@@ -112,8 +114,13 @@ class AddStorableDataAfterSceneViewTestLogic(ScriptedLoadableModuleLogic):
             tester.runTest()
         except Exception as e:
             import traceback
+
             traceback.print_exc()
-            errorMessage = "Add storable data after scene view test: Exception!\n\n" + str(e) + "\n\nSee Python Console for Stack Trace"
+            errorMessage = (
+                "Add storable data after scene view test: Exception!\n\n"
+                + str(e)
+                + "\n\nSee Python Console for Stack Trace"
+            )
             slicer.util.errorDisplay(errorMessage)
 
         logging.info("Processing completed")

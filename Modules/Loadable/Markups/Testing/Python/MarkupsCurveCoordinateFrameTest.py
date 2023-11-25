@@ -66,8 +66,10 @@ def createCoordinateSystemsModel(curve, axisLength=5):
 
 def addCoordinateSystemUpdater(updateInfo):
     model, curve, coordinateSystemAppender, curvePointToWorldTransform, transform, transformer = updateInfo
-    observation = curve.AddObserver(slicer.vtkMRMLMarkupsNode.PointModifiedEvent,
-                                    lambda caller, eventData, updateInfo=updateInfo: updateCoordinateSystemsModel(updateInfo))
+    observation = curve.AddObserver(
+        slicer.vtkMRMLMarkupsNode.PointModifiedEvent,
+        lambda caller, eventData, updateInfo=updateInfo: updateCoordinateSystemsModel(updateInfo),
+    )
     return [curve, observation]
 
 
@@ -97,7 +99,8 @@ testSceneFilePath = curveMeasurementsTestDir + "/MarkupsCurvatureTestScene.mrb"
 slicer.util.downloadFile(
     TESTING_DATA_URL + "SHA256/5b1f39e28ad8611790152fdc092ec9b3ee14254aad4897377db9576139c88e32",
     testSceneFilePath,
-    checksum="SHA256:5b1f39e28ad8611790152fdc092ec9b3ee14254aad4897377db9576139c88e32")
+    checksum="SHA256:5b1f39e28ad8611790152fdc092ec9b3ee14254aad4897377db9576139c88e32",
+)
 slicer.util.loadScene(testSceneFilePath)
 planarCurveNode = slicer.util.getNode("C")
 
@@ -113,13 +116,18 @@ if not planarCurveNode.GetCurvePointToWorldTransformAtPointIndex(6, curvePointTo
 
 curvePointToWorldMatrix = slicer.util.arrayFromVTKMatrix(curvePointToWorldTransform)
 expectedCurvePointToWorldMatrix = np.array(
-    [[2.15191499e-01, 0.00000000e+00, -9.76571871e-01, -3.03394470e+01],
-     [0.00000000e+00, -1.00000000e+00, 0.00000000e+00, 3.63797881e-09],
-        [-9.76571871e-01, 0.00000000e+00, -2.15191499e-01, 8.10291061e+01],
-        [0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
+    [
+        [2.15191499e-01, 0.00000000e00, -9.76571871e-01, -3.03394470e01],
+        [0.00000000e00, -1.00000000e00, 0.00000000e00, 3.63797881e-09],
+        [-9.76571871e-01, 0.00000000e00, -2.15191499e-01, 8.10291061e01],
+        [0.00000000e00, 0.00000000e00, 0.00000000e00, 1.00000000e00],
+    ]
+)
 
 if not np.isclose(curvePointToWorldMatrix, expectedCurvePointToWorldMatrix).all():
-    raise Exception(f"Test1 CurvePointToWorldTransformAtPointIndex value incorrect: got {curvePointToWorldMatrix}, expected {expectedCurvePointToWorldMatrix}.")
+    raise Exception(
+        f"Test1 CurvePointToWorldTransformAtPointIndex value incorrect: got {curvePointToWorldMatrix}, expected {expectedCurvePointToWorldMatrix}."
+    )
 
 #
 # Test2. Test free-form closed curve with 6 control points, all points in one plane
@@ -143,13 +151,18 @@ if not closedCurveNode.GetCurvePointToWorldTransformAtPointIndex(6, curvePointTo
 
 curvePointToWorldMatrix = slicer.util.arrayFromVTKMatrix(curvePointToWorldTransform)
 expectedCurvePointToWorldMatrix = np.array(
-    [[-3.85813409e-01, 0.00000000e+00, -9.22576833e-01, -3.71780586e+01],
-     [0.00000000e+00, 1.00000000e+00, 0.00000000e+00, 3.63797881e-09],
-        [9.22576833e-01, 0.00000000e+00, -3.85813409e-01, 8.78303909e+01],
-        [0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
+    [
+        [-3.85813409e-01, 0.00000000e00, -9.22576833e-01, -3.71780586e01],
+        [0.00000000e00, 1.00000000e00, 0.00000000e00, 3.63797881e-09],
+        [9.22576833e-01, 0.00000000e00, -3.85813409e-01, 8.78303909e01],
+        [0.00000000e00, 0.00000000e00, 0.00000000e00, 1.00000000e00],
+    ]
+)
 
 if not np.isclose(curvePointToWorldMatrix, expectedCurvePointToWorldMatrix).all():
-    raise Exception(f"Test2 CurvePointToWorldTransformAtPointIndex value incorrect: got {curvePointToWorldMatrix}, expected {expectedCurvePointToWorldMatrix}.")
+    raise Exception(
+        f"Test2 CurvePointToWorldTransformAtPointIndex value incorrect: got {curvePointToWorldMatrix}, expected {expectedCurvePointToWorldMatrix}."
+    )
 
 #
 # Test3. Test on a vessel centerline curve
@@ -163,7 +176,8 @@ testSceneFilePath = curveMeasurementsTestDir + "/MarkupsControlPointMeasurementI
 slicer.util.downloadFile(
     TESTING_DATA_URL + "SHA256/b636ecfc1be54504c2c9843e1ff53242ee6b951228490ae99a89e06c8890e344",
     testSceneFilePath,
-    checksum="SHA256:b636ecfc1be54504c2c9843e1ff53242ee6b951228490ae99a89e06c8890e344")
+    checksum="SHA256:b636ecfc1be54504c2c9843e1ff53242ee6b951228490ae99a89e06c8890e344",
+)
 
 # Import test scene
 slicer.util.loadScene(testSceneFilePath)
@@ -198,13 +212,18 @@ if not centerlineCurve.GetCurvePointToWorldTransformAtPointIndex(6, curvePointTo
 
 curvePointToWorldMatrix = slicer.util.arrayFromVTKMatrix(curvePointToWorldTransform)
 expectedCurvePointToWorldMatrix = np.array(
-    [[9.85648052e-01, 8.80625424e-03, -1.68583415e-01, -3.08991909e+00],
-     [-6.35257659e-02, 9.44581803e-01, -3.22070946e-01, 2.22146526e-01],
-        [1.56404587e-01, 3.28157991e-01, 9.31584638e-01, -7.34501495e+01],
-        [0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
+    [
+        [9.85648052e-01, 8.80625424e-03, -1.68583415e-01, -3.08991909e00],
+        [-6.35257659e-02, 9.44581803e-01, -3.22070946e-01, 2.22146526e-01],
+        [1.56404587e-01, 3.28157991e-01, 9.31584638e-01, -7.34501495e01],
+        [0.00000000e00, 0.00000000e00, 0.00000000e00, 1.00000000e00],
+    ]
+)
 
 if not np.isclose(curvePointToWorldMatrix, expectedCurvePointToWorldMatrix).all():
-    raise Exception(f"Test3 CurvePointToWorldTransformAtPointIndex value incorrect: got {curvePointToWorldMatrix}, expected {expectedCurvePointToWorldMatrix}.")
+    raise Exception(
+        f"Test3 CurvePointToWorldTransformAtPointIndex value incorrect: got {curvePointToWorldMatrix}, expected {expectedCurvePointToWorldMatrix}."
+    )
 
 #
 # Test4. curvature computation for a circle-shaped closed curve
@@ -218,7 +237,9 @@ import math
 circleCurveNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLMarkupsClosedCurveNode")
 for controlPointIndex in range(numberOfControlPoints):
     angle = 2.0 * math.pi * controlPointIndex / numberOfControlPoints
-    pointIndex = circleCurveNode.AddControlPoint(vtk.vtkVector3d(radius * math.sin(angle), radius * math.cos(angle), 0.0))
+    pointIndex = circleCurveNode.AddControlPoint(
+        vtk.vtkVector3d(radius * math.sin(angle), radius * math.cos(angle), 0.0)
+    )
 
 # Visualize
 
@@ -232,13 +253,18 @@ if not circleCurveNode.GetCurvePointToWorldTransformAtPointIndex(6, curvePointTo
 
 curvePointToWorldMatrix = slicer.util.arrayFromVTKMatrix(curvePointToWorldTransform)
 expectedCurvePointToWorldMatrix = np.array(
-    [[0.10190135, 0., 0.99479451, 3.29378772],
-     [0.99479451, 0., -0.10190135, 34.84461594],
-        [0., 1., 0., 0.],
-        [0., 0., 0., 1.]])
+    [
+        [0.10190135, 0.0, 0.99479451, 3.29378772],
+        [0.99479451, 0.0, -0.10190135, 34.84461594],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0],
+    ]
+)
 
 if not np.isclose(curvePointToWorldMatrix, expectedCurvePointToWorldMatrix).all():
-    raise Exception(f"Test4. CurvePointToWorldTransformAtPointIndex value incorrect: got {curvePointToWorldMatrix}, expected {expectedCurvePointToWorldMatrix}.")
+    raise Exception(
+        f"Test4. CurvePointToWorldTransformAtPointIndex value incorrect: got {curvePointToWorldMatrix}, expected {expectedCurvePointToWorldMatrix}."
+    )
 
 #
 # Remove observations

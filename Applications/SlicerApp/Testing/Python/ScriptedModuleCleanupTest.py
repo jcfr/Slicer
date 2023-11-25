@@ -52,8 +52,10 @@ def check_exit_code(slicer_executable, testing_enabled=True, debug=False):
         # Copy helper module that creates a file when startup completed event is received
         currentDirPath = os.path.dirname(__file__).replace("\\", "/")
         from shutil import copyfile
-        copyfile(currentDirPath + "/ScriptedModuleCleanupTestHelperModule.py",
-                 temporaryModuleDirPath + "/ModuleCleanup.py")
+
+        copyfile(
+            currentDirPath + "/ScriptedModuleCleanupTestHelperModule.py", temporaryModuleDirPath + "/ModuleCleanup.py"
+        )
 
         # fmt: off
         common_arguments = [

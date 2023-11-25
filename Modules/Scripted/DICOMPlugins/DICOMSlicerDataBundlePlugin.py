@@ -134,15 +134,19 @@ class DICOMSlicerDataBundlePluginClass(DICOMPlugin):
         #   the DICOM plugins don't support it yet.
         dataNode = None
         nodesAfterLoading = slicer.util.getNodes()
-        loadedNodes = [node for node in list(nodesAfterLoading.values()) if
-                       node not in list(nodesBeforeLoading.values())]
+        loadedNodes = [
+            node for node in list(nodesAfterLoading.values()) if node not in list(nodesBeforeLoading.values())
+        ]
         for node in loadedNodes:
             if node.IsA("vtkMRMLScalarVolumeNode"):
                 dataNode = node
         if dataNode is None:
             for node in loadedNodes:
-                if node.IsA("vtkMRMLModelNode") and node.GetName() not in ["Red Volume Slice", "Yellow Volume Slice",
-                                                                           "Green Volume Slice"]:
+                if node.IsA("vtkMRMLModelNode") and node.GetName() not in [
+                    "Red Volume Slice",
+                    "Yellow Volume Slice",
+                    "Green Volume Slice",
+                ]:
                     dataNode = node
                     break
         if dataNode is None:
@@ -185,12 +189,16 @@ class DICOMSlicerDataBundlePluginClass(DICOMPlugin):
         for exportable in exportables:
             # Find reference series (series that will be modified into a scene data bundle)
             # Get DICOM UID - can be study instance UID or series instance UID
-            dicomUid = shNode.GetItemUID(exportable.subjectHierarchyItemID,
-                                         slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMUIDName())
+            dicomUid = shNode.GetItemUID(
+                exportable.subjectHierarchyItemID, slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMUIDName()
+            )
             if not dicomUid:
                 continue
             # Get series instance UID
-            if shNode.GetItemLevel(exportable.subjectHierarchyItemID) == slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMLevelStudy():
+            if (
+                shNode.GetItemLevel(exportable.subjectHierarchyItemID)
+                == slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMLevelStudy()
+            ):
                 # Study is selected
                 seriesInstanceUids = slicer.dicomDatabase.seriesForStudy(dicomUid)
                 seriesInstanceUid = seriesInstanceUids[0] if seriesInstanceUids else None
@@ -208,22 +216,27 @@ class DICOMSlicerDataBundlePluginClass(DICOMPlugin):
         tags["PatientName"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientNameTagName())
         tags["PatientID"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientIDTagName())
         tags["PatientBirthDate"] = exportable.tag(
-            slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientBirthDateTagName())
+            slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientBirthDateTagName()
+        )
         tags["PatientSex"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientSexTagName())
         tags["PatientComments"] = exportable.tag(
-            slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientCommentsTagName())
+            slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMPatientCommentsTagName()
+        )
 
         tags["StudyDate"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyDateTagName())
         tags["StudyTime"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyTimeTagName())
         tags["StudyDescription"] = exportable.tag(
-            slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyDescriptionTagName())
+            slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyDescriptionTagName()
+        )
 
         if dicomFiles:
             referenceFile = dicomFiles[0]
         else:
             referenceFile = None
             # No DICOM file exists that could be used as reference, therefore we need to pass on the ID fields.
-            tags["StudyInstanceUID"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyInstanceUIDTagName())
+            tags["StudyInstanceUID"] = exportable.tag(
+                slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyInstanceUIDTagName()
+            )
             tags["StudyID"] = exportable.tag(slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMStudyIDTagName())
             tags["SeriesInstanceUID"] = exportable.tag("SeriesInstanceUID")
             tags["SeriesNumber"] = exportable.tag("SeriesNumber")

@@ -89,8 +89,9 @@ class _CachedParameterWrapper(_ParameterWrapper):
         # This would prevent the object from being garbage collected, and the observers from being removed when the object goes out of scope.
         # Instead, we create a weakref to self and use it in a lambda function.
         _selfWeakRef = weakref.ref(self)
-        self._observerTag: int = parameterNode.AddObserver(vtk.vtkCommand.ModifiedEvent,
-                                                           lambda caller, event: _selfWeakRef()._onModified(caller, event))
+        self._observerTag: int = parameterNode.AddObserver(
+            vtk.vtkCommand.ModifiedEvent, lambda caller, event: _selfWeakRef()._onModified(caller, event)
+        )
         self._currentlyWriting: bool = False
 
     def __del__(self):
@@ -150,13 +151,14 @@ def _checkParamName(paramNodeWrapInstanceOrClass, paramName: str):
         if subname is None:
             return
         else:
-            checkPackMember(unannotatedType(paramNodeWrapInstanceOrClass.allParameters[topname].unalteredType),
-                            subname)
+            checkPackMember(unannotatedType(paramNodeWrapInstanceOrClass.allParameters[topname].unalteredType), subname)
     else:
-        raise ValueError(f"Cannot find a param with the given name: {topname}"
-                         + "\n  Found parameters ["
-                         + "".join([f"\n    {name}," for name in paramNodeWrapInstanceOrClass.allParameters.keys()])
-                         + "\n  ]")
+        raise ValueError(
+            f"Cannot find a param with the given name: {topname}"
+            + "\n  Found parameters ["
+            + "".join([f"\n    {name}," for name in paramNodeWrapInstanceOrClass.allParameters.keys()])
+            + "\n  ]"
+        )
 
 
 def _isCached(self, paramName: str):
@@ -345,7 +347,11 @@ def _processClass(classtype):
     checkedSetAttr(classtype, "disconnectGui", _disconnectGui)
     checkedSetAttr(classtype, "StartModify", lambda self: self.parameterNode.StartModify())
     checkedSetAttr(classtype, "EndModify", lambda self, wasModified: self.parameterNode.EndModify(wasModified))
-    checkedSetAttr(classtype, "AddObserver", lambda self, event, callback, priority=0.0: self.parameterNode.AddObserver(event, callback, priority))
+    checkedSetAttr(
+        classtype,
+        "AddObserver",
+        lambda self, event, callback, priority=0.0: self.parameterNode.AddObserver(event, callback, priority),
+    )
     checkedSetAttr(classtype, "RemoveObserver", lambda self, tag: self.parameterNode.RemoveObserver(tag))
     checkedSetAttr(classtype, "Modified", lambda self: self.parameterNode.Modified())
     return classtype

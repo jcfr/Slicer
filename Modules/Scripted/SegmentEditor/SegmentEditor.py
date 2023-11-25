@@ -15,16 +15,20 @@ class SegmentEditor(ScriptedLoadableModule):
         self.parent.categories = ["", translate("qSlicerAbstractCoreModule", "Segmentation")]
         self.parent.dependencies = ["Segmentations", "SubjectHierarchy"]
         self.parent.contributors = ["Csaba Pinter (Queen's University), Andras Lasso (Queen's University)"]
-        self.parent.helpText = _("""
+        self.parent.helpText = _(
+            """
 This module allows editing segmentation objects by directly drawing and using segmentation tools on the contained segments.
 Representations other than the labelmap one (which is used for editing) are automatically updated real-time,
 so for example the closed surface can be visualized as edited in the 3D view.
-""")
+"""
+        )
         self.parent.helpText += parent.defaultDocumentationLink
-        self.parent.acknowledgementText = _("""
+        self.parent.acknowledgementText = _(
+            """
 This work is part of SparKit project, funded by Cancer Care Ontario (CCO)'s ACRU program
 and Ontario Consortium for Adaptive Interventions in Radiation Oncology (OCAIRO).
-""")
+"""
+        )
 
     def setup(self):
         # Register subject hierarchy plugin
@@ -114,8 +118,10 @@ class SegmentEditorWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     def enter(self):
         """Runs whenever the module is reopened"""
         if self.editor.turnOffLightboxes():
-            slicer.util.warningDisplay(_("Segment Editor is not compatible with slice viewers in light box mode."
-                                         "Views are being reset."), windowTitle=_("Segment Editor"))
+            slicer.util.warningDisplay(
+                _("Segment Editor is not compatible with slice viewers in light box mode." "Views are being reset."),
+                windowTitle=_("Segment Editor"),
+            )
 
         # Allow switching between effects and selected segment using keyboard shortcuts
         self.editor.installKeyboardShortcuts()

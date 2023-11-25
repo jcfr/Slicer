@@ -32,14 +32,11 @@ class WikidocRole:
     wiki_root = "https://wiki.slicer.org/slicerWiki/index.php"
 
     # -----------------------------------------------------------------------------
-    def __call__(self, role, rawtext, text, lineno, inliner,
-                 options={}, content=[]):
-
+    def __call__(self, role, rawtext, text, lineno, inliner, options={}, content=[]):
         roles.set_classes(options)
 
         parts = utils.unescape(text).split(" ", 1)
-        uri = "{}/Documentation/{}/{}".format(self.wiki_root, self.wiki_doc_version,
-                                              parts[0])
+        uri = "{}/Documentation/{}/{}".format(self.wiki_root, self.wiki_doc_version, parts[0])
         text = parts[1]
 
         node = nodes.reference(rawtext, text, refuri=uri, **options)
@@ -253,8 +250,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ("index", "SlicerWizard.tex", "SlicerWizard Documentation",
-     author, "manual"),
+    ("index", "SlicerWizard.tex", "SlicerWizard Documentation", author, "manual"),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -283,8 +279,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ("index", "slicerwizard", "SlicerWizard Documentation",
-     [author], 1),
+    ("index", "slicerwizard", "SlicerWizard Documentation", [author], 1),
 ]
 
 # If true, show URL addresses after external links.
@@ -297,9 +292,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ("index", "SlicerWizard", "SlicerWizard Documentation",
-     author, "SlicerWizard", "One line description of project.",
-     "Miscellaneous"),
+    (
+        "index",
+        "SlicerWizard",
+        "SlicerWizard Documentation",
+        author,
+        "SlicerWizard",
+        "One line description of project.",
+        "Miscellaneous",
+    ),
 ]
 
 # Documents to append as an appendix to all manuals.

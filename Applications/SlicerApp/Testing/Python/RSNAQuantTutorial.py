@@ -53,7 +53,11 @@ class RSNAQuantTutorialWidget(ScriptedLoadableModuleWidget):
         formLayout = qt.QFormLayout(testsCollapsibleButton)
 
         # test buttons
-        tests = (("Part 1 : Ruler", self.onPart1Ruler), ("Part 2: ChangeTracker", self.onPart2ChangeTracker), ("Part 3 : PETCT", self.onPart3PETCT))
+        tests = (
+            ("Part 1 : Ruler", self.onPart1Ruler),
+            ("Part 2: ChangeTracker", self.onPart2ChangeTracker),
+            ("Part 3 : PETCT", self.onPart3PETCT),
+        )
         for text, slot in tests:
             testButton = qt.QPushButton(text)
             testButton.toolTip = "Run the test."
@@ -73,7 +77,9 @@ class RSNAQuantTutorialWidget(ScriptedLoadableModuleWidget):
         #
         self.enableScreenshotsFlagCheckBox = qt.QCheckBox()
         self.enableScreenshotsFlagCheckBox.checked = 0
-        self.enableScreenshotsFlagCheckBox.setToolTip("If checked, take screen shots for tutorials. Use Save Data to write them to disk.")
+        self.enableScreenshotsFlagCheckBox.setToolTip(
+            "If checked, take screen shots for tutorials. Use Save Data to write them to disk."
+        )
         screenShotsFormLayout.addRow("Enable Screenshots", self.enableScreenshotsFlagCheckBox)
 
         #
@@ -224,7 +230,8 @@ class RSNAQuantTutorialTest(ScriptedLoadableModuleTest):
         extractPath = SampleData.downloadFromURL(
             fileNames="dataset3_PETCT.zip",
             uris=TESTING_DATA_URL + "SHA256/11e81af3462076f4ca371b632e03ed435240042915c2daf07f80059b3f78f88d",
-            checksums="SHA256:11e81af3462076f4ca371b632e03ed435240042915c2daf07f80059b3f78f88d")[0]
+            checksums="SHA256:11e81af3462076f4ca371b632e03ed435240042915c2daf07f80059b3f78f88d",
+        )[0]
 
         self.delayDisplay("Loading PET_CT_pre-treatment.mrb")
         preTreatmentPath = extractPath + "/PET_CT_pre-treatment.mrb"
@@ -326,7 +333,8 @@ class RSNAQuantTutorialTest(ScriptedLoadableModuleTest):
             fileNames="ChangeTrackerScene.mrb",
             loadFiles=True,
             uris=TESTING_DATA_URL + "SHA256/64734cbbf8ebafe4a52f551d1510a8f6f3d0625eb5b6c1e328be117c48e2c653",
-            checksums="SHA256:64734cbbf8ebafe4a52f551d1510a8f6f3d0625eb5b6c1e328be117c48e2c653")
+            checksums="SHA256:64734cbbf8ebafe4a52f551d1510a8f6f3d0625eb5b6c1e328be117c48e2c653",
+        )
         self.takeScreenshot("ChangeTracker-Loaded", "Finished with download and loading", -1)
 
         try:
@@ -349,8 +357,12 @@ class RSNAQuantTutorialTest(ScriptedLoadableModuleTest):
 
             baselineNode = slicer.util.getNode("2006-spgr1")
             followupNode = slicer.util.getNode("2007-spgr1")
-            changeTracker.selectScansStep._ChangeTrackerSelectScansStep__baselineVolumeSelector.setCurrentNode(baselineNode)
-            changeTracker.selectScansStep._ChangeTrackerSelectScansStep__followupVolumeSelector.setCurrentNode(followupNode)
+            changeTracker.selectScansStep._ChangeTrackerSelectScansStep__baselineVolumeSelector.setCurrentNode(
+                baselineNode
+            )
+            changeTracker.selectScansStep._ChangeTrackerSelectScansStep__followupVolumeSelector.setCurrentNode(
+                followupNode
+            )
             self.takeScreenshot("ChangeTracker-SetInputs", "Select input scans", -1)
 
             changeTracker.workflow.goForward()
@@ -374,7 +386,9 @@ class RSNAQuantTutorialTest(ScriptedLoadableModuleTest):
             self.takeScreenshot("ChangeTracker-SetROIExtent", "Resize the VOI", -1)
 
             layoutManager.setLayout(slicer.vtkMRMLLayoutNode.SlicerLayoutConventionalWidescreenView)
-            self.takeScreenshot("ChangeTracker-ConventionalWidescreen", "Select the viewing mode Conventional Widescreen", -1)
+            self.takeScreenshot(
+                "ChangeTracker-ConventionalWidescreen", "Select the viewing mode Conventional Widescreen", -1
+            )
 
             slicer.util.clickAndDrag(redWidget, button="Right")
             self.takeScreenshot("ChangeTracker-ZoomVOI", "Zoom", -1)

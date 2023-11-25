@@ -36,7 +36,8 @@ def parse_pip_list_output(packages_to_update):
     Return a mapping of package names to (current_version, latest_version).
     """
     packages = {}
-    for i in range(2, len(packages_to_update) - 1):  # First two lines are headings, so skip parsing these. Last line is empty
+    # First two lines are headings, so skip parsing these. Last line is empty
+    for i in range(2, len(packages_to_update) - 1):
         if packages_to_update[i].strip() == "":
             break
         details = packages_to_update[i].split()  # ['asn1crypto', '0.24.0', '1.4.0', 'wheel']
@@ -49,7 +50,11 @@ def parse_pip_list_output(packages_to_update):
 
 def external_project_filepaths(directory):
     """Yield a generator of external project filepaths found in ``directory``."""
-    for dirpath, _, filenames, in os.walk(directory):
+    for (
+        dirpath,
+        _,
+        filenames,
+    ) in os.walk(directory):
         for filename in filenames:
             yield os.path.join(dirpath, filename)
 
@@ -134,23 +139,31 @@ def update_external_project_python_packages(packages_to_update, directory, cpyth
         hashes = []
         desired_version_files = data["releases"].get(desired_version, [])
         for release_file in desired_version_files:
-            if release_file["python_version"] not in ["py3", "py2.py3", cpython_tag] and "abi3" not in release_file["filename"]:
+            if (
+                release_file["python_version"] not in ["py3", "py2.py3", cpython_tag]
+                and "abi3" not in release_file["filename"]
+            ):
                 # e.g. PyNaCl-1.5.0-cp36-abi3-win_amd64.whl has python_version tag of py36, but is abi compatible for Python 3.6 and later for the Windows platform
                 continue  # means we did 'pip list --outdated' earlier which confirmed version supports our python version
             if release_file["packagetype"] != "bdist_wheel":
                 continue  # Only want to install with wheels as building from source can require complex build tools
             filename = release_file["filename"]
-            if not filename.endswith(("py3-none-any.whl", "64.whl", "universal2.whl")):  # win_amd64.whl, aarch64.whl, x86_64.whl
+            if not filename.endswith(
+                ("py3-none-any.whl", "64.whl", "universal2.whl")
+            ):  # win_amd64.whl, aarch64.whl, x86_64.whl
                 continue  # Only want 64-bit wheels
             wheel_hash = release_file["digests"]["sha256"]
             filenames.append(" " * indentation + f"#  - {filename}")
             hashes.append(f"--hash=sha256:{wheel_hash}")
         if not hashes:
-            print(f"ERROR UPDATING '{package_name}': Unable to find latest version for specified python version." +
-                  "This package might need an updated package version for the specified CPython tag.")
+            print(
+                f"ERROR UPDATING '{package_name}': Unable to find latest version for specified python version."
+                + "This package might need an updated package version for the specified CPython tag."
+            )
             continue
         simple_package_version = " " * indentation + f"{package_name}=={desired_version} "
-        hashes_joiner_text = " \\\n" + " " * len(simple_package_version)  # new line for each additional hash and with indentation to line up vertically
+        # new line for each additional hash and with indentation to line up vertically
+        hashes_joiner_text = " \\\n" + " " * len(simple_package_version)
         all_hashes = simple_package_version + hashes_joiner_text.join(hashes)
 
         # Only include filenames if there are multiple wheels for a given package
@@ -171,7 +184,8 @@ def update_external_project_python_packages(packages_to_update, directory, cpyth
         for package_name, updated_line in lines_to_write.items():
             regex = rf"(# \[{package_name}\]).*?(# \[/{package_name}\])"
             updated_line = f"# [{package_name}]" + "\n" + updated_line + " " * indentation + f"# [/{package_name}]"
-            file_text = re.sub(regex, updated_line, file_text, flags=re.DOTALL)  # but new lines in the unlimited match messing things up
+            # but new lines in the unlimited match messing things up
+            file_text = re.sub(regex, updated_line, file_text, flags=re.DOTALL)
             with open(filepath, "w") as open_file:
                 open_file.write(file_text)
 
@@ -190,10 +204,32 @@ def main(args):
         This script DOES NOT handle python package version incompatibilities or the
         addition/removal of other package dependencies for a given package.
     """
-    parser.add_argument("-s", "--search-directory", metavar="Path/To/Directory", required=False, help="Directory to search and replace python version info")
-    parser.add_argument("-c", "--cpython-tag", metavar="cp{Major}.{Minor}", required=False, help="CPython version of python packages to check for")
-    parser.add_argument("--from-installed-packages", action="store_true", required=False, help="Update external projects based on installed packages")
-    parser.add_argument("--validate", action="store_true", required=False, help="Search for external project files and check consistency of hints")
+    parser.add_argument(
+        "-s",
+        "--search-directory",
+        metavar="Path/To/Directory",
+        required=False,
+        help="Directory to search and replace python version info",
+    )
+    parser.add_argument(
+        "-c",
+        "--cpython-tag",
+        metavar="cp{Major}.{Minor}",
+        required=False,
+        help="CPython version of python packages to check for",
+    )
+    parser.add_argument(
+        "--from-installed-packages",
+        action="store_true",
+        required=False,
+        help="Update external projects based on installed packages",
+    )
+    parser.add_argument(
+        "--validate",
+        action="store_true",
+        required=False,
+        help="Search for external project files and check consistency of hints",
+    )
     parser.add_argument("--path", metavar="Path/To/site-packages", required=False, help="Package installation path")
     args = parser.parse_args(args=args)
 

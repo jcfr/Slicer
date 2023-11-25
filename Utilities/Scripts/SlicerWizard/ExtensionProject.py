@@ -93,9 +93,10 @@ class ExtensionProject:
 
                 if encoding is not None:
                     if confidence < 0.5:
-                        logging.warning("%s: encoding detection confidence is %f:"
-                                        " project contents might be corrupt" %
-                                        (path, confidence))
+                        logging.warning(
+                            "%s: encoding detection confidence is %f:"
+                            " project contents might be corrupt" % (path, confidence)
+                        )
 
             if encoding is None:
                 # If unable to determine encoding, skip unicode conversion... users
@@ -267,11 +268,12 @@ class ExtensionProject:
         """
 
         for t in reversed(self._scriptContents.tokens):
-            if _isCommand(t, "set") and len(t.arguments) and \
-               t.arguments[0].text == name:
+            if _isCommand(t, "set") and len(t.arguments) and t.arguments[0].text == name:
                 if len(t.arguments) < 2:
                     return None
-                value = " ".join([argument.text for argument in t.arguments[1:] if isinstance(argument, CMakeParser.String)])
+                value = " ".join(
+                    [argument.text for argument in t.arguments[1:] if isinstance(argument, CMakeParser.String)]
+                )
                 if substitute:
                     value = self.substituteVariableReferences(value)
                 return value
@@ -302,11 +304,9 @@ class ExtensionProject:
         """
 
         for t in self._scriptContents.tokens:
-            if _isCommand(t, "set") and len(t.arguments) and \
-               t.arguments[0].text == name:
+            if _isCommand(t, "set") and len(t.arguments) and t.arguments[0].text == name:
                 if len(t.arguments) < 2:
-                    t.arguments.append(CMakeParser.String(text=value, indent=" ",
-                                                          prefix='"', suffix='"'))
+                    t.arguments.append(CMakeParser.String(text=value, indent=" ", prefix='"', suffix='"'))
 
                 else:
                     varg = t.arguments[1]
@@ -339,8 +339,7 @@ class ExtensionProject:
         for n in range(len(self._scriptContents.tokens)):
             t = self._scriptContents.tokens[n]
 
-            if isinstance(t, CMakeParser.Comment) and \
-               t.text.startswith(self._moduleInsertPlaceholder):
+            if isinstance(t, CMakeParser.Comment) and t.text.startswith(self._moduleInsertPlaceholder):
                 indent = t.indent
                 after = n
                 t.indent = _trimIndent(t.indent)
@@ -354,8 +353,7 @@ class ExtensionProject:
             raise EOFError("failed to find insertion point for module")
 
         arguments = [CMakeParser.String(text=name)]
-        t = CMakeParser.Command(text="add_subdirectory", arguments=arguments,
-                                indent=indent)
+        t = CMakeParser.Command(text="add_subdirectory", arguments=arguments, indent=indent)
         self._scriptContents.tokens.insert(after, t)
 
     # ---------------------------------------------------------------------------

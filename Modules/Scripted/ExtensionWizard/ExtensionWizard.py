@@ -155,12 +155,10 @@ class ExtensionWizardWidget:
         self.extensionContentsView.hideColumn(3)
 
         self.createExtensionModuleButton = createToolButton("Add Module to Extension")
-        self.createExtensionModuleButton.connect("clicked(bool)",
-                                                 self.createExtensionModule)
+        self.createExtensionModuleButton.connect("clicked(bool)", self.createExtensionModule)
 
         self.editExtensionMetadataButton = createToolButton("Edit Extension Metadata")
-        self.editExtensionMetadataButton.connect("clicked(bool)",
-                                                 self.editExtensionMetadata)
+        self.editExtensionMetadataButton.connect("clicked(bool)", self.editExtensionMetadata)
 
         editorLayout = qt.QFormLayout(self.editorCollapsibleButton)
         editorLayout.addRow("Name:", self.extensionNameField)
@@ -226,8 +224,9 @@ class ExtensionWizardWidget:
                 if repo is None:
                     destination = os.path.join(dlg.destination, dlg.componentName)
                     if os.path.exists(destination):
-                        raise OSError("create extension: refusing to overwrite"
-                                      " existing directory '%s'" % destination)
+                        raise OSError(
+                            "create extension: refusing to overwrite" " existing directory '%s'" % destination
+                        )
                     createInSubdirectory = False
 
                 else:
@@ -236,17 +235,26 @@ class ExtensionWizardWidget:
                     createInSubdirectory = False  # create the files in the destination directory
                     requireEmptyDirectory = False  # we only check if no CMakeLists.txt file exists
                     if os.path.exists(cmakeFile):
-                        raise OSError("create extension: refusing to overwrite"
-                                      " directory containing CMakeLists.txt file at '%s'" % dlg.destination)
+                        raise OSError(
+                            "create extension: refusing to overwrite"
+                            " directory containing CMakeLists.txt file at '%s'" % dlg.destination
+                        )
 
                 path = self.templateManager.copyTemplate(
-                    destination, "extensions",
-                    dlg.componentType, dlg.componentName,
-                    createInSubdirectory, requireEmptyDirectory)
+                    destination,
+                    "extensions",
+                    dlg.componentType,
+                    dlg.componentName,
+                    createInSubdirectory,
+                    requireEmptyDirectory,
+                )
 
             except:
-                if not slicer.util.confirmRetryCloseDisplay("An error occurred while trying to create the extension.",
-                                                            parent=self.parent.window(), detailedText=traceback.format_exc()):
+                if not slicer.util.confirmRetryCloseDisplay(
+                    "An error occurred while trying to create the extension.",
+                    parent=self.parent.window(),
+                    detailedText=traceback.format_exc(),
+                ):
                     return
 
                 continue
@@ -260,8 +268,8 @@ class ExtensionWizardWidget:
     def selectExtension(self, path=None):
         if path is None or isinstance(path, bool):
             path = qt.QFileDialog.getExistingDirectory(
-                self.parent.window(), "Select Extension...",
-                self.extensionLocation)
+                self.parent.window(), "Select Extension...", self.extensionLocation
+            )
 
         if not len(path):
             return False
@@ -286,8 +294,12 @@ class ExtensionWizardWidget:
             xp = SlicerWizard.ExtensionProject(path)
 
         except:
-            slicer.util.errorDisplay("Failed to open extension '%s'." % path, parent=self.parent.window(),
-                                     detailedText=traceback.format_exc(), standardButtons=qt.QMessageBox.Close)
+            slicer.util.errorDisplay(
+                "Failed to open extension '%s'." % path,
+                parent=self.parent.window(),
+                detailedText=traceback.format_exc(),
+                standardButtons=qt.QMessageBox.Close,
+            )
             return False
 
         # Enable and show edit section
@@ -355,7 +367,9 @@ class ExtensionWizardWidget:
                 # Add module(s) to permanent search paths, if requested
                 if dlg.addToSearchPaths:
                     settings = slicer.app.revisionUserSettings()
-                    rawSearchPaths = list(_settingsList(settings, "Modules/AdditionalPaths", convertToAbsolutePaths=True))
+                    rawSearchPaths = list(
+                        _settingsList(settings, "Modules/AdditionalPaths", convertToAbsolutePaths=True)
+                    )
                     searchPaths = [qt.QDir(path) for path in rawSearchPaths]
                     modified = False
 
@@ -368,7 +382,9 @@ class ExtensionWizardWidget:
                             modified = True
 
                     if modified:
-                        settings.setValue("Modules/AdditionalPaths", slicer.app.toSlicerHomeRelativePaths(rawSearchPaths))
+                        settings.setValue(
+                            "Modules/AdditionalPaths", slicer.app.toSlicerHomeRelativePaths(rawSearchPaths)
+                        )
 
                 # Enable developer mode (shows Reload&Test section, etc.), if requested
                 if dlg.enableDeveloperMode:
@@ -389,21 +405,28 @@ class ExtensionWizardWidget:
                         text = "The '%s' module could not be registered:" % failed[0].key
 
                     failedFormat = "<ul><li>%(key)s<br/>(%(path)s)</li></ul>"
-                    detailedInformation = "".join(
-                        [failedFormat % m.__dict__ for m in failed])
+                    detailedInformation = "".join([failedFormat % m.__dict__ for m in failed])
 
-                    slicer.util.errorDisplay(text, parent=parent, windowTitle="Module loading failed",
-                                             standardButtons=qt.QMessageBox.Close, informativeText=detailedInformation)
+                    slicer.util.errorDisplay(
+                        text,
+                        parent=parent,
+                        windowTitle="Module loading failed",
+                        standardButtons=qt.QMessageBox.Close,
+                        informativeText=detailedInformation,
+                    )
 
                     return
 
                 # Instantiate and load requested module(s)
                 if not factory.loadModules([module.key for module in modulesToLoad]):
-                    text = ("The module factory manager reported an error. "
-                            "One or more of the requested module(s) and/or "
-                            "dependencies thereof may not have been loaded.")
-                    slicer.util.errorDisplay(text, parent=parent, windowTitle="Error loading module(s)",
-                                             standardButtons=qt.QMessageBox.Close)
+                    text = (
+                        "The module factory manager reported an error. "
+                        "One or more of the requested module(s) and/or "
+                        "dependencies thereof may not have been loaded."
+                    )
+                    slicer.util.errorDisplay(
+                        text, parent=parent, windowTitle="Error loading module(s)", standardButtons=qt.QMessageBox.Close
+                    )
 
     # ---------------------------------------------------------------------------
     def createExtensionModule(self):
@@ -413,21 +436,21 @@ class ExtensionWizardWidget:
             return
 
         dlg = CreateComponentDialog("module", self.parent.window())
-        dlg.setTemplates(self.templateManager.templates("modules"),
-                         default="scripted")
+        dlg.setTemplates(self.templateManager.templates("modules"), default="scripted")
         dlg.showDestination = False
 
         while dlg.exec_() == qt.QDialog.Accepted:
             name = dlg.componentName
 
             try:
-                self.templateManager.copyTemplate(self.extensionLocation, "modules",
-                                                  dlg.componentType, name)
+                self.templateManager.copyTemplate(self.extensionLocation, "modules", dlg.componentType, name)
 
             except:
-                if not slicer.util.confirmRetryCloseDisplay("An error occurred while trying to create the module.",
-                                                            parent=self.parent.window(),
-                                                            detailedText=traceback.format_exc()):
+                if not slicer.util.confirmRetryCloseDisplay(
+                    "An error occurred while trying to create the module.",
+                    parent=self.parent.window(),
+                    detailedText=traceback.format_exc(),
+                ):
                     return
 
                 continue
@@ -438,15 +461,24 @@ class ExtensionWizardWidget:
 
             except:
                 text = "An error occurred while adding the module to the extension."
-                detailedInformation = "The module has been created, but the extension" \
-                                      " CMakeLists.txt could not be updated. In order" \
-                                      " to include the module in the extension build," \
-                                      " you will need to update the extension" \
-                                      " CMakeLists.txt by hand."
-                slicer.util.errorDisplay(text, parent=self.parent.window(), detailedText=traceback.format_exc(),
-                                         standardButtons=qt.QMessageBox.Close, informativeText=detailedInformation)
+                detailedInformation = (
+                    "The module has been created, but the extension"
+                    " CMakeLists.txt could not be updated. In order"
+                    " to include the module in the extension build,"
+                    " you will need to update the extension"
+                    " CMakeLists.txt by hand."
+                )
+                slicer.util.errorDisplay(
+                    text,
+                    parent=self.parent.window(),
+                    detailedText=traceback.format_exc(),
+                    standardButtons=qt.QMessageBox.Close,
+                    informativeText=detailedInformation,
+                )
 
-            ExtensionWizardWidget.loadModules(os.path.join(self.extensionLocation, name), depth=0, parent=self.parent.window())
+            ExtensionWizardWidget.loadModules(
+                os.path.join(self.extensionLocation, name), depth=0, parent=self.parent.window()
+            )
             return
 
     # ---------------------------------------------------------------------------

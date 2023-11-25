@@ -26,15 +26,20 @@ class ScriptedLoadableModuleTemplate(ScriptedLoadableModule):
         self.parent.dependencies = []
         self.parent.contributors = ["John Doe (AnyWare Corp.)"]  # replace with "Firstname Lastname (Organization)"
         # _() function marks text as translatable to other languages
-        self.parent.helpText = _("""
+        self.parent.helpText = _(
+            """
 This is an example of scripted loadable module bundled in an extension.
 It performs a simple thresholding on the input volume and optionally captures a screenshot.
-""")
+"""
+        )
         self.parent.helpText += self.getDefaultModuleDocumentationLink()
-        self.parent.acknowledgementText = _("""
+        self.parent.acknowledgementText = _(
+            """
 This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc.
 and Steve Pieper, Isomics, Inc. and was partially funded by NIH grant 3P41RR013218-12S1.
-""")  # replace with organization, grant and thanks.
+"""
+        )  # replace with organization, grant and thanks.
+
 
 #
 # ScriptedLoadableModuleTemplateWidget
@@ -100,7 +105,10 @@ class ScriptedLoadableModuleTemplateWidget(ScriptedLoadableModuleWidget):
         self.imageThresholdSliderWidget.maximum = 100
         self.imageThresholdSliderWidget.value = 0.5
         self.imageThresholdSliderWidget.setToolTip(
-            _("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero."))
+            _(
+                "Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero."
+            )
+        )
         parametersFormLayout.addRow(_("Image threshold"), self.imageThresholdSliderWidget)
 
         #
@@ -108,7 +116,9 @@ class ScriptedLoadableModuleTemplateWidget(ScriptedLoadableModuleWidget):
         #
         self.enableScreenshotsFlagCheckBox = qt.QCheckBox()
         self.enableScreenshotsFlagCheckBox.checked = 0
-        self.enableScreenshotsFlagCheckBox.setToolTip(_("If checked, take screen shots for tutorials. Use Save Data to write them to disk."))
+        self.enableScreenshotsFlagCheckBox.setToolTip(
+            _("If checked, take screen shots for tutorials. Use Save Data to write them to disk.")
+        )
         parametersFormLayout.addRow(_("Enable Screenshots"), self.enableScreenshotsFlagCheckBox)
 
         #
@@ -140,7 +150,9 @@ class ScriptedLoadableModuleTemplateWidget(ScriptedLoadableModuleWidget):
         logic = ScriptedLoadableModuleTemplateLogic()
         enableScreenshotsFlag = self.enableScreenshotsFlagCheckBox.checked
         imageThreshold = self.imageThresholdSliderWidget.value
-        logic.run(self.inputSelector.currentNode(), self.outputSelector.currentNode(), imageThreshold, enableScreenshotsFlag)
+        logic.run(
+            self.inputSelector.currentNode(), self.outputSelector.currentNode(), imageThreshold, enableScreenshotsFlag
+        )
 
 
 #
@@ -180,7 +192,9 @@ class ScriptedLoadableModuleTemplateLogic(ScriptedLoadableModuleLogic):
             logging.debug("isValidInputOutputData failed: no output volume node defined")
             return False
         if inputVolumeNode.GetID() == outputVolumeNode.GetID():
-            logging.debug("isValidInputOutputData failed: input and output volume is the same. Create a new volume for output to avoid this error.")
+            logging.debug(
+                "isValidInputOutputData failed: input and output volume is the same. Create a new volume for output to avoid this error."
+            )
             return False
         return True
 
@@ -194,7 +208,12 @@ class ScriptedLoadableModuleTemplateLogic(ScriptedLoadableModuleLogic):
         logging.info("Processing started")
 
         # Compute the thresholded output volume using the Threshold Scalar Volume CLI module
-        cliParams = {"InputVolume": inputVolume.GetID(), "OutputVolume": outputVolume.GetID(), "ThresholdValue": imageThreshold, "ThresholdType": "Above"}
+        cliParams = {
+            "InputVolume": inputVolume.GetID(),
+            "OutputVolume": outputVolume.GetID(),
+            "ThresholdValue": imageThreshold,
+            "ThresholdType": "Above",
+        }
         cliNode = slicer.cli.run(slicer.modules.thresholdscalarvolume, None, cliParams, wait_for_completion=True)
 
         logging.info("Processing completed")
@@ -240,7 +259,8 @@ class ScriptedLoadableModuleTemplateTest(ScriptedLoadableModuleTest):
             nodeNames="MRHead",
             fileNames="MR-head.nrrd",
             uris=TESTING_DATA_URL + "SHA256/cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93",
-            checksums="SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93")
+            checksums="SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93",
+        )
         self.delayDisplay("Finished with download and loading")
 
         logic = ScriptedLoadableModuleTemplateLogic()

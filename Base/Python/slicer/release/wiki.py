@@ -144,9 +144,7 @@ class Wiki:
         """Copy ``Documentation/Nightly`` and ``Template:Documentation/Nightly``
         pages into ``release_version`` namespace.
         """
-        self.doc.versionPages(
-            "Nightly", release_version,
-            ["Documentation", "Template:Documentation"])
+        self.doc.versionPages("Nightly", release_version, ["Documentation", "Template:Documentation"])
 
     VERSION_INFO_PAGES = {
         "previous": "Template:Documentation/prevversion",
@@ -191,24 +189,20 @@ class Wiki:
             # update page
             content = self.page_content(page_name)
             template = "<includeonly>%s</includeonly>"
-            log.debug("replacing '{}' with '{}'".format(
-                template % current_version, template % updated_version))
-            content = content.replace(
-                template % current_version, template % updated_version)
-            summary = "Update {} version from {} to {}".format(
-                page_short_name, current_version, updated_version)
+            log.debug("replacing '{}' with '{}'".format(template % current_version, template % updated_version))
+            content = content.replace(template % current_version, template % updated_version)
+            summary = "Update {} version from {} to {}".format(page_short_name, current_version, updated_version)
             self.set_page_content(page_name, content, summary)
             # sanity check
             current_version = self.version_info(page_name)
             if current_version != updated_version:
                 raise RuntimeError(
-                    "Failed to update {}: {} version is {}".format(
-                        page_name, page_short_name, current_version))
+                    "Failed to update {}: {} version is {}".format(page_name, page_short_name, current_version)
+                )
 
     def version_list(self):
         content = self.page_content("Template:Documentation/versionlist")
-        return re.findall(
-            r"\[\[Documentation/(?:[.\w]+)\|([.\w]+)\]\]", content)
+        return re.findall(r"\[\[Documentation/(?:[.\w]+)\|([.\w]+)\]\]", content)
 
     def update_version_list(self, release_version):
         # check if update is needed
@@ -231,15 +225,11 @@ class Wiki:
         # sanity check
         current_list = self.version_list()
         if release_version not in current_list:
-            raise RuntimeError(
-                "Failed to update {}: version {} is not in the list".format(
-                    page_name, release_version))
+            raise RuntimeError("Failed to update {}: version {} is not in the list".format(page_name, release_version))
 
     def acknowledgments_main_version(self):
-        content = self.page_content(
-            "Template:Documentation/acknowledgments-versionlist")
-        return re.findall(
-            r"\[\[Documentation/(?:[.\w]+)/Acknowledgments\|([.\w]+)\]\]", content)[0]
+        content = self.page_content("Template:Documentation/acknowledgments-versionlist")
+        return re.findall(r"\[\[Documentation/(?:[.\w]+)/Acknowledgments\|([.\w]+)\]\]", content)[0]
 
     REDIRECT_PAGES = [
         "FAQ",
@@ -271,34 +261,32 @@ class Wiki:
             content = self.page_content(redirect_page)
             template = "#REDIRECT [[Documentation/%s"
             log.debug("replacing %s" % (template % current_version))
-            content = content.replace(
-                template % current_version, template % release_version)
+            content = content.replace(template % current_version, template % release_version)
             summary = "Update REDIRECT from Documentation/{} to Documentation/{}".format(
-                current_version, release_version)
+                current_version, release_version
+            )
             self.set_page_content(redirect_page, content, summary)
             # sanity check
             current_version = self.redirect_page_version(redirect_page)
             if current_version != release_version:
-                raise RuntimeError(
-                    "Failed to update {}: version is {}".format(
-                        redirect_page, current_version))
+                raise RuntimeError("Failed to update {}: version is {}".format(redirect_page, current_version))
 
     def update_top_level_documentation_page(self, release_version):
         # check if update is needed
         page_name = "Documentation"
-        template = "* [[Documentation/{version}|{version}]] / " \
-                   "[[Documentation/{version}/ReleaseNotes|Release notes]] / " \
-                   "[[Documentation/{version}/Announcements | Announcement]] / " \
-                   "[[Documentation/{version}/Acknowledgments | Acknowledgments]]"
+        template = (
+            "* [[Documentation/{version}|{version}]] / "
+            "[[Documentation/{version}/ReleaseNotes|Release notes]] / "
+            "[[Documentation/{version}/Announcements | Announcement]] / "
+            "[[Documentation/{version}/Acknowledgments | Acknowledgments]]"
+        )
         marker = "<!-- NEXT RELEASE -->"
         content = self.page_content(page_name)
         if marker not in content:
-            log.error(
-                f"failed to update {page_name}: marker {marker} not found")
+            log.error(f"failed to update {page_name}: marker {marker} not found")
             return
         if template.format(version=release_version) in content:
-            log.info(
-                f"skipping {page_name}: version {release_version} already added")
+            log.info(f"skipping {page_name}: version {release_version} already added")
             return
         # update page
         content = content.replace(
@@ -322,8 +310,7 @@ def handle_query(wiki, args):
 
     def display_next_version_info():
         print("Next version info:")
-        for page_short_name, version in \
-                wiki.compute_updated_version_info(wiki.next_version()).items():
+        for page_short_name, version in wiki.compute_updated_version_info(wiki.next_version()).items():
             page_name = Wiki.VERSION_INFO_PAGES[page_short_name]
             print(f"  {page_name}: {version}")
 
@@ -331,8 +318,7 @@ def handle_query(wiki, args):
         print("Versions: %s" % " ".join(wiki.version_list()))
 
     def display_acknowledgments_main_version():
-        print(
-            "Acknowledgments main version: %s" % wiki.acknowledgments_main_version())
+        print("Acknowledgments main version: %s" % wiki.acknowledgments_main_version())
 
     def display_redirect_pages_version():
         print("Redirect pages:")

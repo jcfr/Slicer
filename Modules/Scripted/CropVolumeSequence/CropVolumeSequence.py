@@ -26,11 +26,15 @@ class CropVolumeSequence(ScriptedLoadableModule):
         self.parent.categories = [translate("qSlicerAbstractCoreModule", "Sequences")]
         self.parent.dependencies = []
         self.parent.contributors = ["Andras Lasso (PerkLab, Queen's University)"]
-        self.parent.helpText = _("""This module can crop and resample a volume sequence to reduce its size for faster rendering and processing.""")
+        self.parent.helpText = _(
+            """This module can crop and resample a volume sequence to reduce its size for faster rendering and processing."""
+        )
         self.parent.helpText += self.getDefaultModuleDocumentationLink()
-        self.parent.acknowledgementText = _("""
+        self.parent.acknowledgementText = _(
+            """
 This file was originally developed by Andras Lasso
-""")
+"""
+        )
 
 
 #
@@ -85,7 +89,9 @@ class CropVolumeSequenceWidget(ScriptedLoadableModuleWidget):
         self.outputSelector.showHidden = False
         self.outputSelector.showChildNodeTypes = False
         self.outputSelector.setMRMLScene(slicer.mrmlScene)
-        self.outputSelector.setToolTip(_("Pick a sequence node where the cropped and resampled volumes will be stored."))
+        self.outputSelector.setToolTip(
+            _("Pick a sequence node where the cropped and resampled volumes will be stored.")
+        )
         parametersFormLayout.addRow(_("Output volume sequence: "), self.outputSelector)
 
         #
@@ -153,7 +159,11 @@ class CropVolumeSequenceWidget(ScriptedLoadableModuleWidget):
 
     def onApplyButton(self):
         logic = CropVolumeSequenceLogic()
-        logic.run(self.inputSelector.currentNode(), self.outputSelector.currentNode(), self.cropParametersSelector.currentNode())
+        logic.run(
+            self.inputSelector.currentNode(),
+            self.outputSelector.currentNode(),
+            self.cropParametersSelector.currentNode(),
+        )
 
 
 #
@@ -330,8 +340,7 @@ class CropVolumeSequenceTest(ScriptedLoadableModuleTest):
 
         # Verify results
 
-        self.assertEqual(croppedSequenceNode.GetNumberOfDataNodes(),
-                         sequenceNode.GetNumberOfDataNodes())
+        self.assertEqual(croppedSequenceNode.GetNumberOfDataNodes(), sequenceNode.GetNumberOfDataNodes())
 
         cropVolumeNode = sequenceBrowserNode.GetProxyNode(croppedSequenceNode)
         self.assertIsNotNone(cropVolumeNode)

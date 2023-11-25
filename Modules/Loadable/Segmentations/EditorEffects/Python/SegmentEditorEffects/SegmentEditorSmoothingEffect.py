@@ -33,7 +33,8 @@ class SegmentEditorSmoothingEffect(AbstractScriptedSegmentEditorPaintEffect):
         return qt.QIcon()
 
     def helpText(self):
-        return "<html>" + _("""Make segment boundaries smoother<br> by removing extrusions and filling small holes. The effect can be either applied locally
+        return "<html>" + _(
+            """Make segment boundaries smoother<br> by removing extrusions and filling small holes. The effect can be either applied locally
 (by painting in viewers) or to the whole segment (by clicking Apply button). Available methods:<p>
 <ul style="margin: 0">
 <li><b>Median:</b> removes small details while keeps smooth contours mostly unchanged. Applied to selected segment only.
@@ -42,7 +43,8 @@ class SegmentEditorSmoothingEffect(AbstractScriptedSegmentEditorPaintEffect):
 <li><b>Gaussian:</b> smoothes all contours, tends to shrink the segment. Applied to selected segment only.
 <li><b>Joint smoothing:</b> smoothes multiple segments at once, preserving watertight interface between them. Masking settings are bypassed.
 If segments overlap, segment higher in the segments table will have priority. <b>Applied to all visible segments.</b>
-</ul><p>""")
+</ul><p>"""
+        )
 
     def setupOptionsFrame(self):
         self.methodSelectorComboBox = qt.QComboBox()
@@ -55,15 +57,23 @@ If segments overlap, segment higher in the segments table will have priority. <b
 
         self.kernelSizeMMSpinBox = slicer.qMRMLSpinBox()
         self.kernelSizeMMSpinBox.setMRMLScene(slicer.mrmlScene)
-        self.kernelSizeMMSpinBox.setToolTip(_("Diameter of the neighborhood that will be considered around each voxel. "
-                                              "Higher value makes smoothing stronger (more details are suppressed)."))
+        self.kernelSizeMMSpinBox.setToolTip(
+            _(
+                "Diameter of the neighborhood that will be considered around each voxel. "
+                "Higher value makes smoothing stronger (more details are suppressed)."
+            )
+        )
         self.kernelSizeMMSpinBox.quantity = "length"
         self.kernelSizeMMSpinBox.minimum = 0.0
         self.kernelSizeMMSpinBox.value = 3.0
         self.kernelSizeMMSpinBox.singleStep = 1.0
 
         self.kernelSizePixel = qt.QLabel()
-        self.kernelSizePixel.setToolTip(_("Diameter of the neighborhood in pixel. Computed from the segment's spacing and the specified kernel size."))
+        self.kernelSizePixel.setToolTip(
+            _(
+                "Diameter of the neighborhood in pixel. Computed from the segment's spacing and the specified kernel size."
+            )
+        )
 
         kernelSizeFrame = qt.QHBoxLayout()
         kernelSizeFrame.addWidget(self.kernelSizeMMSpinBox)
@@ -72,12 +82,18 @@ If segments overlap, segment higher in the segments table will have priority. <b
 
         self.gaussianStandardDeviationMMSpinBox = slicer.qMRMLSpinBox()
         self.gaussianStandardDeviationMMSpinBox.setMRMLScene(slicer.mrmlScene)
-        self.gaussianStandardDeviationMMSpinBox.setToolTip(_("Standard deviation of the Gaussian smoothing filter coefficients. "
-                                                             "Higher value makes smoothing stronger (more details are suppressed)."))
+        self.gaussianStandardDeviationMMSpinBox.setToolTip(
+            _(
+                "Standard deviation of the Gaussian smoothing filter coefficients. "
+                "Higher value makes smoothing stronger (more details are suppressed)."
+            )
+        )
         self.gaussianStandardDeviationMMSpinBox.quantity = "length"
         self.gaussianStandardDeviationMMSpinBox.value = 3.0
         self.gaussianStandardDeviationMMSpinBox.singleStep = 1.0
-        self.gaussianStandardDeviationMMLabel = self.scriptedEffect.addLabeledOptionsWidget(_("Standard deviation:"), self.gaussianStandardDeviationMMSpinBox)
+        self.gaussianStandardDeviationMMLabel = self.scriptedEffect.addLabeledOptionsWidget(
+            _("Standard deviation:"), self.gaussianStandardDeviationMMSpinBox
+        )
 
         self.jointTaubinSmoothingFactorSlider = ctk.ctkSliderWidget()
         self.jointTaubinSmoothingFactorSlider.setToolTip(_("Higher value means stronger smoothing."))
@@ -86,14 +102,20 @@ If segments overlap, segment higher in the segments table will have priority. <b
         self.jointTaubinSmoothingFactorSlider.value = 0.5
         self.jointTaubinSmoothingFactorSlider.singleStep = 0.01
         self.jointTaubinSmoothingFactorSlider.pageStep = 0.1
-        self.jointTaubinSmoothingFactorLabel = self.scriptedEffect.addLabeledOptionsWidget(_("Smoothing factor:"), self.jointTaubinSmoothingFactorSlider)
+        self.jointTaubinSmoothingFactorLabel = self.scriptedEffect.addLabeledOptionsWidget(
+            _("Smoothing factor:"), self.jointTaubinSmoothingFactorSlider
+        )
 
         self.applyToAllVisibleSegmentsCheckBox = qt.QCheckBox()
         self.applyToAllVisibleSegmentsCheckBox.setToolTip(
-            _("Apply smoothing effect to all visible segments in this segmentation node. This operation may take a while."))
+            _(
+                "Apply smoothing effect to all visible segments in this segmentation node. This operation may take a while."
+            )
+        )
         self.applyToAllVisibleSegmentsCheckBox.objectName = self.__class__.__name__ + "ApplyToAllVisibleSegments"
-        self.applyToAllVisibleSegmentsLabel = self.scriptedEffect.addLabeledOptionsWidget(_("Apply to visible segments:"),
-                                                                                          self.applyToAllVisibleSegmentsCheckBox)
+        self.applyToAllVisibleSegmentsLabel = self.scriptedEffect.addLabeledOptionsWidget(
+            _("Apply to visible segments:"), self.applyToAllVisibleSegmentsCheckBox
+        )
 
         self.applyButton = qt.QPushButton(_("Apply"))
         self.applyButton.objectName = self.__class__.__name__ + "Apply"
@@ -126,7 +148,11 @@ If segments overlap, segment higher in the segments table will have priority. <b
     def updateParameterWidgetsVisibility(self):
         methodIndex = self.methodSelectorComboBox.currentIndex
         smoothingMethod = self.methodSelectorComboBox.itemData(methodIndex)
-        morphologicalMethod = (smoothingMethod == MEDIAN or smoothingMethod == MORPHOLOGICAL_OPENING or smoothingMethod == MORPHOLOGICAL_CLOSING)
+        morphologicalMethod = (
+            smoothingMethod == MEDIAN
+            or smoothingMethod == MORPHOLOGICAL_OPENING
+            or smoothingMethod == MORPHOLOGICAL_CLOSING
+        )
         self.kernelSizeMMLabel.setVisible(morphologicalMethod)
         self.kernelSizeMMSpinBox.setVisible(morphologicalMethod)
         self.kernelSizePixel.setVisible(morphologicalMethod)
@@ -145,7 +171,10 @@ If segments overlap, segment higher in the segments table will have priority. <b
 
         # size rounded to nearest odd number. If kernel size is even then image gets shifted.
         kernelSizeMM = self.scriptedEffect.doubleParameter("KernelSizeMm")
-        kernelSizePixel = [int(round((kernelSizeMM / selectedSegmentLabelmapSpacing[componentIndex] + 1) / 2) * 2 - 1) for componentIndex in range(3)]
+        kernelSizePixel = [
+            int(round((kernelSizeMM / selectedSegmentLabelmapSpacing[componentIndex] + 1) / 2) * 2 - 1)
+            for componentIndex in range(3)
+        ]
         return kernelSizePixel
 
     def updateGUIFromMRML(self):
@@ -155,22 +184,30 @@ If segments overlap, segment higher in the segments table will have priority. <b
         self.methodSelectorComboBox.blockSignals(wasBlocked)
 
         wasBlocked = self.kernelSizeMMSpinBox.blockSignals(True)
-        self.setWidgetMinMaxStepFromImageSpacing(self.kernelSizeMMSpinBox, self.scriptedEffect.selectedSegmentLabelmap())
+        self.setWidgetMinMaxStepFromImageSpacing(
+            self.kernelSizeMMSpinBox, self.scriptedEffect.selectedSegmentLabelmap()
+        )
         self.kernelSizeMMSpinBox.value = self.scriptedEffect.doubleParameter("KernelSizeMm")
         self.kernelSizeMMSpinBox.blockSignals(wasBlocked)
         kernelSizePixel = self.getKernelSizePixel()
         self.kernelSizePixel.text = f"{kernelSizePixel[0]}x{kernelSizePixel[1]}x{kernelSizePixel[2]} pixel"
 
         wasBlocked = self.gaussianStandardDeviationMMSpinBox.blockSignals(True)
-        self.setWidgetMinMaxStepFromImageSpacing(self.gaussianStandardDeviationMMSpinBox, self.scriptedEffect.selectedSegmentLabelmap())
-        self.gaussianStandardDeviationMMSpinBox.value = self.scriptedEffect.doubleParameter("GaussianStandardDeviationMm")
+        self.setWidgetMinMaxStepFromImageSpacing(
+            self.gaussianStandardDeviationMMSpinBox, self.scriptedEffect.selectedSegmentLabelmap()
+        )
+        self.gaussianStandardDeviationMMSpinBox.value = self.scriptedEffect.doubleParameter(
+            "GaussianStandardDeviationMm"
+        )
         self.gaussianStandardDeviationMMSpinBox.blockSignals(wasBlocked)
 
         wasBlocked = self.jointTaubinSmoothingFactorSlider.blockSignals(True)
         self.jointTaubinSmoothingFactorSlider.value = self.scriptedEffect.doubleParameter("JointTaubinSmoothingFactor")
         self.jointTaubinSmoothingFactorSlider.blockSignals(wasBlocked)
 
-        applyToAllVisibleSegments = qt.Qt.Unchecked if self.scriptedEffect.integerParameter("ApplyToAllVisibleSegments") == 0 else qt.Qt.Checked
+        applyToAllVisibleSegments = (
+            qt.Qt.Unchecked if self.scriptedEffect.integerParameter("ApplyToAllVisibleSegments") == 0 else qt.Qt.Checked
+        )
         wasBlocked = self.applyToAllVisibleSegmentsCheckBox.blockSignals(True)
         self.applyToAllVisibleSegmentsCheckBox.setCheckState(applyToAllVisibleSegments)
         self.applyToAllVisibleSegmentsCheckBox.blockSignals(wasBlocked)
@@ -200,8 +237,11 @@ If segments overlap, segment higher in the segments table will have priority. <b
     def onApply(self, maskImage=None, maskExtent=None):
         """maskImage: contains nonzero where smoothing will be applied"""
         smoothingMethod = self.scriptedEffect.parameter("SmoothingMethod")
-        applyToAllVisibleSegments = int(self.scriptedEffect.parameter("ApplyToAllVisibleSegments")) != 0 \
-            if self.scriptedEffect.parameter("ApplyToAllVisibleSegments") else False
+        applyToAllVisibleSegments = (
+            int(self.scriptedEffect.parameter("ApplyToAllVisibleSegments")) != 0
+            if self.scriptedEffect.parameter("ApplyToAllVisibleSegments")
+            else False
+        )
 
         if smoothingMethod != JOINT_TAUBIN:
             # Make sure the user wants to do the operation, even if the segment is not visible
@@ -227,7 +267,11 @@ If segments overlap, segment higher in the segments table will have priority. <b
                     return
                 for index in range(inputSegmentIDs.GetNumberOfValues()):
                     segmentID = inputSegmentIDs.GetValue(index)
-                    self.showStatusMessage(_("Smoothing {segmentName}...").format(segmentationNode.GetSegmentation().GetSegment(segmentID).GetName()))
+                    self.showStatusMessage(
+                        _("Smoothing {segmentName}...").format(
+                            segmentationNode.GetSegmentation().GetSegment(segmentID).GetName()
+                        )
+                    )
                     self.scriptedEffect.parameterSetNode().SetSelectedSegmentID(segmentID)
                     self.smoothSelectedSegment(maskImage, maskExtent)
                 # restore segment selection
@@ -239,9 +283,14 @@ If segments overlap, segment higher in the segments table will have priority. <b
 
     def clipImage(self, inputImage, maskExtent, margin):
         clipper = vtk.vtkImageClip()
-        clipper.SetOutputWholeExtent(maskExtent[0] - margin[0], maskExtent[1] + margin[0],
-                                     maskExtent[2] - margin[1], maskExtent[3] + margin[1],
-                                     maskExtent[4] - margin[2], maskExtent[5] + margin[2])
+        clipper.SetOutputWholeExtent(
+            maskExtent[0] - margin[0],
+            maskExtent[1] + margin[0],
+            maskExtent[2] - margin[1],
+            maskExtent[3] + margin[1],
+            maskExtent[4] - margin[2],
+            maskExtent[5] + margin[2],
+        )
         clipper.SetInputData(inputImage)
         clipper.SetClipData(True)
         clipper.Update()
@@ -250,7 +299,9 @@ If segments overlap, segment higher in the segments table will have priority. <b
         clippedImage.CopyDirections(inputImage)
         return clippedImage
 
-    def modifySelectedSegmentByLabelmap(self, smoothedImage, selectedSegmentLabelmap, modifierLabelmap, maskImage, maskExtent):
+    def modifySelectedSegmentByLabelmap(
+        self, smoothedImage, selectedSegmentLabelmap, modifierLabelmap, maskImage, maskExtent
+    ):
         if maskImage:
             smoothedClippedSelectedSegmentLabelmap = slicer.vtkOrientedImageData()
             smoothedClippedSelectedSegmentLabelmap.ShallowCopy(smoothedImage)
@@ -258,12 +309,16 @@ If segments overlap, segment higher in the segments table will have priority. <b
 
             # fill smoothed selected segment outside the painted region to 1 so that in the end the image is not modified by OPERATION_MINIMUM
             fillValue = 1.0
-            slicer.vtkOrientedImageDataResample.ApplyImageMask(smoothedClippedSelectedSegmentLabelmap, maskImage, fillValue, False)
+            slicer.vtkOrientedImageDataResample.ApplyImageMask(
+                smoothedClippedSelectedSegmentLabelmap, maskImage, fillValue, False
+            )
             # set original segment labelmap outside painted region, solid 1 inside painted region
-            slicer.vtkOrientedImageDataResample.ModifyImage(maskImage, selectedSegmentLabelmap,
-                                                            slicer.vtkOrientedImageDataResample.OPERATION_MAXIMUM)
-            slicer.vtkOrientedImageDataResample.ModifyImage(maskImage, smoothedClippedSelectedSegmentLabelmap,
-                                                            slicer.vtkOrientedImageDataResample.OPERATION_MINIMUM)
+            slicer.vtkOrientedImageDataResample.ModifyImage(
+                maskImage, selectedSegmentLabelmap, slicer.vtkOrientedImageDataResample.OPERATION_MAXIMUM
+            )
+            slicer.vtkOrientedImageDataResample.ModifyImage(
+                maskImage, smoothedClippedSelectedSegmentLabelmap, slicer.vtkOrientedImageDataResample.OPERATION_MINIMUM
+            )
 
             updateExtent = [0, -1, 0, -1, 0, -1]
             modifierExtent = modifierLabelmap.GetExtent()
@@ -271,12 +326,14 @@ If segments overlap, segment higher in the segments table will have priority. <b
                 updateExtent[2 * i] = min(maskExtent[2 * i], modifierExtent[2 * i])
                 updateExtent[2 * i + 1] = max(maskExtent[2 * i + 1], modifierExtent[2 * i + 1])
 
-            self.scriptedEffect.modifySelectedSegmentByLabelmap(maskImage,
-                                                                slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet,
-                                                                updateExtent)
+            self.scriptedEffect.modifySelectedSegmentByLabelmap(
+                maskImage, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet, updateExtent
+            )
         else:
             modifierLabelmap.DeepCopy(smoothedImage)
-            self.scriptedEffect.modifySelectedSegmentByLabelmap(modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet)
+            self.scriptedEffect.modifySelectedSegmentByLabelmap(
+                modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet
+            )
 
     def smoothSelectedSegment(self, maskImage=None, maskExtent=None):
         try:
@@ -321,14 +378,18 @@ If segments overlap, segment higher in the segments table will have priority. <b
                 thresh2.SetOutputScalarType(selectedSegmentLabelmap.GetScalarType())
                 thresh2.Update()
 
-                self.modifySelectedSegmentByLabelmap(thresh2.GetOutput(), selectedSegmentLabelmap, modifierLabelmap, maskImage, maskExtent)
+                self.modifySelectedSegmentByLabelmap(
+                    thresh2.GetOutput(), selectedSegmentLabelmap, modifierLabelmap, maskImage, maskExtent
+                )
 
             else:
                 # size rounded to nearest odd number. If kernel size is even then image gets shifted.
                 kernelSizePixel = self.getKernelSizePixel()
 
                 if maskExtent:
-                    clippedSelectedSegmentLabelmap = self.clipImage(selectedSegmentLabelmap, maskExtent, kernelSizePixel)
+                    clippedSelectedSegmentLabelmap = self.clipImage(
+                        selectedSegmentLabelmap, maskExtent, kernelSizePixel
+                    )
                 else:
                     clippedSelectedSegmentLabelmap = selectedSegmentLabelmap
 
@@ -360,7 +421,9 @@ If segments overlap, segment higher in the segments table will have priority. <b
                 smoothingFilter.SetKernelSize(kernelSizePixel[0], kernelSizePixel[1], kernelSizePixel[2])
                 smoothingFilter.Update()
 
-                self.modifySelectedSegmentByLabelmap(smoothingFilter.GetOutput(), selectedSegmentLabelmap, modifierLabelmap, maskImage, maskExtent)
+                self.modifySelectedSegmentByLabelmap(
+                    smoothingFilter.GetOutput(), selectedSegmentLabelmap, modifierLabelmap, maskImage, maskExtent
+                )
 
         except IndexError:
             logging.error("apply: Failed to apply smoothing")
@@ -378,9 +441,9 @@ If segments overlap, segment higher in the segments table will have priority. <b
             return
 
         mergedImage = slicer.vtkOrientedImageData()
-        if not segmentationNode.GenerateMergedLabelmapForAllSegments(mergedImage,
-                                                                     vtkSegmentationCore.vtkSegmentation.EXTENT_UNION_OF_SEGMENTS_PADDED,
-                                                                     None, visibleSegmentIds):
+        if not segmentationNode.GenerateMergedLabelmapForAllSegments(
+            mergedImage, vtkSegmentationCore.vtkSegmentation.EXTENT_UNION_OF_SEGMENTS_PADDED, None, visibleSegmentIds
+        ):
             logging.error("Failed to apply smoothing: cannot get list of visible segments")
             return
 
@@ -455,7 +518,9 @@ If segments overlap, segment higher in the segments table will have priority. <b
         # layer control options have been implemented. Users may wish to keep segments on separate layers, and not allow them to be
         # separated/merged automatically. This effect could leverage those options once they have been implemented.
         oldOverwriteMode = self.scriptedEffect.parameterSetNode().GetOverwriteMode()
-        self.scriptedEffect.parameterSetNode().SetOverwriteMode(slicer.vtkMRMLSegmentEditorNode.OverwriteVisibleSegments)
+        self.scriptedEffect.parameterSetNode().SetOverwriteMode(
+            slicer.vtkMRMLSegmentEditorNode.OverwriteVisibleSegments
+        )
         for segmentId, labelValue in segmentLabelValues:
             threshold.SetLowerThreshold(labelValue)
             threshold.SetUpperThreshold(labelValue)
@@ -464,8 +529,13 @@ If segments overlap, segment higher in the segments table will have priority. <b
             smoothedBinaryLabelMap = slicer.vtkOrientedImageData()
             smoothedBinaryLabelMap.ShallowCopy(stencil.GetOutput())
             smoothedBinaryLabelMap.SetImageToWorldMatrix(imageToWorldMatrix)
-            self.scriptedEffect.modifySegmentByLabelmap(segmentationNode, segmentId, smoothedBinaryLabelMap,
-                                                        slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet, False)
+            self.scriptedEffect.modifySegmentByLabelmap(
+                segmentationNode,
+                segmentId,
+                smoothedBinaryLabelMap,
+                slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet,
+                False,
+            )
         self.scriptedEffect.parameterSetNode().SetOverwriteMode(oldOverwriteMode)
 
     def paintApply(self, viewWidget):

@@ -50,8 +50,7 @@ def _credentials(client, request, action="fill"):
 
     # Raise exception if process failed
     if p.returncode != 0:
-        raise git.GitCommandError(["credential", action], p.returncode,
-                                  err.rstrip())
+        raise git.GitCommandError(["credential", action], p.returncode, err.rstrip())
 
     # Return token parsed from the command's output
     return _CredentialToken(out.decode())

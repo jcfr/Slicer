@@ -10,7 +10,12 @@ import vtk
 import slicer
 
 
-__all__ = ["ScriptedLoadableModule", "ScriptedLoadableModuleWidget", "ScriptedLoadableModuleLogic", "ScriptedLoadableModuleTest"]
+__all__ = [
+    "ScriptedLoadableModule",
+    "ScriptedLoadableModuleWidget",
+    "ScriptedLoadableModuleLogic",
+    "ScriptedLoadableModuleTest",
+]
 
 
 class ScriptedLoadableModule:
@@ -104,8 +109,7 @@ class ScriptedLoadableModuleWidget:
         if not parent:
             self.setup()
             self.parent.show()
-        slicer.app.moduleManager().connect(
-            "moduleAboutToBeUnloaded(QString)", self._onModuleAboutToBeUnloaded)
+        slicer.app.moduleManager().connect("moduleAboutToBeUnloaded(QString)", self._onModuleAboutToBeUnloaded)
 
     def resourcePath(self, filename):
         """Return the absolute path of the module ``Resources`` directory."""
@@ -132,10 +136,10 @@ class ScriptedLoadableModuleWidget:
                 settings = qt.QSettings()
                 settings.setValue(
                     f"{self.moduleName}/PreferredReloadAndTestAction",
-                    self.reloadTestMenuButton.defaultAction().objectName)
+                    self.reloadTestMenuButton.defaultAction().objectName,
+                )
 
-            slicer.app.moduleManager().disconnect(
-                "moduleAboutToBeUnloaded(QString)", self._onModuleAboutToBeUnloaded)
+            slicer.app.moduleManager().disconnect("moduleAboutToBeUnloaded(QString)", self._onModuleAboutToBeUnloaded)
 
     def setupDeveloperSection(self):
         if not self.developerMode:
@@ -187,7 +191,9 @@ class ScriptedLoadableModuleWidget:
         # Restore Last used action for this module
         defaultAction = self.reloadTestAction
         actions = [self.reloadTestAction, self.testAction]
-        defaultActionName = qt.QSettings().value(f"{self.moduleName}/PreferredReloadAndTestAction", defaultAction.objectName)
+        defaultActionName = qt.QSettings().value(
+            f"{self.moduleName}/PreferredReloadAndTestAction", defaultAction.objectName
+        )
         for action in actions:
             if action.objectName == defaultActionName:
                 defaultAction = action
@@ -197,8 +203,10 @@ class ScriptedLoadableModuleWidget:
 
         # edit python source code
         self.editSourceButton = qt.QPushButton("Edit")
-        self.editSourceButton.toolTip = ("Edit the module's source code. Shift+Click to copy the source code path to the clipboard."
-                                         " The default editor can be changed in the Python section of the Application Settings.")
+        self.editSourceButton.toolTip = (
+            "Edit the module's source code. Shift+Click to copy the source code path to the clipboard."
+            " The default editor can be changed in the Python section of the Application Settings."
+        )
         self.editSourceButton.connect("clicked()", self.onEditSource)
 
         self.editModuleUiButton = None
@@ -210,7 +218,9 @@ class ScriptedLoadableModuleWidget:
             # Module UI file exists
             self.editModuleUiButton = qt.QPushButton("Edit UI")
             self.editModuleUiButton.toolTip = "Edit the module's .ui file."
-            self.editModuleUiButton.connect("clicked()", lambda filename=moduleUiFileName: slicer.util.startQtDesigner(moduleUiFileName))
+            self.editModuleUiButton.connect(
+                "clicked()", lambda filename=moduleUiFileName: slicer.util.startQtDesigner(moduleUiFileName)
+            )
 
         # restart Slicer button
         # (use this during development, but remove it when delivering
@@ -225,7 +235,9 @@ class ScriptedLoadableModuleWidget:
             reloadFormLayout.addRow(createHLayout([self.reloadButton, self.reloadTestMenuButton, self.restartButton]))
             reloadFormLayout.addRow(createHLayout([self.editSourceButton, self.editModuleUiButton]))
         else:
-            reloadFormLayout.addRow(createHLayout([self.reloadButton, self.reloadTestMenuButton, self.editSourceButton, self.restartButton]))
+            reloadFormLayout.addRow(
+                createHLayout([self.reloadButton, self.reloadTestMenuButton, self.editSourceButton, self.restartButton])
+            )
 
     def setup(self):
         # Instantiate and connect default widgets ...

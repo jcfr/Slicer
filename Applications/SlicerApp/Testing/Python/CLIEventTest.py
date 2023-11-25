@@ -238,12 +238,23 @@ class CLIEventTestTest(ScriptedLoadableModuleTest):
         self.assertEqual(shNode.GetItemParent(shNode.GetItemByDataNode(outputVolume)), shNode.GetSceneItemID())
 
         self.delayDisplay("Run CLI module")
-        cliParams = {"InputVolume": inputVolume.GetID(), "OutputVolume": outputVolume.GetID(), "ThresholdValue": 100, "ThresholdType": "Above"}
+        cliParams = {
+            "InputVolume": inputVolume.GetID(),
+            "OutputVolume": outputVolume.GetID(),
+            "ThresholdValue": 100,
+            "ThresholdType": "Above",
+        }
         cliNode = slicer.cli.run(slicer.modules.thresholdscalarvolume, None, cliParams, wait_for_completion=True)
 
         # After CLI execution is completed, output volume must be in the same folder as the referenced node
-        self.assertEqual(shNode.GetItemParent(shNode.GetItemByDataNode(outputVolume)), shNode.GetItemParent(shNode.GetItemByDataNode(inputVolume)))
+        self.assertEqual(
+            shNode.GetItemParent(shNode.GetItemByDataNode(outputVolume)),
+            shNode.GetItemParent(shNode.GetItemByDataNode(inputVolume)),
+        )
 
         # After pending events are processed, the output volume must be in the same subject hierarchy folder
         slicer.app.processEvents()
-        self.assertEqual(shNode.GetItemParent(shNode.GetItemByDataNode(outputVolume)), shNode.GetItemParent(shNode.GetItemByDataNode(inputVolume)))
+        self.assertEqual(
+            shNode.GetItemParent(shNode.GetItemByDataNode(outputVolume)),
+            shNode.GetItemParent(shNode.GetItemByDataNode(inputVolume)),
+        )

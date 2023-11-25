@@ -18,7 +18,9 @@ class SlicerRestoreSceneViewCrashIssue3445(ScriptedLoadableModule):
         self.parent.title = "SceneView restore crash (Issue 3445)"
         self.parent.categories = ["Testing.TestCases"]
         self.parent.dependencies = []
-        self.parent.contributors = ["Jean-Christophe Fillion-Robin (Kitware)"]  # replace with "Firstname Lastname (Organization)"
+        self.parent.contributors = [
+            "Jean-Christophe Fillion-Robin (Kitware)"
+        ]  # replace with "Firstname Lastname (Organization)"
         self.parent.helpText = """This test has been added to check that
     Slicer does not crash while restoring scene view associated with BrainAtlas2012.mrb.
 
@@ -103,7 +105,8 @@ class SlicerRestoreSceneViewCrashIssue3445Test(ScriptedLoadableModuleTest):
             fileNames="BrainAtlas2012.mrb",
             loadFiles=True,
             uris=TESTING_DATA_URL + "SHA256/688ebcc6f45989795be2bcdc6b8b5bfc461f1656d677ed3ddef8c313532687f1",
-            checksums="SHA256:688ebcc6f45989795be2bcdc6b8b5bfc461f1656d677ed3ddef8c313532687f1")[0]
+            checksums="SHA256:688ebcc6f45989795be2bcdc6b8b5bfc461f1656d677ed3ddef8c313532687f1",
+        )[0]
 
         self.delayDisplay("Finished with download")
 

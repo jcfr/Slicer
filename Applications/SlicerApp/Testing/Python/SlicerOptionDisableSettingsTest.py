@@ -32,8 +32,12 @@ Usage:
 def checkUserSettings(slicer_executable, common_args, keep_temporary_settings=False):
     # Add a user setting
     args = list(common_args)
-    args.extend(["--python-code",
-                 'slicer.app.userSettings().setValue("foo", "bar"); print("foo: %s" % slicer.app.userSettings().value("foo"))'])
+    args.extend(
+        [
+            "--python-code",
+            'slicer.app.userSettings().setValue("foo", "bar"); print("foo: %s" % slicer.app.userSettings().value("foo"))',
+        ]
+    )
     assert runSlicerAndExit(slicer_executable, args)[0] == EXIT_SUCCESS
     print("=> ok\n")
 
@@ -47,8 +51,12 @@ def checkUserSettings(slicer_executable, common_args, keep_temporary_settings=Fa
         args.append("--keep-temporary-settings")
         condition = '!= "bar"'
         error = "Setting foo should be set to bar"
-    args.extend(["--python-code",
-                 'if slicer.app.userSettings().value("foo") ' + condition + ': raise Exception("' + error + '.")'])
+    args.extend(
+        [
+            "--python-code",
+            'if slicer.app.userSettings().value("foo") ' + condition + ': raise Exception("' + error + '.")',
+        ]
+    )
     assert runSlicerAndExit(slicer_executable, args)[0] == EXIT_SUCCESS
     print("=> ok\n")
 
@@ -56,8 +64,12 @@ def checkUserSettings(slicer_executable, common_args, keep_temporary_settings=Fa
 def checkRevisionUserSettings(slicer_executable, common_args, keep_temporary_settings=False):
     # Add a user revision setting
     args = list(common_args)
-    args.extend(["--python-code",
-                 'slicer.app.revisionUserSettings().setValue("foo", "bar"); print("foo: %s" % slicer.app.revisionUserSettings().value("foo"))'])
+    args.extend(
+        [
+            "--python-code",
+            'slicer.app.revisionUserSettings().setValue("foo", "bar"); print("foo: %s" % slicer.app.revisionUserSettings().value("foo"))',
+        ]
+    )
     assert runSlicerAndExit(slicer_executable, args)[0] == EXIT_SUCCESS
     print("=> ok\n")
 
@@ -71,8 +83,12 @@ def checkRevisionUserSettings(slicer_executable, common_args, keep_temporary_set
         args.append("--keep-temporary-settings")
         condition = '!= "bar"'
         error = "Setting foo should be set to bar"
-    args.extend(["--python-code",
-                 'if slicer.app.revisionUserSettings().value("foo") ' + condition + ': raise Exception("' + error + '.")'])
+    args.extend(
+        [
+            "--python-code",
+            'if slicer.app.revisionUserSettings().value("foo") ' + condition + ': raise Exception("' + error + '.")',
+        ]
+    )
     assert runSlicerAndExit(slicer_executable, args)[0] == EXIT_SUCCESS
     print("=> ok\n")
 

@@ -107,7 +107,9 @@ class SlicerMRBSaveRestoreCheckPaths(ScriptedLoadableModuleTest):
                     if (not self.mrbDeleteFilesAfterLoad) or ("BundleSaveTemp" in absFileName):
                         self.numberOfFilesNotFound += 1
                     else:
-                        print("\t\tMRB files were deleted after load, not counting this file as not found for the purposes of this test")
+                        print(
+                            "\t\tMRB files were deleted after load, not counting this file as not found for the purposes of this test"
+                        )
                 else:
                     print("\tfile exists:", absFileName)
                 # check for the file list
@@ -120,7 +122,9 @@ class SlicerMRBSaveRestoreCheckPaths(ScriptedLoadableModuleTest):
                         if (not self.mrbDeleteFilesAfterLoad) or ("BundleSaveTemp" in absFileName):
                             self.numberOfFilesNotFound += 1
                         else:
-                            print("\t\tMRB files were deleted after load, not counting this file as not found for the purposes of this test")
+                            print(
+                                "\t\tMRB files were deleted after load, not counting this file as not found for the purposes of this test"
+                            )
 
     def checkSceneViewFileNames(self, scene):
         # check for any scene views
@@ -130,7 +134,9 @@ class SlicerMRBSaveRestoreCheckPaths(ScriptedLoadableModuleTest):
             return
         for n in range(numberOfSceneViews):
             sceneViewNode = slicer.mrmlScene.GetNthNodeByClass(n, "vtkMRMLSceneViewNode")
-            slicer.util.delayDisplay("\nChecking scene view " + sceneViewNode.GetName() + ", id = " + sceneViewNode.GetID())
+            slicer.util.delayDisplay(
+                "\nChecking scene view " + sceneViewNode.GetName() + ", id = " + sceneViewNode.GetID()
+            )
             self.checkSceneFileNames(sceneViewNode.GetStoredScene())
 
     def checkAllFileNames(self, scene):
@@ -184,10 +190,14 @@ class SlicerMRBSaveRestoreCheckPaths(ScriptedLoadableModuleTest):
         slicer.util.delayDisplay("Temp dir = %s " % tempDir)
         mrmlFilePath = tempDir + "/SlicerMRBSaveRestoreCheckPath.mrml"
         slicer.mrmlScene.SetURL(mrmlFilePath)
-        slicer.util.delayDisplay(f"Saving mrml file to {mrmlFilePath}, current url of scene is {slicer.mrmlScene.GetURL()}")
+        slicer.util.delayDisplay(
+            f"Saving mrml file to {mrmlFilePath}, current url of scene is {slicer.mrmlScene.GetURL()}"
+        )
         # saveScene just writes out the .mrml file
         self.assertTrue(ioManager.saveScene(mrmlFilePath, screenShot))
-        slicer.util.delayDisplay(f"Finished saving mrml file {mrmlFilePath}, mrml url is now {slicer.mrmlScene.GetURL()}\n\n\n")
+        slicer.util.delayDisplay(
+            f"Finished saving mrml file {mrmlFilePath}, mrml url is now {slicer.mrmlScene.GetURL()}\n\n\n"
+        )
         slicer.util.delayDisplay("mrml root dir = %s" % slicer.mrmlScene.GetRootDirectory())
         # explicitly save MRHead
         ioManager.addDefaultStorageNodes()

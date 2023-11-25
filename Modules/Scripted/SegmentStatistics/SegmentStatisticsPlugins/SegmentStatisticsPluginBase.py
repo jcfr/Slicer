@@ -18,8 +18,16 @@ class SegmentStatisticsPluginBase:
         return entry if not returnAsString else entry.GetAsString()
 
     @staticmethod
-    def createMeasurementInfo(name, description, units, quantityDicomCode=None, unitsDicomCode=None,
-                              measurementMethodDicomCode=None, derivationDicomCode=None, componentNames=None):
+    def createMeasurementInfo(
+        name,
+        description,
+        units,
+        quantityDicomCode=None,
+        unitsDicomCode=None,
+        measurementMethodDicomCode=None,
+        derivationDicomCode=None,
+        componentNames=None,
+    ):
         """Utility method to create measurement information"""
         info = {
             "name": name,
@@ -84,7 +92,9 @@ class SegmentStatisticsPluginBase:
     def getRequestedKeys(self):
         if not self.parameterNode:
             return ()
-        requestedKeys = [key for key in self.keys if self.parameterNode.GetParameter(self.toLongKey(key) + ".enabled") == "True"]
+        requestedKeys = [
+            key for key in self.keys if self.parameterNode.GetParameter(self.toLongKey(key) + ".enabled") == "True"
+        ]
         return requestedKeys
 
     def toLongKey(self, key):
@@ -105,8 +115,9 @@ class SegmentStatisticsPluginBase:
         self.parameterNode = parameterNode
         if self.parameterNode:
             self.setDefaultParameters(self.parameterNode)
-            self.parameterNodeObserver = self.parameterNode.AddObserver(vtk.vtkCommand.ModifiedEvent,
-                                                                        self.updateGuiFromParameterNode)
+            self.parameterNodeObserver = self.parameterNode.AddObserver(
+                vtk.vtkCommand.ModifiedEvent, self.updateGuiFromParameterNode
+            )
         self.createDefaultOptionsWidget()
         self.updateGuiFromParameterNode()
 

@@ -23,8 +23,7 @@ def getTextValuesFromNode(nodelist):
 
 def getThisNodesInfoAsText(currentNode, label):
     """Only get the text info for the matching label at this level of the tree"""
-    labelNodeList = [node for node in
-                     currentNode.childNodes if node.nodeName == label]
+    labelNodeList = [node for node in currentNode.childNodes if node.nodeName == label]
 
     if len(labelNodeList) > 0:
         labelNode = labelNodeList[0]  # Only get the first one
@@ -37,8 +36,9 @@ def getLongFlagDefinition(currentNode):
     labelNodeList = currentNode.getElementsByTagName("longflag")
     if labelNodeList.length > 0:
         labelNode = labelNodeList[0]  # Only get the first one
-        return "{}{}{}".format('[<span style="color:orange">--',
-                               getTextValuesFromNode(labelNode.childNodes), "</span>]")
+        return "{}{}{}".format(
+            '[<span style="color:orange">--', getTextValuesFromNode(labelNode.childNodes), "</span>]"
+        )
     return ""
 
 
@@ -47,8 +47,7 @@ def getFlagDefinition(currentNode):
     labelNodeList = currentNode.getElementsByTagName("flag")
     if labelNodeList.length > 0:
         labelNode = labelNodeList[0]  # Only get the first one
-        return "{}{}{}".format('[<span style="color:pink">-',
-                               getTextValuesFromNode(labelNode.childNodes), "</span>]")
+        return "{}{}{}".format('[<span style="color:pink">-', getTextValuesFromNode(labelNode.childNodes), "</span>]")
     return ""
 
 
@@ -57,8 +56,9 @@ def getLabelDefinition(currentNode):
     labelNodeList = currentNode.getElementsByTagName("label")
     if labelNodeList.length > 0:
         labelNode = labelNodeList[0]  # Only get the first one
-        return "{}{}{}".format("** <span style=\"color:green\">'''",
-                               getTextValuesFromNode(labelNode.childNodes), "'''</span>")
+        return "{}{}{}".format(
+            "** <span style=\"color:green\">'''", getTextValuesFromNode(labelNode.childNodes), "'''</span>"
+        )
     return ""
 
 
@@ -67,8 +67,7 @@ def getDefaultValueDefinition(currentNode):
     labelNodeList = currentNode.getElementsByTagName("default")
     if labelNodeList.length > 0:
         labelNode = labelNodeList[0]  # Only get the first one
-        return "{}{}{}".format("''Default value: ",
-                               getTextValuesFromNode(labelNode.childNodes), "''")
+        return "{}{}{}".format("''Default value: ", getTextValuesFromNode(labelNode.childNodes), "''")
     return ""
 
 
@@ -78,8 +77,7 @@ def GetSEMDoc(filename):
     Return the primary heirarchial tree node.
     """
     doc = xml.dom.minidom.parse(filename)
-    executableNode = [node for node in doc.childNodes if
-                      node.nodeName == "executable"]
+    executableNode = [node for node in doc.childNodes if node.nodeName == "executable"]
     # Only use the first
     return executableNode[0]
 
@@ -148,18 +146,12 @@ Examples of the module in use:
 """
 
     stringDict = dict({})
-    stringDict["executableTitle"] = getThisNodesInfoAsText(
-        executableNode, "title")
-    stringDict["executableCategory"] = getThisNodesInfoAsText(
-        executableNode, "category")
-    stringDict["executableAuthor"] = getThisNodesInfoAsText(
-        executableNode, "contributor")
-    stringDict["executableDescription"] = getThisNodesInfoAsText(
-        executableNode, "description")
-    stringDict["executableVersion"] = getThisNodesInfoAsText(
-        executableNode, "version")
-    stringDict["executableDocumentationURL"] = getThisNodesInfoAsText(
-        executableNode, "documentation-url")
+    stringDict["executableTitle"] = getThisNodesInfoAsText(executableNode, "title")
+    stringDict["executableCategory"] = getThisNodesInfoAsText(executableNode, "category")
+    stringDict["executableAuthor"] = getThisNodesInfoAsText(executableNode, "contributor")
+    stringDict["executableDescription"] = getThisNodesInfoAsText(executableNode, "description")
+    stringDict["executableVersion"] = getThisNodesInfoAsText(executableNode, "version")
+    stringDict["executableDocumentationURL"] = getThisNodesInfoAsText(executableNode, "documentation-url")
     stringDict["tblStart"] = "{|"  # To avoid subs the entire table as var
     stringDict["tblStop"] = "|}"  # To avoid subs the entire table as var
 
@@ -170,15 +162,16 @@ Examples of the module in use:
 def DumpSEMMediaWikiFeatures(executableNode):
     outRegion = ""
     outRegion += "===Quick Tour of Features and Use===\n\n"
-    outRegion += "{}{}".format("A list panels in the interface,",
-                               " their features, what they mean, and how to use them.\n")
+    outRegion += "{}{}".format(
+        "A list panels in the interface,", " their features, what they mean, and how to use them.\n"
+    )
     outRegion += "{|\n|\n"
     # Now print all the command line arguments and the labels
     # that showup in the GUI interface
     for parameterNode in executableNode.getElementsByTagName("parameters"):
         outRegion += "* <span style=\"color:blue\">'''''{}'''''</span>: {}\n".format(
-            getThisNodesInfoAsText(parameterNode, "label"),
-            getThisNodesInfoAsText(parameterNode, "description"))
+            getThisNodesInfoAsText(parameterNode, "label"), getThisNodesInfoAsText(parameterNode, "description")
+        )
         currentNode = parameterNode.firstChild
         while currentNode is not None:
             if currentNode.nodeType == currentNode.ELEMENT_NODE:
@@ -190,20 +183,19 @@ def DumpSEMMediaWikiFeatures(executableNode):
                             getLabelDefinition(currentNode),
                             getLongFlagDefinition(currentNode),
                             getFlagDefinition(currentNode),
-                            getThisNodesInfoAsText(currentNode,
-                                                   "description"),
-                            getDefaultValueDefinition(currentNode))
+                            getThisNodesInfoAsText(currentNode, "description"),
+                            getDefaultValueDefinition(currentNode),
+                        )
                     else:
                         outRegion += "{} {} {}: {}\n\n".format(
                             getLabelDefinition(currentNode),
                             getLongFlagDefinition(currentNode),
                             getFlagDefinition(currentNode),
-                            getThisNodesInfoAsText(currentNode,
-                                                   "description"))
+                            getThisNodesInfoAsText(currentNode, "description"),
+                        )
             currentNode = currentNode.nextSibling
 
-    outRegion += "{}{}\n".format("|[[Image:screenshotBlankNotOptional.png|",
-                                 "thumb|280px|User Interface]]")
+    outRegion += "{}{}\n".format("|[[Image:screenshotBlankNotOptional.png|", "thumb|280px|User Interface]]")
     outRegion += "|}\n\n"
     return outRegion
 
@@ -320,9 +312,7 @@ def SEMToMediaWikiProg():
         elif stage == "f":
             docString += DumpSEMMediaWikiFooter(ExecutableNode)
         else:
-            parser.error(
-                "The only valid options are [h|b|f]: Given {}".format(
-                    stage))
+            parser.error("The only valid options are [h|b|f]: Given {}".format(stage))
 
     if options.xmlfilename is not None:
         outfile = open(options.outfilename, "w")

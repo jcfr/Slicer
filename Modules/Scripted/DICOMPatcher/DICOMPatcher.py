@@ -26,7 +26,9 @@ class DICOMPatcher(ScriptedLoadableModule):
         self.parent.categories = [translate("qSlicerAbstractCoreModule", "Utilities")]
         self.parent.dependencies = ["DICOM"]
         self.parent.contributors = ["Andras Lasso (PerkLab)"]
-        self.parent.helpText = _("""Fix common issues in DICOM files. This module may help fixing DICOM files that Slicer fails to import.""")
+        self.parent.helpText = _(
+            """Fix common issues in DICOM files. This module may help fixing DICOM files that Slicer fails to import."""
+        )
         self.parent.helpText += parent.defaultDocumentationLink
         self.parent.acknowledgementText = _("""This file was originally developed by Andras Lasso, PerkLab.""")
 
@@ -68,43 +70,70 @@ class DICOMPatcherWidget(ScriptedLoadableModuleWidget):
 
         self.normalizeFileNamesCheckBox = qt.QCheckBox()
         self.normalizeFileNamesCheckBox.checked = True
-        self.normalizeFileNamesCheckBox.setToolTip(_("Replace file and folder names with automatically generated names."
-                                                     " Fixes errors caused by file path containins special characters or being too long."))
+        self.normalizeFileNamesCheckBox.setToolTip(
+            _(
+                "Replace file and folder names with automatically generated names."
+                " Fixes errors caused by file path containins special characters or being too long."
+            )
+        )
         parametersFormLayout.addRow(_("Normalize file names"), self.normalizeFileNamesCheckBox)
 
         self.forceSamePatientNameIdInEachDirectoryCheckBox = qt.QCheckBox()
         self.forceSamePatientNameIdInEachDirectoryCheckBox.checked = False
-        self.forceSamePatientNameIdInEachDirectoryCheckBox.setToolTip(_(
-            "Generate patient name and ID from the first file in a directory and force all"
-            " other files in the same directory to have the same patient name and ID."
-            " Enable this option if a separate patient directory is created for each patched file."))
-        parametersFormLayout.addRow(_("Force same patient name and ID in each directory"), self.forceSamePatientNameIdInEachDirectoryCheckBox)
+        self.forceSamePatientNameIdInEachDirectoryCheckBox.setToolTip(
+            _(
+                "Generate patient name and ID from the first file in a directory and force all"
+                " other files in the same directory to have the same patient name and ID."
+                " Enable this option if a separate patient directory is created for each patched file."
+            )
+        )
+        parametersFormLayout.addRow(
+            _("Force same patient name and ID in each directory"), self.forceSamePatientNameIdInEachDirectoryCheckBox
+        )
 
         self.forceSameSeriesInstanceUidInEachDirectoryCheckBox = qt.QCheckBox()
         self.forceSameSeriesInstanceUidInEachDirectoryCheckBox.checked = False
-        self.forceSameSeriesInstanceUidInEachDirectoryCheckBox.setToolTip(_(
-            "Generate a new series instance UID for each directory"
-            " and set it in all files in that same directory."
-            " Enable this option to force placing all frames in a folder into a single volume."))
-        parametersFormLayout.addRow(_("Force same series instance UID in each directory"), self.forceSameSeriesInstanceUidInEachDirectoryCheckBox)
+        self.forceSameSeriesInstanceUidInEachDirectoryCheckBox.setToolTip(
+            _(
+                "Generate a new series instance UID for each directory"
+                " and set it in all files in that same directory."
+                " Enable this option to force placing all frames in a folder into a single volume."
+            )
+        )
+        parametersFormLayout.addRow(
+            _("Force same series instance UID in each directory"),
+            self.forceSameSeriesInstanceUidInEachDirectoryCheckBox,
+        )
 
         self.generateMissingIdsCheckBox = qt.QCheckBox()
         self.generateMissingIdsCheckBox.checked = True
-        self.generateMissingIdsCheckBox.setToolTip(_("Generate missing patient, study, series IDs. It is assumed that"
-                                                     " all files in a directory belong to the same series. Fixes error caused by too aggressive anonymization"
-                                                     " or incorrect DICOM image converters."))
+        self.generateMissingIdsCheckBox.setToolTip(
+            _(
+                "Generate missing patient, study, series IDs. It is assumed that"
+                " all files in a directory belong to the same series. Fixes error caused by too aggressive anonymization"
+                " or incorrect DICOM image converters."
+            )
+        )
         parametersFormLayout.addRow(_("Generate missing patient/study/series IDs"), self.generateMissingIdsCheckBox)
 
         self.generateImagePositionFromSliceThicknessCheckBox = qt.QCheckBox()
         self.generateImagePositionFromSliceThicknessCheckBox.checked = True
-        self.generateImagePositionFromSliceThicknessCheckBox.setToolTip(_("Generate 'image position sequence' for multi-frame files that only have"
-                                                                          " 'SliceThickness' field. Fixes error in Dolphin 3D CBCT scanners."))
-        parametersFormLayout.addRow(_("Generate slice position for multi-frame volumes"), self.generateImagePositionFromSliceThicknessCheckBox)
+        self.generateImagePositionFromSliceThicknessCheckBox.setToolTip(
+            _(
+                "Generate 'image position sequence' for multi-frame files that only have"
+                " 'SliceThickness' field. Fixes error in Dolphin 3D CBCT scanners."
+            )
+        )
+        parametersFormLayout.addRow(
+            _("Generate slice position for multi-frame volumes"), self.generateImagePositionFromSliceThicknessCheckBox
+        )
 
         self.fixExposureFiascoCheckBox = qt.QCheckBox()
         self.fixExposureFiascoCheckBox.checked = True
-        self.fixExposureFiascoCheckBox.setToolTip("If checked, then some invalid exposure tags are converted to valid tags"
-                                                  " (see the 'exposure fiasco' - http://dclunie.blogspot.com/2008/11/dicom-exposure-attribute-fiasco.html).")
+        self.fixExposureFiascoCheckBox.setToolTip(
+            "If checked, then some invalid exposure tags are converted to valid tags"
+            " (see the 'exposure fiasco' - http://dclunie.blogspot.com/2008/11/dicom-exposure-attribute-fiasco.html)."
+        )
         parametersFormLayout.addRow("Fix invalid exposure tags", self.fixExposureFiascoCheckBox)
 
         characterSetLayout = qt.QHBoxLayout()
@@ -113,7 +142,8 @@ class DICOMPatcherWidget(ScriptedLoadableModuleWidget):
         self.specifyCharacterSetCheckBox.checked = False
         self.specifyCharacterSetCheckBox.setToolTip(
             "If checked, then SpecificCharacterSet is set to the specified value in all DICOM files"
-            " where the character set is not specified already. It is recommended to enable this if patient name does not show up correctly.")
+            " where the character set is not specified already. It is recommended to enable this if patient name does not show up correctly."
+        )
         characterSetLayout.addWidget(self.specifyCharacterSetCheckBox)
 
         self.specifyCharacterSetLineEdit = qt.QLineEdit()
@@ -125,8 +155,12 @@ class DICOMPatcherWidget(ScriptedLoadableModuleWidget):
 
         self.anonymizeDicomCheckBox = qt.QCheckBox()
         self.anonymizeDicomCheckBox.checked = False
-        self.anonymizeDicomCheckBox.setToolTip(_("If checked, then some patient identifiable information will be removed from the patched DICOM files."
-                                                 " There are many fields that can identify a patient, this function does not remove all of them."))
+        self.anonymizeDicomCheckBox.setToolTip(
+            _(
+                "If checked, then some patient identifiable information will be removed from the patched DICOM files."
+                " There are many fields that can identify a patient, this function does not remove all of them."
+            )
+        )
         parametersFormLayout.addRow(_("Partially anonymize"), self.anonymizeDicomCheckBox)
 
         #
@@ -165,7 +199,9 @@ class DICOMPatcherWidget(ScriptedLoadableModuleWidget):
             import tempfile
 
             if not self.outputDirSelector.currentPath:
-                self.outputDirSelector.currentPath = tempfile.mkdtemp(prefix="DICOMPatcher-", dir=slicer.app.temporaryPath)
+                self.outputDirSelector.currentPath = tempfile.mkdtemp(
+                    prefix="DICOMPatcher-", dir=slicer.app.temporaryPath
+                )
 
             self.inputDirSelector.addCurrentPathToHistory()
             self.outputDirSelector.addCurrentPathToHistory()
@@ -356,7 +392,9 @@ class RemoveDICOMDIR(DICOMPatcherRule):
     def skipFile(self, filepath):
         if os.path.basename(filepath) != "DICOMDIR":
             return False
-        self.addLog("DICOMDIR file is ignored (its contents may be inconsistent with the contents of the indexed DICOM files, therefore it is safer not to use it)")
+        self.addLog(
+            "DICOMDIR file is ignored (its contents may be inconsistent with the contents of the indexed DICOM files, therefore it is safer not to use it)"
+        )
         return True
 
 
@@ -373,7 +411,10 @@ class FixPrivateMediaStorageSOPClassUID(DICOMPatcherRule):
         # We could make things nicer by allowing the user to specify a modality.
         DCMTKPrivateMediaStorageSOPClassUID = "1.2.276.0.7230010.3.1.0.1"
         CTImageStorageSOPClassUID = "1.2.840.10008.5.1.4.1.1.2"
-        if not hasattr(ds.file_meta, "MediaStorageSOPClassUID") or ds.file_meta.MediaStorageSOPClassUID == DCMTKPrivateMediaStorageSOPClassUID:
+        if (
+            not hasattr(ds.file_meta, "MediaStorageSOPClassUID")
+            or ds.file_meta.MediaStorageSOPClassUID == DCMTKPrivateMediaStorageSOPClassUID
+        ):
             self.addLog("DCMTK private MediaStorageSOPClassUID found. Replace it with CT media storage SOP class UID.")
             ds.file_meta.MediaStorageSOPClassUID = CTImageStorageSOPClassUID
 
@@ -453,13 +494,16 @@ class AddMissingSliceSpacingToMultiframe(DICOMPatcherRule):
                 slicePosition = [
                     sliceStartPosition[0] + frameIndex * z[0] * sliceSpacing,
                     sliceStartPosition[1] + frameIndex * z[1] * sliceSpacing,
-                    sliceStartPosition[2] + frameIndex * z[2] * sliceSpacing]
+                    sliceStartPosition[2] + frameIndex * z[2] * sliceSpacing,
+                ]
                 planePositionDataSet.ImagePositionPatient = slicePosition
                 planePositionSequence = pydicom.sequence.Sequence()
                 planePositionSequence.insert(pydicom.tag.Tag(0x0020, 0x9113), planePositionDataSet)
                 perFrameFunctionalGroupsDataSet = pydicom.dataset.Dataset()
                 perFrameFunctionalGroupsDataSet.PlanePositionSequence = planePositionSequence
-                perFrameFunctionalGroupsSequence.insert(pydicom.tag.Tag(0x5200, 0x9230), perFrameFunctionalGroupsDataSet)
+                perFrameFunctionalGroupsSequence.insert(
+                    pydicom.tag.Tag(0x5200, 0x9230), perFrameFunctionalGroupsDataSet
+                )
 
             ds.PerFrameFunctionalGroupsSequence = perFrameFunctionalGroupsSequence
 

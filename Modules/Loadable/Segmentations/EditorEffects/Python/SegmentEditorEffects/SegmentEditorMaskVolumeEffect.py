@@ -34,10 +34,12 @@ class SegmentEditorMaskVolumeEffect(AbstractScriptedSegmentEditorEffect):
         return qt.QIcon()
 
     def helpText(self):
-        return "<html>" + _("""Use the currently selected segment as a mask to blank out regions in a volume<br>.
+        return "<html>" + _(
+            """Use the currently selected segment as a mask to blank out regions in a volume<br>.
 The mask is applied to the source volume by default.<p>
 Fill inside and outside operation creates a binary labelmap volume as output, with the inside and outside fill values modifiable.
-""")
+"""
+        )
 
     def setupOptionsFrame(self):
         self.operationRadioButtons = []
@@ -55,7 +57,9 @@ Fill inside and outside operation creates a binary labelmap volume as output, wi
         self.buttonToOperationNameMap[self.fillOutsideButton] = "FILL_OUTSIDE"
 
         self.binaryMaskFillButton = qt.QRadioButton(_("Fill inside and outside"))
-        self.binaryMaskFillButton.setToolTip(_("Create a labelmap volume with specified inside and outside fill values."))
+        self.binaryMaskFillButton.setToolTip(
+            _("Create a labelmap volume with specified inside and outside fill values.")
+        )
         self.operationRadioButtons.append(self.binaryMaskFillButton)
         self.buttonToOperationNameMap[self.binaryMaskFillButton] = "FILL_INSIDE_AND_OUTSIDE"
 
@@ -73,16 +77,24 @@ Fill inside and outside operation creates a binary labelmap volume as output, wi
 
         # Binary mask fill outside value
         self.binaryMaskFillOutsideEdit = ctk.ctkDoubleSpinBox()
-        self.binaryMaskFillOutsideEdit.setToolTip(_("Choose the voxel intensity that will be used to fill outside the mask."))
+        self.binaryMaskFillOutsideEdit.setToolTip(
+            _("Choose the voxel intensity that will be used to fill outside the mask.")
+        )
         self.fillOutsideLabel = qt.QLabel(_("Outside fill value: "))
 
         # Binary mask fill outside value
         self.binaryMaskFillInsideEdit = ctk.ctkDoubleSpinBox()
-        self.binaryMaskFillInsideEdit.setToolTip(_("Choose the voxel intensity that will be used to fill inside the mask."))
+        self.binaryMaskFillInsideEdit.setToolTip(
+            _("Choose the voxel intensity that will be used to fill inside the mask.")
+        )
         self.fillInsideLabel = qt.QLabel(_(" Inside fill value: "))
 
         for fillValueEdit in [self.fillValueEdit, self.binaryMaskFillOutsideEdit, self.binaryMaskFillInsideEdit]:
-            fillValueEdit.decimalsOption = ctk.ctkDoubleSpinBox.DecimalsByValue + ctk.ctkDoubleSpinBox.DecimalsByKey + ctk.ctkDoubleSpinBox.InsertDecimals
+            fillValueEdit.decimalsOption = (
+                ctk.ctkDoubleSpinBox.DecimalsByValue
+                + ctk.ctkDoubleSpinBox.DecimalsByKey
+                + ctk.ctkDoubleSpinBox.InsertDecimals
+            )
             fillValueEdit.minimum = vtk.vtkDoubleArray().GetDataTypeMin(vtk.VTK_DOUBLE)
             fillValueEdit.maximum = vtk.vtkDoubleArray().GetDataTypeMax(vtk.VTK_DOUBLE)
             fillValueEdit.connect("valueChanged(double)", self.fillValueChanged)
@@ -108,8 +120,12 @@ Fill inside and outside operation creates a binary labelmap volume as output, wi
         # Soft edge
         self.softEdgeMmSpinBox = slicer.qMRMLSpinBox()
         self.softEdgeMmSpinBox.setMRMLScene(slicer.mrmlScene)
-        self.softEdgeMmSpinBox.setToolTip(_("Standard deviation of the Gaussian function that blurs the edge of the mask."
-                                            " Higher value makes the edge softer."))
+        self.softEdgeMmSpinBox.setToolTip(
+            _(
+                "Standard deviation of the Gaussian function that blurs the edge of the mask."
+                " Higher value makes the edge softer."
+            )
+        )
         self.softEdgeMmSpinBox.quantity = "length"
         self.softEdgeMmSpinBox.value = 0
         self.softEdgeMmSpinBox.minimum = 0
@@ -149,7 +165,9 @@ Fill inside and outside operation creates a binary labelmap volume as output, wi
         self.outputVolumeSelector.noneDisplay = _("(Create new Volume)")
         self.outputVolumeSelector.showHidden = False
         self.outputVolumeSelector.setMRMLScene(slicer.mrmlScene)
-        self.outputVolumeSelector.setToolTip(_("Masked output volume. It may be the same as the input volume for cumulative masking."))
+        self.outputVolumeSelector.setToolTip(
+            _("Masked output volume. It may be the same as the input volume for cumulative masking.")
+        )
         self.outputVolumeSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.onOutputVolumeChanged)
 
         self.outputVisibilityButton = qt.QToolButton()
@@ -168,8 +186,12 @@ Fill inside and outside operation creates a binary labelmap volume as output, wi
         self.applyButton.connect("clicked()", self.onApply)
 
         for button in self.operationRadioButtons:
-            button.connect("toggled(bool)",
-                           lambda toggle, widget=self.buttonToOperationNameMap[button]: self.onOperationSelectionChanged(widget, toggle))
+            button.connect(
+                "toggled(bool)",
+                lambda toggle, widget=self.buttonToOperationNameMap[button]: self.onOperationSelectionChanged(
+                    widget, toggle
+                ),
+            )
 
     def createCursor(self, widget):
         # Turn off effect-specific cursor for this effect
@@ -197,18 +219,29 @@ Fill inside and outside operation creates a binary labelmap volume as output, wi
     def updateGUIFromMRML(self):
         self.updatingGUIFromMRML = True
 
-        self.fillValueEdit.setValue(float(self.scriptedEffect.parameter("FillValue")) if self.scriptedEffect.parameter("FillValue") else 0)
-        self.binaryMaskFillOutsideEdit.setValue(float(self.scriptedEffect.parameter("BinaryMaskFillValueOutside"))
-                                                if self.scriptedEffect.parameter("BinaryMaskFillValueOutside") else 0)
-        self.binaryMaskFillInsideEdit.setValue(float(self.scriptedEffect.parameter("BinaryMaskFillValueInside"))
-                                               if self.scriptedEffect.parameter("BinaryMaskFillValueInside") else 1)
+        self.fillValueEdit.setValue(
+            float(self.scriptedEffect.parameter("FillValue")) if self.scriptedEffect.parameter("FillValue") else 0
+        )
+        self.binaryMaskFillOutsideEdit.setValue(
+            float(self.scriptedEffect.parameter("BinaryMaskFillValueOutside"))
+            if self.scriptedEffect.parameter("BinaryMaskFillValueOutside")
+            else 0
+        )
+        self.binaryMaskFillInsideEdit.setValue(
+            float(self.scriptedEffect.parameter("BinaryMaskFillValueInside"))
+            if self.scriptedEffect.parameter("BinaryMaskFillValueInside")
+            else 1
+        )
         operationName = self.scriptedEffect.parameter("Operation")
         if operationName:
-            operationButton = list(self.buttonToOperationNameMap.keys())[list(self.buttonToOperationNameMap.values()).index(operationName)]
+            operationButton = list(self.buttonToOperationNameMap.keys())[
+                list(self.buttonToOperationNameMap.values()).index(operationName)
+            ]
             operationButton.setChecked(True)
 
-        self.softEdgeMmSpinBox.setValue(float(self.scriptedEffect.parameter("SoftEdgeMm"))
-                                        if self.scriptedEffect.parameter("SoftEdgeMm") else 0)
+        self.softEdgeMmSpinBox.setValue(
+            float(self.scriptedEffect.parameter("SoftEdgeMm")) if self.scriptedEffect.parameter("SoftEdgeMm") else 0
+        )
 
         inputVolume = self.scriptedEffect.parameterSetNode().GetNodeReference("Mask volume.InputVolume")
         self.inputVolumeSelector.setCurrentNode(inputVolume)
@@ -234,8 +267,12 @@ Fill inside and outside operation creates a binary labelmap volume as output, wi
                 self.outputVolumeSelector.noneDisplay = _("(Create new Labelmap Volume)")
                 self.outputVolumeSelector.nodeTypes = ["vtkMRMLLabelMapVolumeNode", "vtkMRMLScalarVolumeNode"]
 
-        self.inputVisibilityButton.setIcon(self.visibleIcon if self.isVolumeVisible(inputVolume) else self.invisibleIcon)
-        self.outputVisibilityButton.setIcon(self.visibleIcon if self.isVolumeVisible(outputVolume) else self.invisibleIcon)
+        self.inputVisibilityButton.setIcon(
+            self.visibleIcon if self.isVolumeVisible(inputVolume) else self.invisibleIcon
+        )
+        self.outputVisibilityButton.setIcon(
+            self.visibleIcon if self.isVolumeVisible(outputVolume) else self.invisibleIcon
+        )
 
         self.updatingGUIFromMRML = False
 
@@ -245,8 +282,12 @@ Fill inside and outside operation creates a binary labelmap volume as output, wi
         self.scriptedEffect.setParameter("FillValue", self.fillValueEdit.value)
         self.scriptedEffect.setParameter("BinaryMaskFillValueInside", self.binaryMaskFillInsideEdit.value)
         self.scriptedEffect.setParameter("BinaryMaskFillValueOutside", self.binaryMaskFillOutsideEdit.value)
-        self.scriptedEffect.parameterSetNode().SetNodeReferenceID("Mask volume.InputVolume", self.inputVolumeSelector.currentNodeID)
-        self.scriptedEffect.parameterSetNode().SetNodeReferenceID("Mask volume.OutputVolume", self.outputVolumeSelector.currentNodeID)
+        self.scriptedEffect.parameterSetNode().SetNodeReferenceID(
+            "Mask volume.InputVolume", self.inputVolumeSelector.currentNodeID
+        )
+        self.scriptedEffect.parameterSetNode().SetNodeReferenceID(
+            "Mask volume.OutputVolume", self.outputVolumeSelector.currentNodeID
+        )
         self.scriptedEffect.setParameter("SoftEdgeMm", self.softEdgeMmSpinBox.value)
 
     def activate(self):
@@ -287,11 +328,15 @@ Fill inside and outside operation creates a binary labelmap volume as output, wi
             self.updateGUIFromMRML()
 
     def onInputVolumeChanged(self):
-        self.scriptedEffect.parameterSetNode().SetNodeReferenceID("Mask volume.InputVolume", self.inputVolumeSelector.currentNodeID)
+        self.scriptedEffect.parameterSetNode().SetNodeReferenceID(
+            "Mask volume.InputVolume", self.inputVolumeSelector.currentNodeID
+        )
         self.updateGUIFromMRML()  # node reference changes are not observed, update GUI manually
 
     def onOutputVolumeChanged(self):
-        self.scriptedEffect.parameterSetNode().SetNodeReferenceID("Mask volume.OutputVolume", self.outputVolumeSelector.currentNodeID)
+        self.scriptedEffect.parameterSetNode().SetNodeReferenceID(
+            "Mask volume.OutputVolume", self.outputVolumeSelector.currentNodeID
+        )
         self.updateGUIFromMRML()  # node reference changes are not observed, update GUI manually
 
     def fillValueChanged(self):
@@ -324,15 +369,25 @@ Fill inside and outside operation creates a binary labelmap volume as output, wi
 
             softEdgeMm = self.scriptedEffect.doubleParameter("SoftEdgeMm")
 
-            SegmentEditorMaskVolumeEffect.maskVolumeWithSegment(segmentationNode, segmentID, operationMode, fillValues, inputVolume, outputVolume,
-                                                                softEdgeMm=softEdgeMm)
+            SegmentEditorMaskVolumeEffect.maskVolumeWithSegment(
+                segmentationNode, segmentID, operationMode, fillValues, inputVolume, outputVolume, softEdgeMm=softEdgeMm
+            )
 
             slicer.util.setSliceViewerLayers(background=outputVolume)
 
             self.updateGUIFromMRML()
 
     @staticmethod
-    def maskVolumeWithSegment(segmentationNode, segmentID, operationMode, fillValues, inputVolumeNode, outputVolumeNode, maskExtent=None, softEdgeMm=0.0):
+    def maskVolumeWithSegment(
+        segmentationNode,
+        segmentID,
+        operationMode,
+        fillValues,
+        inputVolumeNode,
+        outputVolumeNode,
+        maskExtent=None,
+        softEdgeMm=0.0,
+    ):
         """
         Fill voxels of the input volume inside/outside the masking model with the provided fill value
         maskExtent: optional output to return computed mask extent (expected input is a 6-element list)
@@ -349,7 +404,9 @@ Fill inside and outside operation creates a binary labelmap volume as output, wi
             logging.error("maskVolumeWithSegment failed: invalid maskVolumeNode")
             return False
 
-        if not slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsToLabelmapNode(segmentationNode, segmentIDs, maskVolumeNode, inputVolumeNode):
+        if not slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsToLabelmapNode(
+            segmentationNode, segmentIDs, maskVolumeNode, inputVolumeNode
+        ):
             logging.error("maskVolumeWithSegment failed: ExportSegmentsToLabelmapNode error")
             slicer.mrmlScene.RemoveNode(maskVolumeNode.GetDisplayNode().GetColorNode())
             slicer.mrmlScene.RemoveNode(maskVolumeNode.GetDisplayNode())

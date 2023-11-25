@@ -199,7 +199,9 @@ class QCheckablePushButtonToBoolConnector(GuiConnector):
         super().__init__()
         self._widget: qt.QPushButton = widget
         if not self._widget.checkable:
-            logging.warn(f"Making push button checkable for conversion to bool: button {self._widget}, parent {self._widget.parent}")
+            logging.warn(
+                f"Making push button checkable for conversion to bool: button {self._widget}, parent {self._widget.parent}"
+            )
             self._widget.checkable = True
 
     def _connect(self):
@@ -287,7 +289,9 @@ class QDoubleSpinBoxCtkSliderWidgetToFloatConnector(GuiConnector):
     @staticmethod
     def canRepresent(widget, datatype) -> bool:
         return unannotatedType(datatype) == float and type(widget) in (
-            qt.QDoubleSpinBox, ctk.ctkSliderWidget, slicer.qMRMLSliderWidget,
+            qt.QDoubleSpinBox,
+            ctk.ctkSliderWidget,
+            slicer.qMRMLSliderWidget,
         )
 
     @staticmethod
@@ -352,7 +356,10 @@ class QComboBoxToStringableConnector(GuiConnector):
     @staticmethod
     def canRepresent(widget, datatype) -> bool:
         return type(widget) == qt.QComboBox and unannotatedType(datatype) in (
-            int, float, str, bool,
+            int,
+            float,
+            str,
+            bool,
         )
 
     @staticmethod
@@ -534,7 +541,9 @@ class ctkRangeWidgetToRangeConnector(GuiConnector):
         rangeBounds = findFirstAnnotation(annotations, validators.RangeBounds)
 
         if rangeBounds is None:
-            raise RuntimeError("Cannot have a connection to ctkRangeWidget where the float is unbounded. Add a RangeBounds annotation.")
+            raise RuntimeError(
+                "Cannot have a connection to ctkRangeWidget where the float is unbounded. Add a RangeBounds annotation."
+            )
 
         self._widget.setRange(rangeBounds.minimum, rangeBounds.maximum)
 
@@ -559,8 +568,12 @@ class ctkPathLineEditToPathConnector(GuiConnector):
     @staticmethod
     def canRepresent(widget, datatype) -> bool:
         return type(widget) == ctk.ctkPathLineEdit and unannotatedType(datatype) in (
-            pathlib.Path, pathlib.PosixPath, pathlib.WindowsPath,
-            pathlib.PurePath, pathlib.PurePosixPath, pathlib.PureWindowsPath,
+            pathlib.Path,
+            pathlib.PosixPath,
+            pathlib.WindowsPath,
+            pathlib.PurePath,
+            pathlib.PurePosixPath,
+            pathlib.PureWindowsPath,
         )
 
     @staticmethod
@@ -595,8 +608,12 @@ class ctkDirectoryButtonToPathConnector(GuiConnector):
     @staticmethod
     def canRepresent(widget, datatype) -> bool:
         return type(widget) == ctk.ctkDirectoryButton and unannotatedType(datatype) in (
-            pathlib.Path, pathlib.PosixPath, pathlib.WindowsPath,
-            pathlib.PurePath, pathlib.PurePosixPath, pathlib.PureWindowsPath,
+            pathlib.Path,
+            pathlib.PosixPath,
+            pathlib.WindowsPath,
+            pathlib.PurePath,
+            pathlib.PurePosixPath,
+            pathlib.PureWindowsPath,
         )
 
     @staticmethod
@@ -672,16 +689,20 @@ def _makeParentStack(child, root):
 
 def _extractCorrectWidgets(widget):
     children = widget.findChildren(qt.QWidget)
-    parentStacks = [_makeParentStack(child, widget) for child in children
-                    if child.property(SlicerPackParameterNamePropertyName) is not None]
+    parentStacks = [
+        _makeParentStack(child, widget)
+        for child in children
+        if child.property(SlicerPackParameterNamePropertyName) is not None
+    ]
 
     # Remove stacks that are completely contained within other stacks.
     # note: just doing `sorted(parentStacks, key=lambda x: id(x))` wasn't sorting it right
     ids = [[id(w) for w in ww] for ww in parentStacks]
     parentStacks, _ = zip(*sorted(zip(parentStacks, ids), key=lambda w: w[1]))
 
-    leafParentStacks = [i for i, j in zip(parentStacks[:-1], parentStacks[1:]) if not i == j[:len(i)]] \
-        + [parentStacks[-1]]
+    leafParentStacks = [i for i, j in zip(parentStacks[:-1], parentStacks[1:]) if not i == j[: len(i)]] + [
+        parentStacks[-1]
+    ]
     return leafParentStacks
 
 
@@ -736,7 +757,8 @@ class WidgetChildrenToParameterPackConnector(GuiConnector):
         self._packParamNames = pack.nestedParameterNames(datatype)
         self._nameToConnectorMap = {
             paramName: createGuiConnector(nameWidgetMap[paramName], self._datatype.dataType(paramName))
-            for paramName in self._packParamNames}
+            for paramName in self._packParamNames
+        }
 
     def _connect(self):
         for connector in self._nameToConnectorMap.values():

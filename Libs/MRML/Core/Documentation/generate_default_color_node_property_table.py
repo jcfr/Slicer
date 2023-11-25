@@ -29,20 +29,25 @@ template = "/// | {family} | {category} | {_type} | {node_name} | {singleton_tag
 table = []
 for index in range(nodes.GetNumberOfItems()):
     n = nodes.GetItemAsObject(index)
-    table.append({
-        "family": n.GetClassName().replace("vtkMRML", "").replace("Node", ""),
-        "category": n.GetAttribute("Category"),
-        "_type": n.GetTypeAsString(),
-        "node_name": n.GetName(),
-        "singleton_tag": n.GetSingletonTag(),
-        "node_id": n.GetID()})
+    table.append(
+        {
+            "family": n.GetClassName().replace("vtkMRML", "").replace("Node", ""),
+            "category": n.GetAttribute("Category"),
+            "_type": n.GetTypeAsString(),
+            "node_name": n.GetName(),
+            "singleton_tag": n.GetSingletonTag(),
+            "node_id": n.GetID(),
+        }
+    )
 
-titles = {"family": "Family",
-          "category": "Category",
-          "_type": "Type",
-          "node_name": "Node name",
-          "singleton_tag": "Singleton Tag",
-          "node_id": "Node ID"}
+titles = {
+    "family": "Family",
+    "category": "Category",
+    "_type": "Type",
+    "node_name": "Node name",
+    "singleton_tag": "Singleton Tag",
+    "node_id": "Node ID",
+}
 max_row_widths = {column_name: len(column_title) for (column_name, column_title) in titles.items()}
 
 for row in table:

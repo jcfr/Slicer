@@ -232,7 +232,15 @@ class AtlasTestsTest(ScriptedLoadableModuleTest):
                     self.delayDisplay("Skipping model hierarchy with no display node " + mh.GetName())
                 else:
                     hierarchyManipulating += 1
-                    self.delayDisplay("Manipulating model hierarchy " + mh.GetName() + " (" + str(hierarchyManipulating) + "/" + str(numModelHierarchiesToManipulate) + ")")
+                    self.delayDisplay(
+                        "Manipulating model hierarchy "
+                        + mh.GetName()
+                        + " ("
+                        + str(hierarchyManipulating)
+                        + "/"
+                        + str(numModelHierarchiesToManipulate)
+                        + ")"
+                    )
                     hierarchyOriginalColor = mhd.GetColor()
                     hierarchyOriginalVisibility = mhd.GetVisibility()
                     hierarchyOriginalExpanded = mh.GetExpanded()

@@ -37,10 +37,12 @@ class CLISerializationTest:
         self.SlicerExecutable = None
 
     def _runCLI(self, cli_name, option, json_file_path, parameters=[]):
-        args = ["--launch",
-                cli_name,
-                option, json_file_path,
-                ]
+        args = [
+            "--launch",
+            cli_name,
+            option,
+            json_file_path,
+        ]
         args.extend(parameters)
         return run(self.SlicerExecutable, args)
 
@@ -114,20 +116,16 @@ if __name__ == "__main__":
 
     # Make sure the Json is generated correctly
     expected_json = {
-        "Parameters":
-        {
-            "Boolean Parameters":
-            {
+        "Parameters": {
+            "Boolean Parameters": {
                 "boolean1": True,
                 "boolean2": False,
                 "boolean3": False,
             },
-            "Enumeration Parameters":
-            {
+            "Enumeration Parameters": {
                 "stringChoice": "Bill",
             },
-            "File, Directory and Image Parameters":
-            {
+            "File, Directory and Image Parameters": {
                 "directory1": "",
                 "file1": "",
                 "files": ["1.does", "2.not", "3.matter"],
@@ -135,44 +133,36 @@ if __name__ == "__main__":
                 "image2": "",
                 "outputFile1": "",
             },
-            "Generic Tables":
-            {
+            "Generic Tables": {
                 "inputDT": "",
                 "outputDT": "",
             },
-            "Geometry Parameters":
-            {
+            "Geometry Parameters": {
                 "InputModel": "",
                 "ModelSceneFile": [],
                 "OutputModel": "",
             },
-            "Index Parameters":
-            {
+            "Index Parameters": {
                 "arg0": mrHeadResampled,
                 "arg1": ctHeadAxial,
             },
-            "Measurements":
-            {
+            "Measurements": {
                 "inputFA": "",
                 "outputFA": "",
             },
-            "Point Parameters":
-            {
+            "Point Parameters": {
                 "seed": [[1.0, 0.0, -1.0]],
                 "seedsFile": "",
                 "seedsOutFile": serializeSeedsOutFile,
             },
-            "Regions of interest":
-            {
+            "Regions of interest": {
                 "regions": [],
             },
-            "Scalar Parameters (\u00e1rv\u00edzt\u0171r\u0151 t\u00fck\u00f6rf\u00far\u00f3g\u00e9p)":
-            {
+            "Scalar Parameters (\u00e1rv\u00edzt\u0171r\u0151 t\u00fck\u00f6rf\u00far\u00f3g\u00e9p)": {
                 "doubleVariable": 30,
                 "integerVariable": 30,
             },
-            "Simple return types":
-            {
+            "Simple return types": {
                 "abooleanreturn": False,
                 "adoublereturn": 14,
                 "afloatreturn": 7,
@@ -181,8 +171,7 @@ if __name__ == "__main__":
                 "astringchoicereturn": "Bill",
                 "astringreturn": "Hello",
             },
-            "Transform Parameters":
-            {
+            "Transform Parameters": {
                 "transform1": "%s/ExecutionModelTourTestPython.mrml#vtkMRMLLinearTransformNode1" % (temp_dir),
                 "transform2": "%s/ExecutionModelTourTestPython.mrml#vtkMRMLLinearTransformNode2" % (temp_dir),
                 "transformInput": "",
@@ -192,8 +181,7 @@ if __name__ == "__main__":
                 "transformOutputBspline": "",
                 "transformOutputNonlinear": "",
             },
-            "Vector Parameters":
-            {
+            "Vector Parameters": {
                 "floatVector": [1.2999999523162842, 2, -14],
                 "stringVector": ["foo", "bar", "foobar"],
             },

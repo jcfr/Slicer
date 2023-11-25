@@ -41,7 +41,9 @@ def GetSlicerITKReadWriteAddress(nodeObjectOrName):
     """This function will return the ITK FileIO formatted text address
     so that the image can be read directly from the MRML scene
     """
-    myNode = nodeObjectOrName if isinstance(nodeObjectOrName, slicer.vtkMRMLNode) else slicer.util.getNode(nodeObjectOrName)
+    myNode = (
+        nodeObjectOrName if isinstance(nodeObjectOrName, slicer.vtkMRMLNode) else slicer.util.getNode(nodeObjectOrName)
+    )
     myNodeSceneAddress = myNode.GetScene().GetAddressAsString("").replace("Addr=", "")
     myNodeSceneID = myNode.GetID()
     myNodeFullITKAddress = "slicer:" + myNodeSceneAddress + "#" + myNodeSceneID

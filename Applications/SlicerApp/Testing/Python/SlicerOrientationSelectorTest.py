@@ -19,8 +19,10 @@ class SlicerOrientationSelectorTest(ScriptedLoadableModule):
         self.parent.title = "Create ruler crash (Issue 4199)"
         self.parent.categories = ["Testing.TestCases"]
         self.parent.dependencies = []
-        self.parent.contributors = ["Jean-Christophe Fillion-Robin (Kitware)",
-                                    "Davide Punzo (Kapteyn astronomical institute)"]  # replace with "Firstname Lastname (Organization)"
+        self.parent.contributors = [
+            "Jean-Christophe Fillion-Robin (Kitware)",
+            "Davide Punzo (Kapteyn astronomical institute)",
+        ]  # replace with "Firstname Lastname (Organization)"
         self.parent.helpText = """This test has been added to check that
     orientation selector is correctly updated when updating the SliceToRAS matrix.
     """
@@ -129,6 +131,8 @@ class SlicerOrientationSelectorTestTest(ScriptedLoadableModuleTest):
         orientations = [sliceOrientationSelector.itemText(idx) for idx in range(sliceOrientationSelector.count)]
         expectedOrientations = ["Axial", "Sagittal", "Coronal", "Reformat"]
         if orientations != expectedOrientations:
-            raise Exception(f"Problem with orientation selector\norientations: {orientations}\nexpectedOrientations: {expectedOrientations}")
+            raise Exception(
+                f"Problem with orientation selector\norientations: {orientations}\nexpectedOrientations: {expectedOrientations}"
+            )
 
         self.delayDisplay("Test passed!")

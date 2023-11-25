@@ -62,21 +62,31 @@ class SegmentationsModuleTest2(unittest.TestCase):
         # Define variables
         self.expectedNumOfFilesInDataDir = 4
         self.expectedNumOfFilesInDataSegDir = 2
-        self.closedSurfaceReprName = vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName()
-        self.binaryLabelmapReprName = vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName()
+        self.closedSurfaceReprName = (
+            vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationClosedSurfaceRepresentationName()
+        )
+        self.binaryLabelmapReprName = (
+            vtkSegmentationCore.vtkSegmentationConverter.GetSegmentationBinaryLabelmapRepresentationName()
+        )
 
     # ------------------------------------------------------------------------------
     def TestSection_RetrieveInputData(self):
         try:
             slicer.util.downloadAndExtractArchive(
                 TESTING_DATA_URL + "SHA256/b902f635ef2059cd3b4ba854c000b388e4a9e817a651f28be05c22511a317ec7",
-                self.dataZipFilePath, self.segmentationsModuleTestDir,
-                checksum="SHA256:b902f635ef2059cd3b4ba854c000b388e4a9e817a651f28be05c22511a317ec7")
+                self.dataZipFilePath,
+                self.segmentationsModuleTestDir,
+                checksum="SHA256:b902f635ef2059cd3b4ba854c000b388e4a9e817a651f28be05c22511a317ec7",
+            )
 
-            numOfFilesInDataDirTest = len([name for name in os.listdir(self.dataDir) if os.path.isfile(self.dataDir + "/" + name)])
+            numOfFilesInDataDirTest = len(
+                [name for name in os.listdir(self.dataDir) if os.path.isfile(self.dataDir + "/" + name)]
+            )
             self.assertEqual(numOfFilesInDataDirTest, self.expectedNumOfFilesInDataDir)
             self.assertTrue(os.access(self.dataSegDir, os.F_OK))
-            numOfFilesInDataSegDirTest = len([name for name in os.listdir(self.dataSegDir) if os.path.isfile(self.dataSegDir + "/" + name)])
+            numOfFilesInDataSegDirTest = len(
+                [name for name in os.listdir(self.dataSegDir) if os.path.isfile(self.dataSegDir + "/" + name)]
+            )
             self.assertEqual(numOfFilesInDataSegDirTest, self.expectedNumOfFilesInDataSegDir)
 
         except Exception as e:
@@ -90,7 +100,9 @@ class SegmentationsModuleTest2(unittest.TestCase):
         self.paintEffect = slicer.modules.segmenteditor.widgetRepresentation().self().editor.effectByName("Paint")
         self.eraseEffect = slicer.modules.segmenteditor.widgetRepresentation().self().editor.effectByName("Erase")
         self.islandEffect = slicer.modules.segmenteditor.widgetRepresentation().self().editor.effectByName("Islands")
-        self.thresholdEffect = slicer.modules.segmenteditor.widgetRepresentation().self().editor.effectByName("Threshold")
+        self.thresholdEffect = (
+            slicer.modules.segmenteditor.widgetRepresentation().self().editor.effectByName("Threshold")
+        )
 
         self.segmentEditorNode = slicer.util.getNode("SegmentEditor")
         self.assertIsNotNone(self.segmentEditorNode)
@@ -334,9 +346,13 @@ class SegmentationsModuleTest2(unittest.TestCase):
         segment2Labelmap.GetPointData().GetScalars().Fill(0)
 
         segment1Position_IJK = [5, 5, 5]
-        segment1Labelmap.SetScalarComponentFromDouble(segment1Position_IJK[0], segment1Position_IJK[1], segment1Position_IJK[2], 0, segment1.GetLabelValue())
+        segment1Labelmap.SetScalarComponentFromDouble(
+            segment1Position_IJK[0], segment1Position_IJK[1], segment1Position_IJK[2], 0, segment1.GetLabelValue()
+        )
         segment2Position_IJK = [6, 5, 6]
-        segment2Labelmap.SetScalarComponentFromDouble(segment2Position_IJK[0], segment2Position_IJK[1], segment2Position_IJK[2], 0, segment2.GetLabelValue())
+        segment2Labelmap.SetScalarComponentFromDouble(
+            segment2Position_IJK[0], segment2Position_IJK[1], segment2Position_IJK[2], 0, segment2.GetLabelValue()
+        )
 
         self.checkSegmentVoxelCount(0, 1)
         self.checkSegmentVoxelCount(1, 1)
@@ -437,7 +453,9 @@ class SegmentationsModuleTest2(unittest.TestCase):
         self.thresholdEffect.self().onApply()  # Reset Segment_1
         self.checkSegmentVoxelCount(0, 204)  # Segment_1
         self.segmentEditorNode.SetSelectedSegmentID(segment1Id)
-        self.eraseEffect.modifySelectedSegmentByLabelmap(eraseModifierLabelmap, self.paintEffect.ModificationModeRemoveAll)
+        self.eraseEffect.modifySelectedSegmentByLabelmap(
+            eraseModifierLabelmap, self.paintEffect.ModificationModeRemoveAll
+        )
         self.checkSegmentVoxelCount(0, 177)  # Segment_1
         self.checkSegmentVoxelCount(1, 0)  # Segment_2
 
@@ -559,7 +577,9 @@ class SegmentationsModuleTest2(unittest.TestCase):
         self.segmentEditorNode.SetSelectedSegmentID(segment2Id)
         self.paintEffect.modifySelectedSegmentByLabelmap(paintModifierLabelmap, self.paintEffect.ModificationModeAdd)
 
-        growFromSeedsEffect = slicer.modules.segmenteditor.widgetRepresentation().self().editor.effectByName("Grow from seeds")
+        growFromSeedsEffect = (
+            slicer.modules.segmenteditor.widgetRepresentation().self().editor.effectByName("Grow from seeds")
+        )
         growFromSeedsEffect.self().onPreview()
         growFromSeedsEffect.self().onApply()
 

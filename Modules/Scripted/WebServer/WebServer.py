@@ -76,7 +76,9 @@ class WebServerWidget(ScriptedLoadableModuleWidget):
 
         # open browser page
         self.localConnectionButton = qt.QPushButton("Open static pages in external browser")
-        self.localConnectionButton.toolTip = "Open a connection to the server on the local machine with your system browser."
+        self.localConnectionButton.toolTip = (
+            "Open a connection to the server on the local machine with your system browser."
+        )
         self.layout.addWidget(self.localConnectionButton)
 
         # open slicer widget
@@ -122,7 +124,9 @@ class WebServerWidget(ScriptedLoadableModuleWidget):
         advancedFormLayout.addRow("Slicer API exec: ", self.enableSlicerHandlerExec)
 
         self.enableDICOMHandler = qt.QCheckBox()
-        self.enableDICOMHandler.toolTip = "Enable serving Slicer DICOM database content via DICOMweb (stop server to change option)"
+        self.enableDICOMHandler.toolTip = (
+            "Enable serving Slicer DICOM database content via DICOMweb (stop server to change option)"
+        )
         if hasattr(slicer.modules, "dicom"):
             advancedFormLayout.addRow("DICOMweb API: ", self.enableDICOMHandler)
 
@@ -132,7 +136,9 @@ class WebServerWidget(ScriptedLoadableModuleWidget):
 
         # log to console
         self.logToConsole = qt.QCheckBox()
-        self.logToConsole.toolTip = "Copy log messages to the python console and parent terminal (disable to improve performance)"
+        self.logToConsole.toolTip = (
+            "Copy log messages to the python console and parent terminal (disable to improve performance)"
+        )
         advancedFormLayout.addRow("Log to Console: ", self.logToConsole)
 
         # log to GUI
@@ -166,7 +172,8 @@ class WebServerWidget(ScriptedLoadableModuleWidget):
             enableSlicer=self.enableSlicerHandler.checked,
             enableExec=self.enableSlicerHandlerExec.checked,
             enableDICOM=self.enableDICOMHandler.checked,
-            enableStaticPages=self.enableStaticPagesHandler.checked)
+            enableStaticPages=self.enableStaticPagesHandler.checked,
+        )
         self.logic.enableCORS = self.enableCORS
         self.logic.start()
         self.updateGUIFromLogic()
@@ -180,13 +187,19 @@ class WebServerWidget(ScriptedLoadableModuleWidget):
         self.logToConsole.checked = settingsValue("WebServer/logToConsole", False, converter=toBool)
         self.logToGUI.checked = settingsValue("WebServer/logToGUI", False, converter=toBool)
         self.enableSlicerHandler.checked = settingsValue("WebServer/enableSlicerHandler", True, converter=toBool)
-        self.enableSlicerHandlerExec.checked = settingsValue("WebServer/enableSlicerHandlerExec", False, converter=toBool)
-        self.enableSlicerHandlerExec.checked = settingsValue("WebServer/enableSlicerHandlerExec", False, converter=toBool)
+        self.enableSlicerHandlerExec.checked = settingsValue(
+            "WebServer/enableSlicerHandlerExec", False, converter=toBool
+        )
+        self.enableSlicerHandlerExec.checked = settingsValue(
+            "WebServer/enableSlicerHandlerExec", False, converter=toBool
+        )
         if hasattr(slicer.modules, "dicom"):
             self.enableDICOMHandler.checked = settingsValue("WebServer/enableDICOMHandler", True, converter=toBool)
         else:
             self.enableDICOMHandler.checked = False
-        self.enableStaticPagesHandler.checked = settingsValue("WebServer/enableStaticPagesHandler", True, converter=toBool)
+        self.enableStaticPagesHandler.checked = settingsValue(
+            "WebServer/enableStaticPagesHandler", True, converter=toBool
+        )
 
     def updateGUIFromLogic(self):
         self.startServerButton.setEnabled(not self.logic.serverStarted)
@@ -276,13 +289,15 @@ class SlicerHTTPServer(HTTPServer):
 
     # TODO: set header so client knows that image refreshes are needed (avoid
     # using the &time=xxx trick)
-    def __init__(self,
-                 server_address:tuple[str,int]=("", 2016),
-                 requestHandlers:list[BaseRequestHandler]=None,
-                 docroot:str=".",
-                 logMessage:Callable=None,
-                 certfile:str=None,
-                 enableCORS:bool=False):
+    def __init__(
+        self,
+        server_address: tuple[str, int] = ("", 2016),
+        requestHandlers: list[BaseRequestHandler] = None,
+        docroot: str = ".",
+        logMessage: Callable = None,
+        certfile: str = None,
+        enableCORS: bool = False,
+    ):
         """
         :param server_address: passed to parent class (default ("", 8070))
         :param requestHandlers: request handler objects;
@@ -299,10 +314,10 @@ class SlicerHTTPServer(HTTPServer):
         if certfile:
             # https://stackoverflow.com/questions/19705785/python-3-simple-https-server
             import ssl
-            self.socket = ssl.wrap_socket(self.socket,
-                                          server_side=True,
-                                          certfile=certfile,
-                                          ssl_version=ssl.PROTOCOL_TLS)
+
+            self.socket = ssl.wrap_socket(
+                self.socket, server_side=True, certfile=certfile, ssl_version=ssl.PROTOCOL_TLS
+            )
         self.socket.settimeout(5.0)
         if logMessage:
             self.logMessage = logMessage
@@ -320,12 +335,14 @@ class SlicerHTTPServer(HTTPServer):
         .. note:: this is an internal class of the web server
         """
 
-        def __init__(self,
-                     connectionSocket:socket.socket,
-                     requestHandlers:list[BaseRequestHandler],
-                     docroot:str,
-                     logMessage:BaseRequestLoggingFunction,
-                     enableCORS:bool):
+        def __init__(
+            self,
+            connectionSocket: socket.socket,
+            requestHandlers: list[BaseRequestHandler],
+            docroot: str,
+            logMessage: BaseRequestLoggingFunction,
+            enableCORS: bool,
+        ):
             """
             :param connectionSocket: socket for this request
             :param docroot: for handling static pages content
@@ -362,7 +379,9 @@ class SlicerHTTPServer(HTTPServer):
                 self.requestSoFar += requestPart
                 endOfHeader = self.requestSoFar.find(b"\r\n\r\n")
                 if self.expectedRequestSize > 0:
-                    self.logMessage("received... %d of %d expected" % (len(self.requestSoFar), self.expectedRequestSize))
+                    self.logMessage(
+                        "received... %d of %d expected" % (len(self.requestSoFar), self.expectedRequestSize)
+                    )
                     if len(self.requestSoFar) >= self.expectedRequestSize:
                         requestHeader = self.requestSoFar[: endOfHeader + 2]
                         requestBody = self.requestSoFar[4 + endOfHeader :]
@@ -377,7 +396,9 @@ class SlicerHTTPServer(HTTPServer):
                             numberEndIndex = tag.find(b"\r\n")
                             contentLength = int(tag[numberStartIndex:numberEndIndex])
                             self.expectedRequestSize = 4 + endOfHeader + contentLength
-                            self.logMessage("Expecting a body of %d, total size %d" % (contentLength, self.expectedRequestSize))
+                            self.logMessage(
+                                "Expecting a body of %d, total size %d" % (contentLength, self.expectedRequestSize)
+                            )
                             if len(requestPart) == self.expectedRequestSize:
                                 requestHeader = requestPart[: endOfHeader + 2]
                                 requestBody = requestPart[4 + endOfHeader :]
@@ -392,7 +413,9 @@ class SlicerHTTPServer(HTTPServer):
                 requestComplete = True
 
             if len(requestPart) == 0 or requestComplete:
-                self.logMessage("Got complete message of header size %d, body size %d" % (len(requestHeader), len(requestBody)))
+                self.logMessage(
+                    "Got complete message of header size %d, body size %d" % (len(requestHeader), len(requestBody))
+                )
                 self.readNotifier.disconnect("activated(int)", self.onReadable)
                 self.readNotifier.setEnabled(False)
 
@@ -439,7 +462,9 @@ class SlicerHTTPServer(HTTPServer):
                 httpStatus = "200 OK"
                 if highestConfidenceHandler is not None and highestConfidence > 0.0:
                     try:
-                        contentType, responseBody = highestConfidenceHandler.handleRequest(method=method, uri=uri, requestBody=requestBody)
+                        contentType, responseBody = highestConfidenceHandler.handleRequest(
+                            method=method, uri=uri, requestBody=requestBody
+                        )
                     except Exception as e:
                         etype, value, tb = sys.exc_info()
 
@@ -484,7 +509,10 @@ class SlicerHTTPServer(HTTPServer):
                 sent = self.connectionSocket.send(self.response[: 500 * self.bufferSize])
                 self.response = self.response[sent:]
                 self.sentSoFar += sent
-                self.logMessage("sent: %d (%d of %d, %f%%)" % (sent, self.sentSoFar, self.toSend, 100. * self.sentSoFar / self.toSend))
+                self.logMessage(
+                    "sent: %d (%d of %d, %f%%)"
+                    % (sent, self.sentSoFar, self.toSend, 100.0 * self.sentSoFar / self.toSend)
+                )
             except OSError as e:
                 self.logMessage("Socket error while sending: %s" % e)
                 sendError = True
@@ -500,7 +528,9 @@ class SlicerHTTPServer(HTTPServer):
         try:
             (connectionSocket, clientAddress) = self.socket.accept()
             fileno = connectionSocket.fileno()
-            self.requestCommunicators[fileno] = self.SlicerRequestCommunicator(connectionSocket, self.requestHandlers, self.docroot, self.logMessage, self.enableCORS)
+            self.requestCommunicators[fileno] = self.SlicerRequestCommunicator(
+                connectionSocket, self.requestHandlers, self.docroot, self.logMessage, self.enableCORS
+            )
             self.logMessage("Connected on %s fileno %d" % (connectionSocket, connectionSocket.fileno()))
         except OSError as e:
             self.logMessage("Socket Error", OSError, e)
@@ -571,15 +601,17 @@ class WebServerLogic:
     (enableExec is set to False by default for improved security).
     """
 
-    def __init__(self,
-                 port:Optional[int]=None,
-                 enableSlicer:bool=True,
-                 enableExec:bool=False,
-                 enableDICOM:bool=True,
-                 enableStaticPages:bool=True,
-                 requestHandlers:list[BaseRequestHandler]=None,
-                 logMessage:Optional[BaseRequestLoggingFunction]=None,
-                 enableCORS:bool=False):
+    def __init__(
+        self,
+        port: Optional[int] = None,
+        enableSlicer: bool = True,
+        enableExec: bool = False,
+        enableDICOM: bool = True,
+        enableStaticPages: bool = True,
+        requestHandlers: list[BaseRequestHandler] = None,
+        logMessage: Optional[BaseRequestLoggingFunction] = None,
+        enableCORS: bool = False,
+    ):
         self.logMessage = logMessage or self.defaultLogMessage
         self.port = port or 2016
         self.enableCORS = enableCORS
@@ -631,12 +663,14 @@ class WebServerLogic:
         self.logMessage("docroot: %s" % self.docroot)
         # example: certfile = '/Users/pieper/slicer/latest/SlicerWeb/localhost.pem'
         certfile = None
-        self.server = SlicerHTTPServer(requestHandlers=self.requestHandlers,
-                                       docroot=self.docroot,
-                                       server_address=("", self.port),
-                                       logMessage=self.logMessage,
-                                       certfile=certfile,
-                                       enableCORS=self.enableCORS)
+        self.server = SlicerHTTPServer(
+            requestHandlers=self.requestHandlers,
+            docroot=self.docroot,
+            server_address=("", self.port),
+            logMessage=self.logMessage,
+            certfile=certfile,
+            enableCORS=self.enableCORS,
+        )
         self.server.start()
         self.serverStarted = True
 

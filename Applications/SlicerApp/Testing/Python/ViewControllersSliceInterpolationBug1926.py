@@ -17,7 +17,9 @@ class ViewControllersSliceInterpolationBug1926(ScriptedLoadableModule):
 
     def __init__(self, parent):
         ScriptedLoadableModule.__init__(self, parent)
-        parent.title = "ViewControllers Slice Interpolation Bug 1926"  # TODO make this more human readable by adding spaces
+        parent.title = (
+            "ViewControllers Slice Interpolation Bug 1926"  # TODO make this more human readable by adding spaces
+        )
         parent.categories = ["Testing.TestCases"]
         parent.dependencies = []
         parent.contributors = ["Jim Miller (GE)"]  # replace with "Firstname Lastname (Org)"

@@ -48,14 +48,20 @@ class SegmentEditorMarginEffect(AbstractScriptedSegmentEditorEffect):
 
         self.marginSizeMMSpinBox = slicer.qMRMLSpinBox()
         self.marginSizeMMSpinBox.setMRMLScene(slicer.mrmlScene)
-        self.marginSizeMMSpinBox.setToolTip(_("Segment boundaries will be shifted by this distance. "
-                                              "Positive value means the segments will grow, negative value means segment will shrink."))
+        self.marginSizeMMSpinBox.setToolTip(
+            _(
+                "Segment boundaries will be shifted by this distance. "
+                "Positive value means the segments will grow, negative value means segment will shrink."
+            )
+        )
         self.marginSizeMMSpinBox.quantity = "length"
         self.marginSizeMMSpinBox.value = 3.0
         self.marginSizeMMSpinBox.singleStep = 1.0
 
         self.marginSizeLabel = qt.QLabel()
-        self.marginSizeLabel.setToolTip(_("Size change in pixel. Computed from the segment's spacing and the specified margin size."))
+        self.marginSizeLabel.setToolTip(
+            _("Size change in pixel. Computed from the segment's spacing and the specified margin size.")
+        )
 
         marginSizeFrame = qt.QHBoxLayout()
         marginSizeFrame.addWidget(self.marginSizeMMSpinBox)
@@ -64,14 +70,18 @@ class SegmentEditorMarginEffect(AbstractScriptedSegmentEditorEffect):
 
         self.applyToAllVisibleSegmentsCheckBox = qt.QCheckBox()
         self.applyToAllVisibleSegmentsCheckBox.setToolTip(
-            _("Grow or shrink all visible segments in this segmentation node. This operation may take a while."))
+            _("Grow or shrink all visible segments in this segmentation node. This operation may take a while.")
+        )
         self.applyToAllVisibleSegmentsCheckBox.objectName = self.__class__.__name__ + "ApplyToAllVisibleSegments"
-        self.applyToAllVisibleSegmentsLabel = self.scriptedEffect.addLabeledOptionsWidget(_("Apply to visible segments:"),
-                                                                                          self.applyToAllVisibleSegmentsCheckBox)
+        self.applyToAllVisibleSegmentsLabel = self.scriptedEffect.addLabeledOptionsWidget(
+            _("Apply to visible segments:"), self.applyToAllVisibleSegmentsCheckBox
+        )
 
         self.applyButton = qt.QPushButton(_("Apply"))
         self.applyButton.objectName = self.__class__.__name__ + "Apply"
-        self.applyButton.setToolTip(_("Grows or shrinks selected segment /default) or all segments (checkbox) by the specified margin."))
+        self.applyButton.setToolTip(
+            _("Grows or shrinks selected segment /default) or all segments (checkbox) by the specified margin.")
+        )
         self.scriptedEffect.addOptionsWidget(self.applyButton)
 
         self.applyButton.connect("clicked()", self.onApply)
@@ -122,17 +132,23 @@ class SegmentEditorMarginEffect(AbstractScriptedSegmentEditorEffect):
                 self.applyButton.setEnabled(False)
             else:
                 marginSizeMM = self.getMarginSizeMM()
-                self.marginSizeLabel.text = _("Actual:") + " {} x {} x {} mm ({}x{}x{} pixel)".format(*marginSizeMM, *marginSizePixel)
+                self.marginSizeLabel.text = _("Actual:") + " {} x {} x {} mm ({}x{}x{} pixel)".format(
+                    *marginSizeMM, *marginSizePixel
+                )
                 self.applyButton.setEnabled(True)
         else:
             self.marginSizeLabel.text = _("Empty segment")
 
-        applyToAllVisibleSegments = qt.Qt.Unchecked if self.scriptedEffect.integerParameter("ApplyToAllVisibleSegments") == 0 else qt.Qt.Checked
+        applyToAllVisibleSegments = (
+            qt.Qt.Unchecked if self.scriptedEffect.integerParameter("ApplyToAllVisibleSegments") == 0 else qt.Qt.Checked
+        )
         wasBlocked = self.applyToAllVisibleSegmentsCheckBox.blockSignals(True)
         self.applyToAllVisibleSegmentsCheckBox.setCheckState(applyToAllVisibleSegments)
         self.applyToAllVisibleSegmentsCheckBox.blockSignals(wasBlocked)
 
-        self.setWidgetMinMaxStepFromImageSpacing(self.marginSizeMMSpinBox, self.scriptedEffect.selectedSegmentLabelmap())
+        self.setWidgetMinMaxStepFromImageSpacing(
+            self.marginSizeMMSpinBox, self.scriptedEffect.selectedSegmentLabelmap()
+        )
 
     def growOperationToggled(self, toggled):
         if toggled:
@@ -143,7 +159,11 @@ class SegmentEditorMarginEffect(AbstractScriptedSegmentEditorEffect):
             self.scriptedEffect.setParameter("MarginSizeMm", -self.marginSizeMMSpinBox.value)
 
     def updateMRMLFromGUI(self):
-        marginSizeMM = (self.marginSizeMMSpinBox.value) if self.growOptionRadioButton.checked else (-self.marginSizeMMSpinBox.value)
+        marginSizeMM = (
+            (self.marginSizeMMSpinBox.value)
+            if self.growOptionRadioButton.checked
+            else (-self.marginSizeMMSpinBox.value)
+        )
         self.scriptedEffect.setParameter("MarginSizeMm", marginSizeMM)
         applyToAllVisibleSegments = 1 if self.applyToAllVisibleSegmentsCheckBox.isChecked() else 0
         self.scriptedEffect.setParameter("ApplyToAllVisibleSegments", applyToAllVisibleSegments)
@@ -210,7 +230,9 @@ class SegmentEditorMarginEffect(AbstractScriptedSegmentEditorEffect):
             modifierLabelmap.ShallowCopy(thresh.GetOutput())
 
         # Apply changes
-        self.scriptedEffect.modifySelectedSegmentByLabelmap(modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet)
+        self.scriptedEffect.modifySelectedSegmentByLabelmap(
+            modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet
+        )
 
     def onApply(self):
         # Make sure the user wants to do the operation, even if the segment is not visible
@@ -222,8 +244,11 @@ class SegmentEditorMarginEffect(AbstractScriptedSegmentEditorEffect):
             qt.QApplication.setOverrideCursor(qt.Qt.WaitCursor)
             self.scriptedEffect.saveStateForUndo()
 
-            applyToAllVisibleSegments = int(self.scriptedEffect.parameter("ApplyToAllVisibleSegments")) != 0 \
-                if self.scriptedEffect.parameter("ApplyToAllVisibleSegments") else False
+            applyToAllVisibleSegments = (
+                int(self.scriptedEffect.parameter("ApplyToAllVisibleSegments")) != 0
+                if self.scriptedEffect.parameter("ApplyToAllVisibleSegments")
+                else False
+            )
 
             if applyToAllVisibleSegments:
                 # Smooth all visible segments
@@ -238,8 +263,11 @@ class SegmentEditorMarginEffect(AbstractScriptedSegmentEditorEffect):
                 # select input segments one by one, process
                 for index in range(inputSegmentIDs.GetNumberOfValues()):
                     segmentID = inputSegmentIDs.GetValue(index)
-                    self.showStatusMessage(_("Processing {segmentName}...")
-                                           .format(segmentName=segmentationNode.GetSegmentation().GetSegment(segmentID).GetName()))
+                    self.showStatusMessage(
+                        _("Processing {segmentName}...").format(
+                            segmentName=segmentationNode.GetSegmentation().GetSegment(segmentID).GetName()
+                        )
+                    )
                     self.scriptedEffect.parameterSetNode().SetSelectedSegmentID(segmentID)
                     self.processMargin()
                 # restore segment selection

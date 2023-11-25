@@ -118,7 +118,8 @@ class sceneImport2428Test(ScriptedLoadableModuleTest):
             ["Segment A", [0, 65, 32], 25, [1.0, 0.0, 0.0]],
             ["Segment B", [1, -14, 30], 30, [1.0, 1.0, 0.0]],
             ["Segment C", [0, 28, -7], 15, [0.0, 1.0, 1.0]],
-            ["Segment D", [31, 33, 27], 25, [0.0, 0.0, 1.0]]]
+            ["Segment D", [31, 33, 27], 25, [0.0, 0.0, 1.0]],
+        ]
         for [name, position, radius, color] in segments:
             seed = vtk.vtkSphereSource()
             seed.SetCenter(position)
@@ -209,14 +210,20 @@ class sceneImport2428Test(ScriptedLoadableModuleTest):
             for dn in range(modelNode.GetNumberOfDisplayNodes()):
                 displayNode = modelNode.GetNthDisplayNode(dn)
                 if modelNode.GetPolyData() != displayNode.GetInputPolyData():
-                    self.delayDisplay("Model %d does not match its display node %d! (name: %s, ids: %s and %s)" % (n, dn, modelNode.GetName(), modelNode.GetID(), displayNode.GetID()))
+                    self.delayDisplay(
+                        "Model %d does not match its display node %d! (name: %s, ids: %s and %s)"
+                        % (n, dn, modelNode.GetName(), modelNode.GetID(), displayNode.GetID())
+                    )
                     success = False
             for sn in range(modelNode.GetNumberOfStorageNodes()):
                 storageNode = modelNode.GetNthStorageNode(sn)
                 fileName = storageNode.GetFileName()
                 fileNamesInScene.append(fileName)
                 if fileName in fileNamesInScene:
-                    self.delayDisplay("Model %d has duplicate file name %s! (ids: %s and %s)" % (n, fileName, modelNode.GetID(), storageNode.GetID()))
+                    self.delayDisplay(
+                        "Model %d has duplicate file name %s! (ids: %s and %s)"
+                        % (n, fileName, modelNode.GetID(), storageNode.GetID())
+                    )
                     success = False
 
         #

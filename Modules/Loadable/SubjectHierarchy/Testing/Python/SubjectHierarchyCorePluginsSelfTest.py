@@ -181,7 +181,8 @@ class SubjectHierarchyCorePluginsSelfTestTest(ScriptedLoadableModuleTest):
         self.assertIsNotNone(clonedMarkupsNode.GetStorageNode())
 
         inSameStudy = slicer.vtkSlicerSubjectHierarchyModuleLogic.AreItemsInSameBranch(
-            shNode, markupsShItemID, clonedMarkupsShItemID, slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMLevelStudy())
+            shNode, markupsShItemID, clonedMarkupsShItemID, slicer.vtkMRMLSubjectHierarchyConstants.GetDICOMLevelStudy()
+        )
         self.assertTrue(inSameStudy)
 
     # ------------------------------------------------------------------------------
@@ -219,7 +220,10 @@ class SubjectHierarchyCorePluginsSelfTestTest(ScriptedLoadableModuleTest):
         segmentationNodes.UnRegister(None)
         for i in range(segmentationNodes.GetNumberOfItems()):
             currentSegNode = segmentationNodes.GetItemAsObject(i)
-            if currentSegNode.GetNodeReferenceID(currentSegNode.GetReferenceImageGeometryReferenceRole()) == mrHeadNode.GetID():
+            if (
+                currentSegNode.GetNodeReferenceID(currentSegNode.GetReferenceImageGeometryReferenceRole())
+                == mrHeadNode.GetID()
+            ):
                 segmentationNode = currentSegNode
                 break
 

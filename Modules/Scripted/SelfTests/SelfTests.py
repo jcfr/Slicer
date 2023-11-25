@@ -30,15 +30,19 @@ class SelfTests(ScriptedLoadableModule):
         self.parent.title = "SelfTests"
         self.parent.categories = [translate("qSlicerAbstractCoreModule", "Testing")]
         self.parent.contributors = ["Steve Pieper (Isomics)"]
-        self.parent.helpText = _("""
+        self.parent.helpText = _(
+            """
 The SelfTests module allows developers to provide built-in self-tests (BIST) for slicer so that users can tell
 if their installed version of slicer are running as designed.
-""")
+"""
+        )
         self.parent.helpText += self.getDefaultModuleDocumentationLink()
-        self.parent.acknowledgementText = _("""
+        self.parent.acknowledgementText = _(
+            """
 This work is part of SparKit project, funded by Cancer Care Ontario (CCO)'s ACRU program
 and Ontario Consortium for Adaptive Interventions in Radiation Oncology (OCAIRO).
-""")
+"""
+        )
 
         #
         # slicer.selfTests is a dictionary of tests that are registered
@@ -136,9 +140,7 @@ class SelfTestsLogic:
         testsRun = len(list(self.results.keys()))
         if testsRun == 0:
             return "No tests run"
-        s = "%.0f%% passed (%d of %d)" % (
-            (100. * len(self.passed) / testsRun),
-            len(self.passed), testsRun)
+        s = "%.0f%% passed (%d of %d)" % ((100.0 * len(self.passed) / testsRun), len(self.passed), testsRun)
         s += "\n---\n"
         for test in self.results:
             s += f"{test}\t{self.results[test]}\n"

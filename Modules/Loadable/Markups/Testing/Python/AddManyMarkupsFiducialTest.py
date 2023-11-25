@@ -94,7 +94,9 @@ class AddManyMarkupsFiducialTestWidget(ScriptedLoadableModuleWidget):
         #
         self.fewerModifyFlagCheckBox = qt.QCheckBox()
         self.fewerModifyFlagCheckBox.checked = 0
-        self.fewerModifyFlagCheckBox.toolTip = "If checked, wrap adding points inside of a StartModify - EndModify block"
+        self.fewerModifyFlagCheckBox.toolTip = (
+            "If checked, wrap adding points inside of a StartModify - EndModify block"
+        )
         parametersFormLayout.addRow("Fewer modify events: ", self.fewerModifyFlagCheckBox)
 
         #
@@ -110,7 +112,9 @@ class AddManyMarkupsFiducialTestWidget(ScriptedLoadableModuleWidget):
         #
         self.labelsHiddenFlagCheckBox = qt.QCheckBox()
         self.labelsHiddenFlagCheckBox.checked = 0
-        self.labelsHiddenFlagCheckBox.toolTip = "If checked, markups labels will be forced to be hidden, regardless of default markups properties"
+        self.labelsHiddenFlagCheckBox.toolTip = (
+            "If checked, markups labels will be forced to be hidden, regardless of default markups properties"
+        )
         parametersFormLayout.addRow("Labels hidden: ", self.labelsHiddenFlagCheckBox)
 
         # Apply Button
@@ -147,7 +151,16 @@ class AddManyMarkupsFiducialTestWidget(ScriptedLoadableModuleWidget):
 
 
 class AddManyMarkupsFiducialTestLogic(ScriptedLoadableModuleLogic):
-    def run(self, nodeType, numberOfNodes=10, numberOfControlPoints=10, rOffset=0, usefewerModifyCalls=False, locked=False, labelsHidden=False):
+    def run(
+        self,
+        nodeType,
+        numberOfNodes=10,
+        numberOfControlPoints=10,
+        rOffset=0,
+        usefewerModifyCalls=False,
+        locked=False,
+        labelsHidden=False,
+    ):
         """Run the actual algorithm"""
         print(f"Running test to add {numberOfNodes} nodes markups with {numberOfControlPoints} control points")
         print("Index\tTime to add fid\tDelta between adds")

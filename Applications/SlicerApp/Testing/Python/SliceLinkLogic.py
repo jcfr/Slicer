@@ -136,7 +136,8 @@ class SliceLinkLogicTest(ScriptedLoadableModuleTest):
             nodeNames="FA",
             fileNames="FA.nrrd",
             uris=TESTING_DATA_URL + "SHA256/12d17fba4f2e1f1a843f0757366f28c3f3e1a8bb38836f0de2a32bb1cd476560",
-            checksums="SHA256:12d17fba4f2e1f1a843f0757366f28c3f3e1a8bb38836f0de2a32bb1cd476560")
+            checksums="SHA256:12d17fba4f2e1f1a843f0757366f28c3f3e1a8bb38836f0de2a32bb1cd476560",
+        )
         self.delayDisplay("Finished with download and loading")
         print("")
 

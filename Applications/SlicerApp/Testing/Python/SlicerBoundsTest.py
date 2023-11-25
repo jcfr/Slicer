@@ -69,7 +69,14 @@ class SlicerBoundsTestTest(ScriptedLoadableModuleTest):
 
         bounds = list(range(6))
         volumeNode.GetRASBounds(bounds)
-        untransformedBounds = [-165.68283081054688, 161.62185668945312, 7.542130470275879, 245.78431797027588, -347.62799072265625, -25.12799072265625]
+        untransformedBounds = [
+            -165.68283081054688,
+            161.62185668945312,
+            7.542130470275879,
+            245.78431797027588,
+            -347.62799072265625,
+            -25.12799072265625,
+        ]
         self.assertListAlmostEquals(bounds, untransformedBounds)
 
         volumeNode.GetBounds(bounds)
@@ -83,7 +90,14 @@ class SlicerBoundsTestTest(ScriptedLoadableModuleTest):
         transformNode.ApplyTransform(transform)
 
         volumeNode.SetAndObserveTransformNodeID(transformNode.GetID())
-        transformedBounds = [-764.990027409413, 222.22539693955437, -157.26286179044325, 825.0196226274144, -3477.0246375801075, -244.4287311630153]
+        transformedBounds = [
+            -764.990027409413,
+            222.22539693955437,
+            -157.26286179044325,
+            825.0196226274144,
+            -3477.0246375801075,
+            -244.4287311630153,
+        ]
         volumeNode.GetRASBounds(bounds)
         self.assertListAlmostEquals(bounds, transformedBounds)
 
@@ -116,7 +130,14 @@ class SlicerBoundsTestTest(ScriptedLoadableModuleTest):
         # Testing
         bounds = list(range(6))
         modelNode.GetRASBounds(bounds)
-        untransformedBounds = [-64.5710220336914, 235.01434326171875, -302.91339111328125, 287.3067932128906, -214.92703247070312, 212.1946258544922]
+        untransformedBounds = [
+            -64.5710220336914,
+            235.01434326171875,
+            -302.91339111328125,
+            287.3067932128906,
+            -214.92703247070312,
+            212.1946258544922,
+        ]
         self.assertListAlmostEquals(bounds, untransformedBounds)
 
         modelNode.GetBounds(bounds)
@@ -130,7 +151,14 @@ class SlicerBoundsTestTest(ScriptedLoadableModuleTest):
         transformNode.ApplyTransform(transform)
 
         modelNode.SetAndObserveTransformNodeID(transformNode.GetID())
-        transformedBounds = [-684.0789214975257, 961.8640451930095, -737.3987882515103, 1009.8075011032414, -2158.028473491281, 2129.118193451847]
+        transformedBounds = [
+            -684.0789214975257,
+            961.8640451930095,
+            -737.3987882515103,
+            1009.8075011032414,
+            -2158.028473491281,
+            2129.118193451847,
+        ]
         modelNode.GetRASBounds(bounds)
         self.assertListAlmostEquals(bounds, transformedBounds)
 
@@ -166,7 +194,14 @@ class SlicerBoundsTestTest(ScriptedLoadableModuleTest):
         # Testing
         bounds = list(range(6))
         segmentationNode.GetRASBounds(bounds)
-        untransformedBounds = [-65.41641522206768, 237.23434621664228, -303.75878430165756, 289.7072339384945, -217.463212035832, 213.6873140360733]
+        untransformedBounds = [
+            -65.41641522206768,
+            237.23434621664228,
+            -303.75878430165756,
+            289.7072339384945,
+            -217.463212035832,
+            213.6873140360733,
+        ]
         self.assertListAlmostEquals(bounds, untransformedBounds)
 
         segmentationNode.GetBounds(bounds)
@@ -180,7 +215,14 @@ class SlicerBoundsTestTest(ScriptedLoadableModuleTest):
         transformNode.ApplyTransform(transform)
 
         segmentationNode.SetAndObserveTransformNodeID(transformNode.GetID())
-        transformedBounds = [-690.2701685073093, 966.991271911892, -740.4842166018336, 1018.2608117218165, -2183.4229718546612, 2144.1077463008546]
+        transformedBounds = [
+            -690.2701685073093,
+            966.991271911892,
+            -740.4842166018336,
+            1018.2608117218165,
+            -2183.4229718546612,
+            2144.1077463008546,
+        ]
         segmentationNode.GetRASBounds(bounds)
         self.assertListAlmostEquals(bounds, transformedBounds)
 
@@ -214,7 +256,14 @@ class SlicerBoundsTestTest(ScriptedLoadableModuleTest):
         transformNode.ApplyTransform(transform)
 
         markupNode.SetAndObserveTransformNodeID(transformNode.GetID())
-        transformedBounds = [-1977.3875985837567, 90.6250336838986, -213.3290140037272, 2314.3030541154367, -1801.9498682023534, 24.221433153858232]
+        transformedBounds = [
+            -1977.3875985837567,
+            90.6250336838986,
+            -213.3290140037272,
+            2314.3030541154367,
+            -1801.9498682023534,
+            24.221433153858232,
+        ]
         markupNode.GetRASBounds(bounds)
         self.assertListAlmostEquals(bounds, transformedBounds)
 
@@ -245,7 +294,14 @@ class SlicerBoundsTestTest(ScriptedLoadableModuleTest):
         transformNode.ApplyTransform(transform)
 
         roiNode.SetAndObserveTransformNodeID(transformNode.GetID())
-        transformedBounds = [-1520.2565880625004, 631.261028317266, -85.93765163061204, 1790.9115952348277, -454.6252695921299, 454.0147697244433]
+        transformedBounds = [
+            -1520.2565880625004,
+            631.261028317266,
+            -85.93765163061204,
+            1790.9115952348277,
+            -454.6252695921299,
+            454.0147697244433,
+        ]
         roiNode.GetRASBounds(bounds)
         self.assertListAlmostEquals(bounds, transformedBounds)
 

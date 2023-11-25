@@ -101,7 +101,15 @@ gdiff = afterRestoreSceneCol2[1] - afterReadSceneCol2[1]
 bdiff = afterRestoreSceneCol2[2] - afterReadSceneCol2[2]
 adiff = afterRestoreSceneCol2[3] - afterReadSceneCol2[3]
 diffTotal = math.fabs(rdiff) + math.fabs(gdiff) + math.fabs(bdiff) + math.fabs(adiff)
-print("Difference between colors after restored the scene and value from when it was read in from disk:\n\t", rdiff, gdiff, bdiff, adiff, "\n\tsummed absolute diff = ", diffTotal)
+print(
+    "Difference between colors after restored the scene and value from when it was read in from disk:\n\t",
+    rdiff,
+    gdiff,
+    bdiff,
+    adiff,
+    "\n\tsummed absolute diff = ",
+    diffTotal,
+)
 
 if diffTotal > 0.1:
     exceptionMessage = "Difference between color values total = " + str(diffTotal)

@@ -25,8 +25,7 @@ def builtinTemplatePath():
             return path
 
     # Look for installed templates
-    path = os.path.join(slicer.app.slicerHome, slicer.app.slicerSharePath,
-                        "Wizard", "Templates")
+    path = os.path.join(slicer.app.slicerHome, slicer.app.slicerSharePath, "Wizard", "Templates")
 
     if os.path.exists(path):
         return path

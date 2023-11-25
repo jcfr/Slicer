@@ -106,7 +106,9 @@ class ScenePerformanceWidget(ScriptedLoadableModuleWidget):
         self.URLFileNameLineEdit.setEnabled(enableAddData)
         self.SceneViewSpinBox.setEnabled(True if self.ActionComboBox.currentIndex == 1 else False)
         self.LayoutSpinBox.setEnabled(True if self.ActionComboBox.currentIndex == 3 else False)
-        self.MRMLNodeComboBox.setEnabled(True if self.ActionComboBox.currentIndex == 4 or self.ActionComboBox.currentIndex == 5 else False)
+        self.MRMLNodeComboBox.setEnabled(
+            True if self.ActionComboBox.currentIndex == 4 or self.ActionComboBox.currentIndex == 5 else False
+        )
 
     def findWidget(self, widget, objectName):
         return slicer.util.findChildren(widget, objectName)[0]
@@ -118,10 +120,10 @@ class ScenePerformanceWidget(ScriptedLoadableModuleWidget):
 class ScenePerformanceLogic(ScriptedLoadableModuleLogic):
     def downloadFile(self, downloadURL, downloadFileName, downloadFileChecksum=None):
         import SampleData
-        return SampleData.downloadFromURL(
-            fileNames=downloadFileName,
-            uris=downloadURL,
-            checksums=downloadFileChecksum)[0]
+
+        return SampleData.downloadFromURL(fileNames=downloadFileName, uris=downloadURL, checksums=downloadFileChecksum)[
+            0
+        ]
 
     def startTiming(self):
         self.Timer = qt.QTime()
@@ -148,8 +150,11 @@ class ScenePerformanceTest(ScriptedLoadableModuleTest):
     def testAll(self):
         self.setUp()
 
-        self.addURLData(TESTING_DATA_URL + "SHA256/688ebcc6f45989795be2bcdc6b8b5bfc461f1656d677ed3ddef8c313532687f1",
-                        "BrainAtlas2012.mrb", "SHA256:688ebcc6f45989795be2bcdc6b8b5bfc461f1656d677ed3ddef8c313532687f1")
+        self.addURLData(
+            TESTING_DATA_URL + "SHA256/688ebcc6f45989795be2bcdc6b8b5bfc461f1656d677ed3ddef8c313532687f1",
+            "BrainAtlas2012.mrb",
+            "SHA256:688ebcc6f45989795be2bcdc6b8b5bfc461f1656d677ed3ddef8c313532687f1",
+        )
         self.modifyNodeByID("vtkMRMLScalarVolumeNode1")
         self.modifyNodeByID("vtkMRMLScalarVolumeNode2")
         self.modifyNodeByID("vtkMRMLScalarVolumeNode3")

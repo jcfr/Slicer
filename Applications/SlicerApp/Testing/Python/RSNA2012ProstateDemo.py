@@ -73,7 +73,8 @@ class RSNA2012ProstateDemoTest(ScriptedLoadableModuleTest):
             fileNames="RSNA2012ProstateDemo.mrb",
             loadFiles=True,
             uris=TESTING_DATA_URL + "SHA256/2627388ee213564f8783d0242993212ba01189f4c6640d57c4cde4e28fc5f97b",
-            checksums="SHA256:2627388ee213564f8783d0242993212ba01189f4c6640d57c4cde4e28fc5f97b")
+            checksums="SHA256:2627388ee213564f8783d0242993212ba01189f4c6640d57c4cde4e28fc5f97b",
+        )
 
         # get all scene view nodes and test switching
         svns = slicer.util.getNodes("vtkMRMLSceneViewNode*")

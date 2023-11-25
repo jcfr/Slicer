@@ -77,11 +77,13 @@ class SegmentEditorThresholdEffect(AbstractScriptedSegmentEditorEffect):
         return qt.QIcon()
 
     def helpText(self):
-        return "<html>" + _("""Fill segment based on source volume intensity range<br>. Options:<p>
+        return "<html>" + _(
+            """Fill segment based on source volume intensity range<br>. Options:<p>
 <ul style="margin: 0">
 <li><b>Use for masking:</b> set the selected intensity range as <dfn>Editable intensity range</dfn> and switch to Paint effect.
 <li><b>Apply:</b> set the previewed segmentation in the selected segment. Previous contents of the segment is overwritten.
-</ul><p>""")
+</ul><p>"""
+        )
 
     def activate(self):
         self.setCurrentSegmentTransparent()
@@ -165,9 +167,13 @@ class SegmentEditorThresholdEffect(AbstractScriptedSegmentEditorEffect):
         self.autoThresholdModeSelectorComboBox.addItem(_("threshold below"), MODE_SET_MIN_UPPER)
         self.autoThresholdModeSelectorComboBox.addItem(_("set as lower value"), MODE_SET_LOWER)
         self.autoThresholdModeSelectorComboBox.addItem(_("set as upper value"), MODE_SET_UPPER)
-        self.autoThresholdModeSelectorComboBox.setToolTip(_("How to set lower and upper values of the threshold range."
-                                                            " Threshold above/below: sets the range from the computed value to maximum/minimum."
-                                                            " Set as lower/upper value: only modifies one side of the threshold range."))
+        self.autoThresholdModeSelectorComboBox.setToolTip(
+            _(
+                "How to set lower and upper values of the threshold range."
+                " Threshold above/below: sets the range from the computed value to maximum/minimum."
+                " Set as lower/upper value: only modifies one side of the threshold range."
+            )
+        )
 
         self.autoThresholdMethodSelectorComboBox = qt.QComboBox()
         self.autoThresholdMethodSelectorComboBox.addItem(_("Otsu"), METHOD_OTSU)
@@ -186,17 +192,27 @@ class SegmentEditorThresholdEffect(AbstractScriptedSegmentEditorEffect):
         self.autoThresholdMethodSelectorComboBox.addItem(_("Shanbhag"), METHOD_SHANBHAG)
         self.autoThresholdMethodSelectorComboBox.addItem(_("Triangle"), METHOD_TRIANGLE)
         self.autoThresholdMethodSelectorComboBox.addItem(_("Yen"), METHOD_YEN)
-        self.autoThresholdMethodSelectorComboBox.setToolTip(_("Select method to compute threshold value automatically."))
+        self.autoThresholdMethodSelectorComboBox.setToolTip(
+            _("Select method to compute threshold value automatically.")
+        )
 
         self.selectPreviousAutoThresholdButton = qt.QToolButton()
         self.selectPreviousAutoThresholdButton.text = "<"
-        self.selectPreviousAutoThresholdButton.setToolTip(_("Select previous thresholding method and set thresholds."
-                                                            " Useful for iterating through all available methods."))
+        self.selectPreviousAutoThresholdButton.setToolTip(
+            _(
+                "Select previous thresholding method and set thresholds."
+                " Useful for iterating through all available methods."
+            )
+        )
 
         self.selectNextAutoThresholdButton = qt.QToolButton()
         self.selectNextAutoThresholdButton.text = ">"
-        self.selectNextAutoThresholdButton.setToolTip(_("Select next thresholding method and set thresholds."
-                                                        " Useful for iterating through all available methods."))
+        self.selectNextAutoThresholdButton.setToolTip(
+            _(
+                "Select next thresholding method and set thresholds."
+                " Useful for iterating through all available methods."
+            )
+        )
 
         self.setAutoThresholdButton = qt.QPushButton(_("Set"))
         self.setAutoThresholdButton.setToolTip(_("Set threshold using selected method."))
@@ -406,8 +422,10 @@ class SegmentEditorThresholdEffect(AbstractScriptedSegmentEditorEffect):
         if masterImageData:
             lo, hi = masterImageData.GetScalarRange()
             self.thresholdSlider.setRange(lo, hi)
-            self.thresholdSlider.singleStep = (hi - lo) / 1000.
-            if (self.scriptedEffect.doubleParameter("MinimumThreshold") == self.scriptedEffect.doubleParameter("MaximumThreshold")):
+            self.thresholdSlider.singleStep = (hi - lo) / 1000.0
+            if self.scriptedEffect.doubleParameter("MinimumThreshold") == self.scriptedEffect.doubleParameter(
+                "MaximumThreshold"
+            ):
                 # has not been initialized yet
                 self.scriptedEffect.setParameter("MinimumThreshold", lo + (hi - lo) * 0.25)
                 self.scriptedEffect.setParameter("MaximumThreshold", hi)
@@ -430,12 +448,16 @@ class SegmentEditorThresholdEffect(AbstractScriptedSegmentEditorEffect):
         self.thresholdSlider.setMaximumValue(self.scriptedEffect.doubleParameter("MaximumThreshold"))
         self.thresholdSlider.blockSignals(False)
 
-        autoThresholdMethod = self.autoThresholdMethodSelectorComboBox.findData(self.scriptedEffect.parameter("AutoThresholdMethod"))
+        autoThresholdMethod = self.autoThresholdMethodSelectorComboBox.findData(
+            self.scriptedEffect.parameter("AutoThresholdMethod")
+        )
         wasBlocked = self.autoThresholdMethodSelectorComboBox.blockSignals(True)
         self.autoThresholdMethodSelectorComboBox.setCurrentIndex(autoThresholdMethod)
         self.autoThresholdMethodSelectorComboBox.blockSignals(wasBlocked)
 
-        autoThresholdMode = self.autoThresholdModeSelectorComboBox.findData(self.scriptedEffect.parameter("AutoThresholdMode"))
+        autoThresholdMode = self.autoThresholdModeSelectorComboBox.findData(
+            self.scriptedEffect.parameter("AutoThresholdMode")
+        )
         wasBlocked = self.autoThresholdModeSelectorComboBox.blockSignals(True)
         self.autoThresholdModeSelectorComboBox.setCurrentIndex(autoThresholdMode)
         self.autoThresholdModeSelectorComboBox.blockSignals(wasBlocked)
@@ -521,18 +543,22 @@ class SegmentEditorThresholdEffect(AbstractScriptedSegmentEditorEffect):
     def onUseForPaint(self):
         parameterSetNode = self.scriptedEffect.parameterSetNode()
         parameterSetNode.SourceVolumeIntensityMaskOn()
-        parameterSetNode.SetSourceVolumeIntensityMaskRange(self.thresholdSlider.minimumValue, self.thresholdSlider.maximumValue)
+        parameterSetNode.SetSourceVolumeIntensityMaskRange(
+            self.thresholdSlider.minimumValue, self.thresholdSlider.maximumValue
+        )
         # Switch to paint effect
         self.scriptedEffect.selectEffect("Paint")
 
     def onSelectPreviousAutoThresholdMethod(self):
-        self.autoThresholdMethodSelectorComboBox.currentIndex = (self.autoThresholdMethodSelectorComboBox.currentIndex - 1) \
-            % self.autoThresholdMethodSelectorComboBox.count
+        self.autoThresholdMethodSelectorComboBox.currentIndex = (
+            self.autoThresholdMethodSelectorComboBox.currentIndex - 1
+        ) % self.autoThresholdMethodSelectorComboBox.count
         self.onSelectedAutoThresholdMethod()
 
     def onSelectNextAutoThresholdMethod(self):
-        self.autoThresholdMethodSelectorComboBox.currentIndex = (self.autoThresholdMethodSelectorComboBox.currentIndex + 1) \
-            % self.autoThresholdMethodSelectorComboBox.count
+        self.autoThresholdMethodSelectorComboBox.currentIndex = (
+            self.autoThresholdMethodSelectorComboBox.currentIndex + 1
+        ) % self.autoThresholdMethodSelectorComboBox.count
         self.onSelectedAutoThresholdMethod()
 
     def onSelectedAutoThresholdMethod(self):
@@ -625,7 +651,9 @@ class SegmentEditorThresholdEffect(AbstractScriptedSegmentEditorEffect):
             pass
 
         # Apply changes
-        self.scriptedEffect.modifySelectedSegmentByLabelmap(modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet)
+        self.scriptedEffect.modifySelectedSegmentByLabelmap(
+            modifierLabelmap, slicer.qSlicerSegmentEditorAbstractEffect.ModificationModeSet
+        )
 
         # De-select effect
         self.scriptedEffect.selectEffect("")
@@ -715,7 +743,9 @@ class SegmentEditorThresholdEffect(AbstractScriptedSegmentEditorEffect):
         if viewWidget.className() != "qMRMLSliceWidget":
             return abortEvent
 
-        anyModifierKeyPressed = callerInteractor.GetShiftKey() or callerInteractor.GetControlKey() or callerInteractor.GetAltKey()
+        anyModifierKeyPressed = (
+            callerInteractor.GetShiftKey() or callerInteractor.GetControlKey() or callerInteractor.GetAltKey()
+        )
 
         # Clicking in a view should remove all previous pipelines
         if eventId == vtk.vtkCommand.LeftButtonPressEvent and not anyModifierKeyPressed:
@@ -927,8 +957,12 @@ class SegmentEditorThresholdEffect(AbstractScriptedSegmentEditorEffect):
 
         self.backgroundFunction.AddRGBPoint(scalarRange[0], 1, 1, 1)
         self.backgroundFunction.AddRGBPoint(low - epsilon, 1, 1, 1)
-        self.backgroundFunction.AddRGBPoint(low, self.backgroundColor[0], self.backgroundColor[1], self.backgroundColor[2])
-        self.backgroundFunction.AddRGBPoint(upper, self.backgroundColor[0], self.backgroundColor[1], self.backgroundColor[2])
+        self.backgroundFunction.AddRGBPoint(
+            low, self.backgroundColor[0], self.backgroundColor[1], self.backgroundColor[2]
+        )
+        self.backgroundFunction.AddRGBPoint(
+            upper, self.backgroundColor[0], self.backgroundColor[1], self.backgroundColor[2]
+        )
         self.backgroundFunction.AddRGBPoint(upper + epsilon, 1, 1, 1)
         self.backgroundFunction.AddRGBPoint(scalarRange[1], 1, 1, 1)
         self.backgroundFunction.SetAlpha(1.0)
@@ -1165,7 +1199,9 @@ class HistogramPipeline:
 
         self.brushToWorldOriginTransform.Identity()
         self.brushToWorldOriginTransform.Concatenate(brushToWorldOriginTransformMatrix)
-        self.brushToWorldOriginTransform.RotateX(90)  # cylinder's long axis is the Y axis, we need to rotate it to Z axis
+        self.brushToWorldOriginTransform.RotateX(
+            90
+        )  # cylinder's long axis is the Y axis, we need to rotate it to Z axis
 
         sliceSpacingMm = self.scriptedEffect.sliceSpacing(self.sliceWidget)
 

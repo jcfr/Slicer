@@ -109,8 +109,9 @@ def test_nrrd_dwi_load(first_file, second_file=None):
         g_parsed_normed = normalize(g_parsed_raw)
 
         bval_parsed = parsed_nrrd.bvalue * pow(np.linalg.norm(g_parsed_raw) / max_parsed_grad_norm, 2)
-        np.testing.assert_almost_equal(bval_parsed, dw_node.GetBValue(i), decimal=7,
-                                       err_msg="MRMLNode b value does not match NRRD header")
+        np.testing.assert_almost_equal(
+            bval_parsed, dw_node.GetBValue(i), decimal=7, err_msg="MRMLNode b value does not match NRRD header"
+        )
 
         g_from_node = slicer_grads[i, :]
 
@@ -127,8 +128,12 @@ def test_nrrd_dwi_load(first_file, second_file=None):
         parsed_gradient = np.fromstring(parsed_nrrd.header[grad_key], count=3, sep=" ", dtype=np.float64)
         attr_gradient = np.fromstring(dw_node.GetAttribute(grad_key), count=3, sep=" ", dtype=np.float64)
 
-        np.testing.assert_array_almost_equal(parsed_gradient, attr_gradient, decimal=12,
-                                             err_msg="NHDR gradient does not match gradient in node attribute dictionary")
+        np.testing.assert_array_almost_equal(
+            parsed_gradient,
+            attr_gradient,
+            decimal=12,
+            err_msg="NHDR gradient does not match gradient in node attribute dictionary",
+        )
 
     return (parsed_nrrd, dw_node)
 

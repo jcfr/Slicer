@@ -117,7 +117,9 @@ class DICOMImageSequencePluginClass(DICOMPlugin):
                     # no instance number, probably not cine-MRI
                     canBeCineMri = False
                     if self.detailedLogging:
-                        logging.debug("No instance number attribute found, the series will not be considered as a cine MRI")
+                        logging.debug(
+                            "No instance number attribute found, the series will not be considered as a cine MRI"
+                        )
                     continue
                 cineMriInstanceNumberToFilenameIndex[int(instanceNumber)] = filePath
                 cineMriTriggerTimes.add(slicer.dicomDatabase.fileValue(filePath, self.tags["triggerTime"]))
@@ -135,7 +137,9 @@ class DICOMImageSequencePluginClass(DICOMPlugin):
                     # new instance number
                     seriesNumber = slicer.dicomDatabase.fileValue(filePath, self.tags["seriesNumber"])
                     seriesDescription = slicer.dicomDatabase.fileValue(filePath, self.tags["seriesDescription"])
-                    photometricInterpretation = slicer.dicomDatabase.fileValue(filePath, self.tags["photometricInterpretation"])
+                    photometricInterpretation = slicer.dicomDatabase.fileValue(
+                        filePath, self.tags["photometricInterpretation"]
+                    )
                     name = ""
                     if seriesNumber:
                         name = f"{seriesNumber}:"
@@ -166,11 +170,15 @@ class DICOMImageSequencePluginClass(DICOMPlugin):
                     loadableIndex = instanceNumberToLoadableIndex[instanceNumber]
                     loadables[loadableIndex].files.append(filePath)
                     loadable.tooltip = _("{modality} image sequence ({count} planes)").format(
-                        modality=modality, count=len(loadables[loadableIndex].files))
+                        modality=modality, count=len(loadables[loadableIndex].files)
+                    )
 
         if canBeCineMri and len(cineMriInstanceNumberToFilenameIndex) > 1:
             # Get description from first
-            ds = dicom.read_file(cineMriInstanceNumberToFilenameIndex[next(iter(cineMriInstanceNumberToFilenameIndex))], stop_before_pixels=True)
+            ds = dicom.read_file(
+                cineMriInstanceNumberToFilenameIndex[next(iter(cineMriInstanceNumberToFilenameIndex))],
+                stop_before_pixels=True,
+            )
             name = ""
             if hasattr(ds, "SeriesNumber") and ds.SeriesNumber:
                 name = f"{ds.SeriesNumber}:"
@@ -182,30 +190,48 @@ class DICOMImageSequencePluginClass(DICOMPlugin):
             loadable = DICOMLoadable()
             loadable.singleSequence = True  # put all instances in a single sequence
             loadable.instanceNumbers = sorted(cineMriInstanceNumberToFilenameIndex)
-            loadable.files = [cineMriInstanceNumberToFilenameIndex[instanceNumber] for instanceNumber in loadable.instanceNumbers]
+            loadable.files = [
+                cineMriInstanceNumberToFilenameIndex[instanceNumber] for instanceNumber in loadable.instanceNumbers
+            ]
             loadable.name = name.strip()  # remove leading and trailing spaces, if any
             loadable.tooltip = _("{modality} image sequence").format(modality=ds.Modality)
             loadable.selected = True
             if len(cineMriTriggerTimes) > 3:
                 if self.detailedLogging:
-                    logging.debug("Several different trigger times found (" + repr(cineMriTriggerTimes) + ") - assuming this series is a cine MRI")
+                    logging.debug(
+                        "Several different trigger times found ("
+                        + repr(cineMriTriggerTimes)
+                        + ") - assuming this series is a cine MRI"
+                    )
                 # This is likely a cardiac cine acquisition.
                 if len(cineMriImageOrientations) > 1:
                     if self.detailedLogging:
-                        logging.debug("Several different image orientations found (" + repr(cineMriImageOrientations) + ") - assuming this series is a rotational cine MRI")
+                        logging.debug(
+                            "Several different image orientations found ("
+                            + repr(cineMriImageOrientations)
+                            + ") - assuming this series is a rotational cine MRI"
+                        )
                     # Multivolume importer sets confidence=0.9-1.0, so we need to set a bit higher confidence to be selected by default
                     loadable.confidence = 1.05
                 else:
                     if self.detailedLogging:
-                        logging.debug("All image orientations are the same (" + repr(cineMriImageOrientations) + ") - probably the MultiVolume plugin should load this")
+                        logging.debug(
+                            "All image orientations are the same ("
+                            + repr(cineMriImageOrientations)
+                            + ") - probably the MultiVolume plugin should load this"
+                        )
                     # Multivolume importer sets confidence=0.9-1.0, so we need to set a bit lower confidence to allow multivolume selected by default
                     loadable.confidence = 0.85
             else:
                 # This may be a 3D acquisition,so set lower confidence than scalar volume's default (0.5)
                 if self.detailedLogging:
-                    logging.debug("Only one or few different trigger times found (" + repr(cineMriTriggerTimes) + ") - assuming this series is not a cine MRI")
+                    logging.debug(
+                        "Only one or few different trigger times found ("
+                        + repr(cineMriTriggerTimes)
+                        + ") - assuming this series is not a cine MRI"
+                    )
                 loadable.confidence = 0.4
-            loadable.grayscale = ("MONOCHROME" in ds.PhotometricInterpretation)
+            loadable.grayscale = "MONOCHROME" in ds.PhotometricInterpretation
 
             # Add to loadables list
             loadables.append(loadable)
@@ -231,8 +257,7 @@ class DICOMImageSequencePluginClass(DICOMPlugin):
         reader.Update()
         if reader.GetErrorCode() != vtk.vtkErrorCode.NoError:
             errorString = vtk.vtkErrorCode.GetStringFromErrorCode(reader.GetErrorCode())
-            raise ValueError(
-                f"Could not read image {loadable.name} from file {filePath}. Error is: {errorString}")
+            raise ValueError(f"Could not read image {loadable.name} from file {filePath}. Error is: {errorString}")
 
         rasToIjk = reader.GetRasToIjkMatrix()
         ijkToRas = vtk.vtkMatrix4x4()
@@ -372,7 +397,8 @@ class DICOMImageSequencePluginClass(DICOMPlugin):
             else:
                 # each file is a new sequence
                 outputSequenceNode, playbackRateFps = self.addSequenceFromImageData(
-                    imageData, tempFrameVolume, filePath, loadable.name, (len(loadable.files) == 1))
+                    imageData, tempFrameVolume, filePath, loadable.name, (len(loadable.files) == 1)
+                )
                 outputSequenceNodes.append(outputSequenceNode)
 
         # Delete temporary volume node

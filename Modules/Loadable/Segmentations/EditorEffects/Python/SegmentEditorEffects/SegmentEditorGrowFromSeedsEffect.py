@@ -41,7 +41,8 @@ class SegmentEditorGrowFromSeedsEffect(AbstractScriptedSegmentEditorAutoComplete
         return qt.QIcon()
 
     def helpText(self):
-        return "<html>" + _("""Growing segments to create complete segmentation<br>.
+        return "<html>" + _(
+            """Growing segments to create complete segmentation<br>.
         Location, size, and shape of initial segments and content of source volume are taken into account.
         Final segment boundaries will be placed where source volume brightness changes abruptly. Instructions:<p>
         <ul style="margin: 0">
@@ -55,7 +56,8 @@ class SegmentEditorGrowFromSeedsEffect(AbstractScriptedSegmentEditorAutoComplete
         </ul><p>
         If segments overlap, segment higher in the segments table will have priority.
         The effect uses <a href="http://interactivemedical.org/imic2014/CameraReadyPapers/Paper%204/IMIC_ID4_FastGrowCut.pdf">fast grow-cut method</a>.
-        <p>""")
+        <p>"""
+        )
 
     def reset(self):
         self.growCutFilter = None
@@ -74,9 +76,13 @@ class SegmentEditorGrowFromSeedsEffect(AbstractScriptedSegmentEditorAutoComplete
         self.seedLocalityFactorSlider.decimals = 1
         self.seedLocalityFactorSlider.singleStep = 0.1
         self.seedLocalityFactorSlider.pageStep = 1.0
-        self.seedLocalityFactorSlider.setToolTip(_('Increasing this value makes the effect of seeds more localized,'
-                                                   ' thereby reducing leaks, but requires seed regions to be more evenly distributed in the image.'
-                                                   ' The value is specified as an additional "intensity level difference" per "unit distance."'))
+        self.seedLocalityFactorSlider.setToolTip(
+            _(
+                "Increasing this value makes the effect of seeds more localized,"
+                " thereby reducing leaks, but requires seed regions to be more evenly distributed in the image."
+                ' The value is specified as an additional "intensity level difference" per "unit distance."'
+            )
+        )
         self.scriptedEffect.addLabeledOptionsWidget(_("Seed locality:"), self.seedLocalityFactorSlider)
         self.seedLocalityFactorSlider.connect("valueChanged(double)", self.updateAlgorithmParameterFromGUI)
 
@@ -135,11 +141,14 @@ class SegmentEditorGrowFromSeedsEffect(AbstractScriptedSegmentEditorAutoComplete
         self.growCutFilter.SetSeedLabelVolume(mergedImage)
         startTime = time.time()
         self.growCutFilter.Update()
-        logging.info("Grow-cut operation on volume of {}x{}x{} voxels was completed in {:3.1f} seconds.".format(
-            self.clippedMasterImageData.GetDimensions()[0],
-            self.clippedMasterImageData.GetDimensions()[1],
-            self.clippedMasterImageData.GetDimensions()[2],
-            time.time() - startTime))
+        logging.info(
+            "Grow-cut operation on volume of {}x{}x{} voxels was completed in {:3.1f} seconds.".format(
+                self.clippedMasterImageData.GetDimensions()[0],
+                self.clippedMasterImageData.GetDimensions()[1],
+                self.clippedMasterImageData.GetDimensions()[2],
+                time.time() - startTime,
+            )
+        )
 
         outputLabelmap.DeepCopy(self.growCutFilter.GetOutput())
         imageToWorld = vtk.vtkMatrix4x4()

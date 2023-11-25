@@ -46,8 +46,7 @@ class _ui_LoadModulesDialog:
         vLayout.addWidget(self.enableDeveloperMode)
 
         self.buttonBox = qt.QDialogButtonBox()
-        self.buttonBox.setStandardButtons(qt.QDialogButtonBox.Yes |
-                                          qt.QDialogButtonBox.No)
+        self.buttonBox.setStandardButtons(qt.QDialogButtonBox.Yes | qt.QDialogButtonBox.No)
         vLayout.addWidget(self.buttonBox)
 
 
@@ -86,7 +85,9 @@ class LoadModulesDialog:
             self.ui.addToSearchPaths.text = "Add selected modules to 'Additional module paths'"
 
         # If developer mode is already enabled then don't even show the option
-        developerModeAlreadyEnabled = slicer.util.settingsValue("Developer/DeveloperMode", False, converter=slicer.util.toBool)
+        developerModeAlreadyEnabled = slicer.util.settingsValue(
+            "Developer/DeveloperMode", False, converter=slicer.util.toBool
+        )
         if developerModeAlreadyEnabled:
             self.ui.enableDeveloperMode.visible = False
             self.ui.enableDeveloperMode.checked = False
@@ -108,14 +109,10 @@ class LoadModulesDialog:
             self._moduleItems[item] = module
 
         if len(modules) > 1:
-            self.ui.label.text = (
-                "The following modules can be loaded. "
-                "Would you like to load them now?")
+            self.ui.label.text = "The following modules can be loaded. " "Would you like to load them now?"
 
         elif len(modules) == 1:
-            self.ui.label.text = (
-                "The following module can be loaded. "
-                "Would you like to load it now?")
+            self.ui.label.text = "The following module can be loaded. " "Would you like to load it now?"
 
         else:
             raise ValueError("At least one module must be provided")

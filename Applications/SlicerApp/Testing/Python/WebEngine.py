@@ -59,22 +59,28 @@ class WebEngineWidget(ScriptedLoadableModuleWidget):
         buttons = []
         self.sites = [
             {
-                "label": "Web Console", "url": "http://localhost:1337",
+                "label": "Web Console",
+                "url": "http://localhost:1337",
             },
             {
-                "label": "Crowds Cure Cancer", "url": "http://cancer.crowds-cure.org",
+                "label": "Crowds Cure Cancer",
+                "url": "http://cancer.crowds-cure.org",
             },
             {
-                "label": "Slicer Home Page", "url": "https://slicer.org",
+                "label": "Slicer Home Page",
+                "url": "https://slicer.org",
             },
             {
-                "label": "MorphoSource", "url": "https://www.morphosource.org",
+                "label": "MorphoSource",
+                "url": "https://www.morphosource.org",
             },
             {
-                "label": "Slicer SampleData", "url": "https://www.slicer.org/wiki/SampleData",
+                "label": "Slicer SampleData",
+                "url": "https://www.slicer.org/wiki/SampleData",
             },
             {
-                "label": "SlicerMorph", "url": "https://slicermorph.github.io",
+                "label": "SlicerMorph",
+                "url": "https://slicermorph.github.io",
             },
         ]
         for site in self.sites:
@@ -147,11 +153,13 @@ class WebEngineTest(ScriptedLoadableModuleTest):
         webWidget.show()
         self.delayDisplay("Showing widget")
 
-        webWidget.evalJS("""
+        webWidget.evalJS(
+            """
         const paragraph = document.createElement('p');
         paragraph.innerText = 'Hello from Slicer!';
         document.body.appendChild(paragraph);
-    """)
+    """
+        )
         self.delayDisplay("Slicer should be saying hello!")
 
         #
@@ -185,23 +193,27 @@ class WebEngineTest(ScriptedLoadableModuleTest):
 
         slicer.app.settings().setValue("WebEngine/AllowPythonExecution", ctk.ctkMessageBox.AcceptRole)
 
-        webWidget.evalJS(r"""
+        webWidget.evalJS(
+            r"""
         let pythonCode = "dialog = qt.QInputDialog(slicer.util.mainWindow())\n";
         pythonCode += "dialog.setLabelText('hello')\n";
         pythonCode += "dialog.open()\n";
         pythonCode += "qt.QTimer.singleShot(1000, dialog.close)\n";
 
         window.slicerPython.evalPython(pythonCode);
-    """)
+    """
+        )
 
         self.delayDisplay("Test access to python via js", msec=500)
 
         if hasattr(slicer.modules, "slicerPythonValueFromJS"):
             del slicer.modules.slicerPythonValueFromJS
 
-        webWidget.evalJS("""
+        webWidget.evalJS(
+            """
         window.slicerPython.evalPython("slicer.modules.slicerPythonValueFromJS = 42");
-    """)
+    """
+        )
 
         iteration = 0
         while iteration < 3 and not hasattr(slicer.modules, "slicerPythonValueFromJS"):

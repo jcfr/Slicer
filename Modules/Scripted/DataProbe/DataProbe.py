@@ -24,12 +24,16 @@ class DataProbe(ScriptedLoadableModule):
         parent.title = "DataProbe"
         parent.categories = [translate("qSlicerAbstractCoreModule", "Quantification")]
         parent.contributors = ["Steve Pieper (Isomics)"]
-        parent.helpText = _("""
+        parent.helpText = _(
+            """
 The DataProbe module is used to get information about the current RAS position being
 indicated by the mouse position.
-""")
+"""
+        )
         self.parent.helpText += self.getDefaultModuleDocumentationLink()
-        parent.acknowledgementText = _("""This work is supported by NA-MIC, NAC, NCIGT, NIH U24 CA180918 (PIs Kikinis and Fedorov) and the Slicer Community.""")
+        parent.acknowledgementText = _(
+            """This work is supported by NA-MIC, NAC, NCIGT, NIH U24 CA180918 (PIs Kikinis and Fedorov) and the Slicer Community."""
+        )
         # TODO: need a DataProbe icon
         # parent.icon = qt.QIcon(':Icons/XLarge/SlicerDownloadMRHead.png')
         self.infoWidget = None
@@ -103,7 +107,9 @@ class DataProbeInfoWidget:
         # Observe the crosshair node to get the current cursor position
         self.CrosshairNode = slicer.mrmlScene.GetFirstNodeByClass("vtkMRMLCrosshairNode")
         if self.CrosshairNode:
-            self.CrosshairNodeObserverTag = self.CrosshairNode.AddObserver(slicer.vtkMRMLCrosshairNode.CursorPositionModifiedEvent, self.processEvent)
+            self.CrosshairNodeObserverTag = self.CrosshairNode.AddObserver(
+                slicer.vtkMRMLCrosshairNode.CursorPositionModifiedEvent, self.processEvent
+            )
 
     def __del__(self):
         self.removeObservers()
@@ -244,9 +250,11 @@ class DataProbeInfoWidget:
                 return 0
 
         hasVolume = False
-        layerLogicCalls = (("L", sliceLogic.GetLabelLayer),
-                           ("F", sliceLogic.GetForegroundLayer),
-                           ("B", sliceLogic.GetBackgroundLayer))
+        layerLogicCalls = (
+            ("L", sliceLogic.GetLabelLayer),
+            ("F", sliceLogic.GetForegroundLayer),
+            ("B", sliceLogic.GetBackgroundLayer),
+        )
         for layer, logicCall in layerLogicCalls:
             layerLogic = logicCall()
             volumeNode = layerLogic.GetVolumeNode()
@@ -283,7 +291,8 @@ class DataProbeInfoWidget:
         # set image
         if (not slicer.mrmlScene.IsBatchProcessing()) and sliceLogic and hasVolume and self.showImage:
             pixmap = self._createMagnifiedPixmap(
-                xyz, sliceLogic.GetBlend().GetOutputPort(), self.imageLabel.size, color)
+                xyz, sliceLogic.GetBlend().GetOutputPort(), self.imageLabel.size, color
+            )
             if pixmap:
                 self.imageLabel.setPixmap(pixmap)
                 self.onShowImage(self.showImage)
@@ -291,7 +300,9 @@ class DataProbeInfoWidget:
         if hasattr(self.frame.parent(), "text"):
             sceneName = slicer.mrmlScene.GetURL()
             if sceneName != "":
-                self.frame.parent().text = _("Data Probe: {sceneName}").format(sceneName=self.fitName(sceneName, nameSize=2 * self.nameSize))
+                self.frame.parent().text = _("Data Probe: {sceneName}").format(
+                    sceneName=self.fitName(sceneName, nameSize=2 * self.nameSize)
+                )
             else:
                 self.frame.parent().text = _("Data Probe")
 
@@ -309,18 +320,17 @@ class DataProbeInfoWidget:
         if sliceNode.GetSliceSpacingMode() == slicer.vtkMRMLSliceNode.PrescribedSliceSpacingMode:
             spacing = "(%s)" % spacing
 
-        return \
-            "  {layoutName: <8s}  ({rLabel} {ras_x:3.1f}, {aLabel} {ras_y:3.1f}, {sLabel} {ras_z:3.1f})  {orient: >8s} Sp: {spacing:s}" \
-            .format(layoutName=sliceNode.GetLayoutName(),
-                    rLabel=sliceNode.GetAxisLabel(1) if ras[0] >= 0 else sliceNode.GetAxisLabel(0),
-                    aLabel=sliceNode.GetAxisLabel(3) if ras[1] >= 0 else sliceNode.GetAxisLabel(2),
-                    sLabel=sliceNode.GetAxisLabel(5) if ras[2] >= 0 else sliceNode.GetAxisLabel(4),
-                    ras_x=abs(ras[0]),
-                    ras_y=abs(ras[1]),
-                    ras_z=abs(ras[2]),
-                    orient=sliceNode.GetOrientationString(),
-                    spacing=spacing,
-                    )
+        return "  {layoutName: <8s}  ({rLabel} {ras_x:3.1f}, {aLabel} {ras_y:3.1f}, {sLabel} {ras_z:3.1f})  {orient: >8s} Sp: {spacing:s}".format(
+            layoutName=sliceNode.GetLayoutName(),
+            rLabel=sliceNode.GetAxisLabel(1) if ras[0] >= 0 else sliceNode.GetAxisLabel(0),
+            aLabel=sliceNode.GetAxisLabel(3) if ras[1] >= 0 else sliceNode.GetAxisLabel(2),
+            sLabel=sliceNode.GetAxisLabel(5) if ras[2] >= 0 else sliceNode.GetAxisLabel(4),
+            ras_x=abs(ras[0]),
+            ras_y=abs(ras[1]),
+            ras_z=abs(ras[2]),
+            orient=sliceNode.GetOrientationString(),
+            spacing=spacing,
+        )
 
     def generateLayerName(self, slicerLayerLogic):
         volumeNode = slicerLayerLogic.GetVolumeNode()
@@ -624,7 +634,8 @@ class DataProbeTest(ScriptedLoadableModuleTest):
             nodeNames="FA",
             fileNames="FA.nrrd",
             uris=TESTING_DATA_URL + "SHA256/12d17fba4f2e1f1a843f0757366f28c3f3e1a8bb38836f0de2a32bb1cd476560",
-            checksums="SHA256:12d17fba4f2e1f1a843f0757366f28c3f3e1a8bb38836f0de2a32bb1cd476560")
+            checksums="SHA256:12d17fba4f2e1f1a843f0757366f28c3f3e1a8bb38836f0de2a32bb1cd476560",
+        )
         self.delayDisplay("Finished with download and loading")
 
         self.widget = DataProbeInfoWidget()

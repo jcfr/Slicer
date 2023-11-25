@@ -67,18 +67,20 @@ class DICOMReadersTest(ScriptedLoadableModuleTest):
         self.delayDisplay("Starting the DICOM test")
 
         referenceData = [
-            {"url": TESTING_DATA_URL + "SHA256/3450ef9372a3460a2f181c8d3bb35a74b4f0acb10c6e18cfcf7804e1d99bf843",
-             "checksum": "SHA256:3450ef9372a3460a2f181c8d3bb35a74b4f0acb10c6e18cfcf7804e1d99bf843",
-             "fileName": "Mouse-MR-example-where-GDCM_fails.zip",
-             "name": "Mouse-MR-example-where-GDCM_fails",
-             "seriesUID": "1.3.6.1.4.1.9590.100.1.2.366426457713813178933224342280246227461",
-             # GDCM rejects loading.
-             # DCMTK reads it but then ITK rejects loading the image with 0 spacing.
-             "expectedFailures": ["GDCM", "Archetype", "DCMTK", "GDCM with DCMTK fallback"],
-             "voxelValueQuantity": '(110852, DCM, "MR signal intensity")',
-             "voxelValueUnits": '(1, UCUM, "no units")',
-             },
-            {"url": TESTING_DATA_URL + "SHA256/899f3f8617ca53bad7dca0b2908478319e708b48ff41dfa64b6bac1d76529928",
+            {
+                "url": TESTING_DATA_URL + "SHA256/3450ef9372a3460a2f181c8d3bb35a74b4f0acb10c6e18cfcf7804e1d99bf843",
+                "checksum": "SHA256:3450ef9372a3460a2f181c8d3bb35a74b4f0acb10c6e18cfcf7804e1d99bf843",
+                "fileName": "Mouse-MR-example-where-GDCM_fails.zip",
+                "name": "Mouse-MR-example-where-GDCM_fails",
+                "seriesUID": "1.3.6.1.4.1.9590.100.1.2.366426457713813178933224342280246227461",
+                # GDCM rejects loading.
+                # DCMTK reads it but then ITK rejects loading the image with 0 spacing.
+                "expectedFailures": ["GDCM", "Archetype", "DCMTK", "GDCM with DCMTK fallback"],
+                "voxelValueQuantity": '(110852, DCM, "MR signal intensity")',
+                "voxelValueUnits": '(1, UCUM, "no units")',
+            },
+            {
+                "url": TESTING_DATA_URL + "SHA256/899f3f8617ca53bad7dca0b2908478319e708b48ff41dfa64b6bac1d76529928",
                 "checksum": "SHA256:899f3f8617ca53bad7dca0b2908478319e708b48ff41dfa64b6bac1d76529928",
                 "fileName": "deidentifiedMRHead-dcm-one-series.zip",
                 "name": "deidentifiedMRHead-dcm-one-series",
@@ -86,7 +88,7 @@ class DICOMReadersTest(ScriptedLoadableModuleTest):
                 "expectedFailures": [],
                 "voxelValueQuantity": '(110852, DCM, "MR signal intensity")',
                 "voxelValueUnits": '(1, UCUM, "no units")',
-             },
+            },
         ]
 
         # another dataset that could be added in the future - currently fails for all readers
@@ -108,7 +110,8 @@ class DICOMReadersTest(ScriptedLoadableModuleTest):
                 import SampleData
 
                 dicomFilesDirectory = SampleData.downloadFromURL(
-                    fileNames=dataset["fileName"], uris=dataset["url"], checksums=dataset["checksum"])[0]
+                    fileNames=dataset["fileName"], uris=dataset["url"], checksums=dataset["checksum"]
+                )[0]
                 self.delayDisplay("Finished with download")
 
                 #
@@ -160,9 +163,13 @@ class DICOMReadersTest(ScriptedLoadableModuleTest):
 
                         self.delayDisplay("Test quantity and unit")
                         if "voxelValueQuantity" in dataset.keys():
-                            self.assertEqual(volumeNode.GetVoxelValueQuantity().GetAsPrintableString(), dataset["voxelValueQuantity"])
+                            self.assertEqual(
+                                volumeNode.GetVoxelValueQuantity().GetAsPrintableString(), dataset["voxelValueQuantity"]
+                            )
                         if "voxelValueUnits" in dataset.keys():
-                            self.assertEqual(volumeNode.GetVoxelValueUnits().GetAsPrintableString(), dataset["voxelValueUnits"])
+                            self.assertEqual(
+                                volumeNode.GetVoxelValueUnits().GetAsPrintableString(), dataset["voxelValueUnits"]
+                            )
 
                 #
                 # for each approach that loaded as expected, compare the volumes
@@ -178,7 +185,9 @@ class DICOMReadersTest(ScriptedLoadableModuleTest):
                         secondApproach = approachesThatLoaded[secondApproachIndex]
                         secondVolume = volumesByApproach[secondApproach]
                         print(f"comparing  {firstApproach},{secondApproach}")
-                        comparison = slicer.modules.dicomPlugins["DICOMScalarVolumePlugin"].compareVolumeNodes(firstVolume, secondVolume)
+                        comparison = slicer.modules.dicomPlugins["DICOMScalarVolumePlugin"].compareVolumeNodes(
+                            firstVolume, secondVolume
+                        )
                         if comparison != "":
                             print(("failed: %s", comparison))
                             failedComparisons[firstApproach, secondApproach] = comparison
@@ -223,16 +232,24 @@ class DICOMReadersTest(ScriptedLoadableModuleTest):
         dicomFilesDirectory = SampleData.downloadFromURL(
             fileNames="deidentifiedMRHead-dcm-one-series.zip",
             uris=TESTING_DATA_URL + "SHA256/899f3f8617ca53bad7dca0b2908478319e708b48ff41dfa64b6bac1d76529928",
-            checksums="SHA256:899f3f8617ca53bad7dca0b2908478319e708b48ff41dfa64b6bac1d76529928")[0]
+            checksums="SHA256:899f3f8617ca53bad7dca0b2908478319e708b48ff41dfa64b6bac1d76529928",
+        )[0]
         self.delayDisplay("Finished with download\n")
 
         seriesUID = "1.3.6.1.4.1.5962.99.1.3814087073.479799962.1489872804257.270.0"
-        seriesRASBounds = [-87.29489517211913, 81.70450973510744,
-                           -121.57139587402344, 134.42860412597656,
-                           -138.71430206298828, 117.28569793701172]
+        seriesRASBounds = [
+            -87.29489517211913,
+            81.70450973510744,
+            -121.57139587402344,
+            134.42860412597656,
+            -138.71430206298828,
+            117.28569793701172,
+        ]
         seriesDirectory = "Series 004 [MR - SAG RF FAST VOL FLIP 20]"
-        lastSliceCorners = [[[81.05451202, 133.92860413, 116.78569794], [81.05451202, -122.07139587, 116.78569794]],
-                            [[81.05451202, 133.92860413, -139.21429443], [81.05451202, -122.07139587, -139.21429443]]]
+        lastSliceCorners = [
+            [[81.05451202, 133.92860413, 116.78569794], [81.05451202, -122.07139587, 116.78569794]],
+            [[81.05451202, 133.92860413, -139.21429443], [81.05451202, -122.07139587, -139.21429443]],
+        ]
         filesToRemove = [
             "1.3.6.1.4.1.5962.99.1.3814087073.479799962.1489872804257.361.0.dcm",
             "1.3.6.1.4.1.5962.99.1.3814087073.479799962.1489872804257.362.0.dcm",
