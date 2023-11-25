@@ -68,7 +68,6 @@ extend-ignore = [
   "G002",    # Logging statement uses `%`
 
   "ICN001",  # `numpy` should be imported as `np`
-  "ISC002",  # Implicitly concatenated string literals over multiple lines
   "ISC003",  # Explicitly concatenated string should be implicitly concatenated
 
   "PGH001",  # No builtin `eval()` allowed
@@ -114,6 +113,20 @@ extend-ignore = [
   "UP030",   # Use implicit references for positional format fields
   "UP031",   # Use format specifiers instead of percent format
   "UP032",   # Use f-string instead of `format` call
+
+
+  # Disable linting rules conflicting with "ruff formatter"
+  # See https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+  "COM812",
+  "COM819",
+  "D206",
+  "D300",
+  "E111",
+  "E114",
+  "E117",
+  "ISC001",
+  "ISC002",
+  "W191",
 ]
 
 [lint.pydocstyle]
@@ -153,3 +166,9 @@ convention = "pep257"
 "Modules/Scripted/WebServer/WebServerLib/DICOMRequestHandler.py" = ["E501"]
 "Utilities/Scripts/*.py" = ["E501"]
 "Utilities/Templates/*.py" = ["E501"]
+
+[format]
+exclude = [
+  "Base/QTGUI/Testing/Data/Input/qSlicerScriptedLoadableModuleSyntaxErrorTest.py",
+  "Base/QTGUI/Testing/Data/Input/qSlicerScriptedLoadableModuleSyntaxErrorTestWidget.py",
+]
