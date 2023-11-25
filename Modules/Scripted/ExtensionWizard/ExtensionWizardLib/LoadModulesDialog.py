@@ -41,7 +41,11 @@ class _ui_LoadModulesDialog:
 
         self.enableDeveloperMode = qt.QCheckBox()
         self.enableDeveloperMode.text = "Enable developer mode"
-        self.enableDeveloperMode.toolTip = "Sets the 'Developer mode' application option to enabled. Enabling developer mode is recommended while developing scripted modules, as it makes the Reload and Testing section displayed in the module user interface."
+        self.enableDeveloperMode.toolTip = (
+            "Sets the 'Developer mode' application option to enabled. Enabling developer mode is "
+            "recommended while developing scripted modules, as it makes the Reload and Testing section "
+            "displayed in the module user interface."
+        )
         self.enableDeveloperMode.checked = True
         vLayout.addWidget(self.enableDeveloperMode)
 

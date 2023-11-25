@@ -352,7 +352,8 @@ class VectorToScalarVolumeLogic(ScriptedLoadableModuleLogic):
             # componentToExtract is an index with valid values in the range: [0, numberOfComponents-1]
             if not 0 <= componentToExtract < numberOfComponents:
                 msg = _(
-                    "component to extract ({componentSelected}) is invalid. Image has only {componentsTotal} components."
+                    "component to extract ({componentSelected}) is invalid."
+                    " Image has only {componentsTotal} components."
                 ).format(componentSelected=componentToExtract, componentsTotal=numberOfComponents)
                 logging.debug("isValidInputOutputData failed: %s" % msg)
                 return False, msg

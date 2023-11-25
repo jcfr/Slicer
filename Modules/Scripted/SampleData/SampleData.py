@@ -31,7 +31,8 @@ def downloadFromURL(
     :param uris: Download URL(s).
     :param fileNames: File name(s) that will be downloaded (and loaded).
     :param nodeNames: Node name(s) in the scene.
-    :param checksums: Checksum(s) formatted as ``<algo>:<digest>`` to verify the downloaded file(s). For example, ``SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93``.
+    :param checksums: Checksum(s) formatted as ``<algo>:<digest>`` to verify the downloaded file(s).
+        For example, ``SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93``.
     :param loadFiles: Boolean indicating if file(s) should be loaded. By default, the function decides.
     :param customDownloader: Custom function for downloading.
     :param loadFileTypes: file format name(s) ('VolumeFile' by default).
@@ -179,7 +180,8 @@ class SampleDataSource:
         :param uris: Download URL(s).
         :param fileNames: File name(s) that will be downloaded (and loaded).
         :param nodeNames: Node name(s) in the scene.
-        :param checksums: Checksum(s) formatted as ``<algo>:<digest>`` to verify the downloaded file(s). For example, ``SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93``.
+        :param checksums: Checksum(s) formatted as ``<algo>:<digest>`` to verify the downloaded file(s).
+             For example, ``SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93``.
         :param loadFiles: Boolean indicating if file(s) should be loaded.
         :param customDownloader: Custom function for downloading.
         :param loadFileType: file format name(s) ('VolumeFile' by default if node name is specified).
@@ -493,7 +495,8 @@ class SampleDataLogic:
         :param loadFileType: file format name(s) ('VolumeFile' by default).
         :param loadFiles: Boolean indicating if file(s) should be loaded. By default, the function decides.
         :param loadFileProperties: custom properties passed to the IO plugin.
-        :param checksums: Checksum(s) formatted as ``<algo>:<digest>`` to verify the downloaded file(s). For example, ``SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93``.
+        :param checksums: Checksum(s) formatted as ``<algo>:<digest>`` to verify the downloaded file(s).
+            For example, ``SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93``.
         """
 
         try:
@@ -842,7 +845,8 @@ class SampleDataLogic:
         :param uris: Download URL(s).
         :param fileNames: File name(s) that will be downloaded (and loaded).
         :param nodeNames: Node name(s) in the scene.
-        :param checksums: Checksum(s) formatted as ``<algo>:<digest>`` to verify the downloaded file(s). For example, ``SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93``.
+        :param checksums: Checksum(s) formatted as ``<algo>:<digest>`` to verify the downloaded file(s).
+            For example, ``SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93``.
         :param loadFiles: Boolean indicating if file(s) should be loaded. By default, the function decides.
         :param customDownloader: Custom function for downloading.
         :param loadFileTypes: file format name(s) ('VolumeFile' by default).
@@ -962,7 +966,8 @@ class SampleDataLogic:
         :param uri: Download URL.
         :param destFolderPath: Folder to download the file into.
         :param name: File name that will be downloaded.
-        :param checksum: Checksum formatted as ``<algo>:<digest>`` to verify the downloaded file. For example, ``SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93``.
+        :param checksum: Checksum formatted as ``<algo>:<digest>`` to verify the downloaded file.
+            For example, ``SHA256:cc211f0dfd9a05ca3841ce1141b292898b2dd2d3f08286affadf823a7e58df93``.
         """
         self.downloadPercent = 0
         filePath = destFolderPath + "/" + name
@@ -984,7 +989,8 @@ class SampleDataLogic:
                 if current_digest != digest:
                     self.logMessage(
                         _(
-                            "Checksum verification failed. Computed checksum {currentChecksum} different from expected checksum {expectedChecksum}"
+                            "Checksum verification failed. "
+                            "Computed checksum {currentChecksum} different from expected checksum {expectedChecksum}"
                         ).format(currentChecksum=current_digest, expectedChecksum=digest)
                     )
                     qt.QFile(filePath).remove()
