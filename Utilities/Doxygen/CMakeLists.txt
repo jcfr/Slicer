@@ -2,6 +2,7 @@ find_package(Doxygen 1.10.0 QUIET)
 
 if( DOXYGEN_FOUND )
   if( DOXYGEN_DOT_FOUND )
+
     #
     # User documentation
     #
@@ -12,6 +13,7 @@ if( DOXYGEN_FOUND )
 
     set( Slicer_USER_DOCUMENTATION "NO" )
     set( Slicer_ADDITIONAL_EXCLUDE_PATTERN "*_p.h\  *Private.*" )
+    set( Slicer_WARN_LOGFILE ${CMAKE_CURRENT_BINARY_DIR}/UserDoxygenWarnings.txt )
 
     configure_file(Doxyfile.txt.in ${userdoc_doxyfile})
 
@@ -49,6 +51,7 @@ if( DOXYGEN_FOUND )
     set( Slicer_USER_DOCUMENTATION "YES" )
     set( Slicer_ADDITIONAL_EXCLUDE_PATTERN "" )
     set( Slicer_ADDITIONAL_FILE_PATTERN "*.c \  *.cc \  *.cxx \  *.cpp \  *.c++ \  *.hxx \  *.hpp \  *.h++ \  *.txx \  *.C \  *.CC \  *.C++ \  *.moc" )
+    set( Slicer_WARN_LOGFILE ${CMAKE_CURRENT_BINARY_DIR}/DevDoxygenWarnings.txt )
 
 
     configure_file( Doxyfile.txt.in
