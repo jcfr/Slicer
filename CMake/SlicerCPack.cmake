@@ -419,15 +419,23 @@ if(CPACK_GENERATOR STREQUAL "NSIS")
     string(APPEND CPACK_NSIS_DEFINES "\n  BrandingText ' '\n")
   endif()
 
-  get_property(${app_name}_CPACK_NSIS_MUI_HEADERIMAGE GLOBAL PROPERTY ${app_name}_INSTALLER_HEADER_FILE)
-  string(REPLACE "/" "\\\\" ${app_name}_CPACK_NSIS_MUI_HEADERIMAGE ${${app_name}_CPACK_NSIS_MUI_HEADERIMAGE})
-  slicer_cpack_set("CPACK_NSIS_MUI_HEADERIMAGE")
-  get_property(${app_name}_CPACK_NSIS_MUI_WELCOMEFINISHPAGE_BITMAP GLOBAL PROPERTY ${app_name}_INSTALLER_WELCOME_FILE)
-  string(REPLACE "/" "\\\\" ${app_name}_CPACK_NSIS_MUI_WELCOMEFINISHPAGE_BITMAP ${${app_name}_CPACK_NSIS_MUI_WELCOMEFINISHPAGE_BITMAP})
-  slicer_cpack_set("CPACK_NSIS_MUI_WELCOMEFINISHPAGE_BITMAP")
-  get_property(${app_name}_CPACK_NSIS_MUI_UNWELCOMEFINISHPAGE_BITMAP GLOBAL PROPERTY ${app_name}_INSTALLER_WELCOME_FILE)
-  string(REPLACE "/" "\\\\" ${app_name}_CPACK_NSIS_MUI_UNWELCOMEFINISHPAGE_BITMAP ${${app_name}_CPACK_NSIS_MUI_UNWELCOMEFINISHPAGE_BITMAP})
-  slicer_cpack_set("CPACK_NSIS_MUI_UNWELCOMEFINISHPAGE_BITMAP")
+  # Header
+  if(EXISTS "${Slicer_CPACK_NSIS_INSTALLER_HEADER_FILE}")
+    string(REPLACE "/" "\\\\" _nsis_installer_file ${Slicer_CPACK_NSIS_INSTALLER_HEADER_FILE})
+    slicer_verbose_set(CPACK_NSIS_MUI_HEADERIMAGE "${_nsis_installer_file}")
+  endif()
+
+  # Welcome
+  if(EXISTS "${Slicer_CPACK_NSIS_INSTALLER_WELCOME_FILE}")
+    string(REPLACE "/" "\\\\" _nsis_installer_file ${Slicer_CPACK_NSIS_INSTALLER_WELCOME_FILE})
+    slicer_verbose_set(CPACK_NSIS_MUI_WELCOMEFINISHPAGE_BITMAP "${_nsis_installer_file}")
+  endif()
+
+  # Unwelcome
+  if(EXISTS "${Slicer_CPACK_NSIS_INSTALLER_UNWELCOME_FILE}")
+    string(REPLACE "/" "\\\\" _nsis_installer_file ${Slicer_CPACK_NSIS_INSTALLER_UNWELCOME_FILE})
+    slicer_verbose_set(CPACK_NSIS_MUI_UNWELCOMEFINISHPAGE_BITMAP "${_nsis_installer_file}")
+  endif()
 
   set(CPACK_NSIS_WELCOME_TITLE "Welcome to the ${PACKAGE_APPLICATION_NAME} Setup Wizard")
   set(CPACK_NSIS_WELCOME_TITLE_3LINES True)
