@@ -406,13 +406,13 @@ protected:
   /// It minimizes changes to the imaging pipeline (does not remove and
   /// re-add an input if it is not changed) because rebuilding of the pipeline
   /// is a relatively expensive operation.
-  bool UpdateBlendLayers(vtkImageBlend* blend, const std::deque<SliceLayerInfo> &layers, bool clipToBackgroundVolume);
+  static bool UpdateBlendLayers(vtkImageBlend* blend, const std::deque<SliceLayerInfo> &layers, bool clipToBackgroundVolume);
 
   /// Helper to update the operation to perform based on compositing mode.
   static bool UpdateAddSubOperation(vtkImageMathematics* addSubMath, int compositing);
 
   /// Helper to update foreground opacity when adding/subtracting the background layer
-  bool UpdateFractions(vtkImageMathematics* fraction, double opacity);
+  static bool UpdateFractions(vtkImageMathematics* fraction, double opacity);
 
   /// Helper to update reconstruction slab settings for a given layer.
   static void UpdateReconstructionSlab(vtkMRMLSliceLogic* sliceLogic, vtkMRMLSliceLayerLogic* sliceLayerLogic);
