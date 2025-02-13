@@ -439,6 +439,9 @@ protected:
   /// Helper to update foreground opacity when adding/subtracting the background layer
   static bool UpdateFractions(vtkImageMathematics* fraction, double opacity);
 
+  /// Helper to update Nth additional layer opacity when adding/subtracting the background layer
+  bool UpdateFractions(BlendPipeline* pipeline, std::vector<vtkAlgorithmOutput*> additionalLayerPorts);
+
   /// Helper to update reconstruction slab settings for a given layer.
   static void UpdateReconstructionSlab(vtkMRMLSliceLogic* sliceLogic, vtkMRMLSliceLayerLogic* sliceLayerLogic);
 
