@@ -175,14 +175,7 @@ struct BlendPipeline
       this->AddSubBackgroundCast->SetInputConnection(backgroundImagePort);
       this->AddSubExtractForegroundAlpha->SetInputConnection(foregroundImagePort);
       this->AddSubExtractBackgroundAlpha->SetInputConnection(backgroundImagePort);
-      if (sliceCompositing == vtkMRMLSliceCompositeNode::Add)
-      {
-        this->AddSubMath->SetOperationToAdd();
-      }
-      else
-      {
-        this->AddSubMath->SetOperationToSubtract();
-      }
+
       // If clip to background is disabled, blending occurs over the entire extent
       // of all layers, not just within the background volume region.
       if (!clipToBackgroundVolume)
@@ -977,6 +970,26 @@ bool vtkMRMLSliceLogic::UpdateBlendLayers(vtkImageBlend* blend, const std::deque
 }
 
 //----------------------------------------------------------------------------
+bool vtkMRMLSliceLogic::UpdateAddSubOperation(vtkImageMathematics* addSubMath, int compositing)
+{
+  if (compositing != vtkMRMLSliceCompositeNode::Add && compositing != vtkMRMLSliceCompositeNode::Subtract)
+  {
+    return false;
+  }
+  vtkMTimeType oldAddSubMathMTime = addSubMath->GetMTime();
+  if (compositing == vtkMRMLSliceCompositeNode::Add)
+  {
+    addSubMath->SetOperationToAdd();
+  }
+  else
+  {
+    addSubMath->SetOperationToSubtract();
+  }
+  bool modified = (addSubMath->GetMTime() > oldAddSubMathMTime);
+  return modified;
+}
+
+//----------------------------------------------------------------------------
 bool vtkMRMLSliceLogic::UpdateFractions(vtkImageMathematics* fraction, double opacity)
 {
   vtkMTimeType oldMTime = fraction->GetMTime();
@@ -1117,6 +1130,16 @@ void vtkMRMLSliceLogic::UpdatePipeline()
     this->PipelineUVW->AddLayers(layersUVW, this->SliceCompositeNode->GetCompositing(), this->SliceCompositeNode->GetClipToBackgroundVolume(),
       backgroundImagePortUVW, foregroundImagePortUVW, this->SliceCompositeNode->GetForegroundOpacity(),
       labelImagePortUVW, this->SliceCompositeNode->GetLabelOpacity());
+
+    // Update operating to perform for add/subtract pipeline
+    if (vtkMRMLSliceLogic::UpdateAddSubOperation(this->Pipeline->AddSubMath.GetPointer(), this->SliceCompositeNode->GetCompositing()))
+    {
+      modified = 1;
+    }
+    if (vtkMRMLSliceLogic::UpdateAddSubOperation(this->PipelineUVW->AddSubMath.GetPointer(), this->SliceCompositeNode->GetCompositing()))
+    {
+      modified = 1;
+    }
 
     // Check fraction changes for add/subtract pipeline
     if (this->UpdateFractions(this->Pipeline->ForegroundFractionMath.GetPointer(), this->SliceCompositeNode->GetForegroundOpacity()))
