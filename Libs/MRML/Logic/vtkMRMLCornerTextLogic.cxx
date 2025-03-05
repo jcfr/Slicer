@@ -138,6 +138,42 @@ bool vtkMRMLCornerTextLogic::RegisterPropertyValueProvider(
 }
 
 //---------------------------------------------------------------------------
+bool vtkMRMLCornerTextLogic::UnregisterPropertyValueProvider(const std::string& pluginName)
+{
+  auto it = this->RegisteredProviders.find(pluginName);
+  if (it == this->RegisteredProviders.end())
+  {
+    vtkWarningMacro("Provider for " << pluginName << " not registered.");
+    return false;
+  }
+  this->RegisteredProviders.erase(it);
+  return true;
+}
+
+//---------------------------------------------------------------------------
+std::unordered_set<std::string> vtkMRMLCornerTextLogic::GetRegisteredPropertyProviders() const
+{
+  std::unordered_set<std::string> pluginNames;
+  for (const auto &[plugin, provider] : this->RegisteredProviders)
+  {
+    pluginNames.insert(plugin);
+  }
+  return pluginNames;
+}
+
+//---------------------------------------------------------------------------
+vtkMRMLAbstractAnnotationPropertyValueProvider* vtkMRMLCornerTextLogic::GetRegisteredPropertyProvider(const std::string& pluginName)
+{
+  auto it = this->RegisteredProviders.find(pluginName);
+  if (it == this->RegisteredProviders.end())
+  {
+    vtkWarningMacro("Provider for " << pluginName << " not registered.");
+    return nullptr;
+  }
+  return it->second;
+}
+
+//---------------------------------------------------------------------------
 vtkMRMLTextNode* vtkMRMLCornerTextLogic::GetCornerAnnotations(
     vtkMRMLScene* mrmlScene, const int viewArrangement, const std::string& viewName)
 {

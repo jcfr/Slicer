@@ -42,6 +42,7 @@ class vtkMRMLAbstractAnnotationPropertyValueProvider;
 #include <cstdlib>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 class VTK_MRML_LOGIC_EXPORT vtkMRMLCornerTextLogic :
   public vtkMRMLAbstractLogic
@@ -67,6 +68,9 @@ public:
   /// CornerText Logic functions
   static vtkMRMLTextNode* GetCornerAnnotations(vtkMRMLScene*, const int viewArrangement, const std::string& viewName);
   bool RegisterPropertyValueProvider(const std::string& pluginName, vtkMRMLAbstractAnnotationPropertyValueProvider*);
+  bool UnregisterPropertyValueProvider(const std::string& pluginName);
+  std::unordered_set<std::string> GetRegisteredPropertyProviders() const;
+  vtkMRMLAbstractAnnotationPropertyValueProvider* GetRegisteredPropertyProvider(const std::string& pluginName);
   std::array<std::string, 8> GenerateAnnotations(vtkMRMLSliceNode*, vtkMRMLTextNode*, bool printWarnings = true);
 
   /// @{
