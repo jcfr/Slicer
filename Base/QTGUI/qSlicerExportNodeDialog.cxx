@@ -991,7 +991,7 @@ bool qSlicerExportNodeDialogPrivate::exportNodes()
     }
 
     // Fill saving parameters with the gathered information
-    savingParameters["nodeID"] = node->GetID();
+    savingParameters["nodeID"] = QString::fromUtf8(node->GetID());
     savingParameters["fileName"] = fileInfo.absoluteFilePath();
     savingParameters["fileFormat"] = nodeTypeWidgetSet->formatText();
 

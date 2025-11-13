@@ -394,7 +394,7 @@ void qSlicerSubjectHierarchyTransformsPluginPrivate::showResetCenterOfTransforma
     }
 
     QAction* action = this->ResetCenterOfTransformationMenu->addAction(transformNode->GetName());
-    action->setData(QVariant(transformNode->GetID()));
+    action->setData(QVariant(QString::fromUtf8(transformNode->GetID())));
     this->ResetCenterOfTransformationNodeGroup->addAction(action);
     QObject::connect(action, SIGNAL(triggered()), q, SLOT(resetCenterOfTransformationTransformedNodeBounds()));
   }
@@ -881,7 +881,7 @@ void qSlicerSubjectHierarchyTransformsPlugin::showViewContextMenuActionsForItem(
   }
 
   d->ViewContextMenuEventData = eventData;
-  d->ViewContextMenuEventData["NodeID"] = QVariant(transformNode->GetID());
+  d->ViewContextMenuEventData["NodeID"] = QString::fromUtf8(transformNode->GetID());
 
   d->InvertAction->setVisible(true);
   d->IdentityAction->setVisible(true);

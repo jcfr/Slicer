@@ -1059,7 +1059,7 @@ bool qSlicerCoreIOManager::exportNodes(const QList<qSlicerIO::IOProperties>& par
 
     // Copy parameters map; we will need to set the nodeID parameter to correspond to the node in the temporary scene
     qSlicerIO::IOProperties temporarySceneParameters = parameters;
-    temporarySceneParameters["nodeID"] = temporaryStorableNode->GetID();
+    temporarySceneParameters["nodeID"] = QString::fromUtf8(temporaryStorableNode->GetID());
 
     // Deduce "fileType" from "fileFormat" parameter; saveNodes will want both
     qSlicerIO::IOFileType fileType = this->fileWriterFileType(storableNode, parameters["fileFormat"].toString());

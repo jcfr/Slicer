@@ -735,7 +735,7 @@ void qMRMLSegmentEditorWidget::updateMaskingSection()
   if (d->ParameterSetNode->GetMaskMode() == vtkMRMLSegmentationNode::EditAllowedInsideSingleSegment)
   {
     // segment item
-    maskModeIndex = d->MaskModeComboBox->findData(d->ParameterSetNode->GetMaskSegmentID());
+    maskModeIndex = d->MaskModeComboBox->findData(QString::fromUtf8(d->ParameterSetNode->GetMaskSegmentID()));
   }
   else
   {

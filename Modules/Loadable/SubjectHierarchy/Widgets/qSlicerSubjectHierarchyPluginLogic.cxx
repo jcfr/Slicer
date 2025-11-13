@@ -557,7 +557,7 @@ void qSlicerSubjectHierarchyPluginLogic::onDisplayMenuEvent(vtkObject* displayNo
   eventDataMap["ComponentIndex"] = QVariant(eventData->GetComponentIndex());
   if (eventData->GetViewNode())
   {
-    eventDataMap["ViewNodeID"] = QVariant(eventData->GetViewNode()->GetID());
+    eventDataMap["ViewNodeID"] = QVariant(QString::fromUtf8(eventData->GetViewNode()->GetID()));
   }
   if (eventData->IsWorldPositionValid())
   {

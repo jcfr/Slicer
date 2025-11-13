@@ -523,7 +523,7 @@ void qSlicerSubjectHierarchyMarkupsPlugin::showViewContextMenuActionsForItem(vtk
   }
 
   d->ViewContextMenuEventData = eventData;
-  d->ViewContextMenuEventData["NodeID"] = QVariant(associatedNode->GetID());
+  d->ViewContextMenuEventData["NodeID"] = QString::fromUtf8(associatedNode->GetID());
 
   int componentType = d->ViewContextMenuEventData["ComponentType"].toInt();
   bool pointActionsDisabled = componentType == vtkMRMLMarkupsDisplayNode::ComponentTranslationHandle || //

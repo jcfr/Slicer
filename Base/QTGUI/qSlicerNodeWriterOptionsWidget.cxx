@@ -69,7 +69,7 @@ void qSlicerNodeWriterOptionsWidget::setObject(vtkObject* object)
   vtkMRMLStorableNode* storableNode = vtkMRMLStorableNode::SafeDownCast(object);
   if (storableNode != nullptr)
   {
-    d->Properties["nodeID"] = storableNode->GetID();
+    d->Properties["nodeID"] = QString::fromUtf8(storableNode->GetID());
   }
   else
   {

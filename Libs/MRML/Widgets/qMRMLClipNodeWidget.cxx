@@ -277,7 +277,7 @@ void qMRMLClipNodeWidget::updateClippingNodeFrame()
 
       if (clippingNode)
       {
-        object->setProperty("ID", QVariant(clippingNode->GetID()));
+        object->setProperty("ID", QVariant(QString::fromUtf8(clippingNode->GetID())));
       }
       object->setProperty("Index", QVariant(i));
     }
