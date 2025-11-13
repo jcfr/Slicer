@@ -21,6 +21,7 @@
 // Qt includes
 #include <QBrush>
 #include <QDebug>
+#include <QIODevice>
 #include <QMimeData>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
 # include <QRegularExpression>
