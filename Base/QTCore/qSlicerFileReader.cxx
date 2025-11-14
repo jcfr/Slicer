@@ -98,7 +98,8 @@ QStringList qSlicerFileReader::supportedNameFilters(const QString& fileName, int
     for (QString extension : ctk::nameFilterToExtensions(nameFilter))
     {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-      QRegularExpression regExp(QRegularExpression::wildcardToRegularExpression(extension), QRegularExpression::CaseInsensitiveOption);
+      QRegularExpression regExp(QRegularExpression::wildcardToRegularExpression(extension, QRegularExpression::NonPathWildcardConversion),
+                                QRegularExpression::CaseInsensitiveOption);
       Q_ASSERT(regExp.isValid());
       if (regExp.match(file.absoluteFilePath()).hasMatch())
 #else

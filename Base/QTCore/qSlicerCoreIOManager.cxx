@@ -180,7 +180,8 @@ QList<qSlicerFileWriter*> qSlicerCoreIOManagerPrivate::writers(const qSlicerIO::
           extensionWithStar.prepend("*");
         }
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-        QRegularExpression regExp(QRegularExpression::wildcardToRegularExpression(extensionWithStar), QRegularExpression::CaseInsensitiveOption);
+        QRegularExpression regExp(QRegularExpression::wildcardToRegularExpression(extensionWithStar, QRegularExpression::NonPathWildcardConversion),
+                                  QRegularExpression::CaseInsensitiveOption);
         Q_ASSERT(regExp.isValid());
         if (regExp.match(file.absoluteFilePath()).hasMatch())
 #else
