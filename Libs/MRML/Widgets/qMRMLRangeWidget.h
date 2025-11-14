@@ -26,6 +26,11 @@
 #include <ctkRangeSlider.h>
 #include <ctkRangeWidget.h>
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+// vtkMRML includes
+Q_MOC_INCLUDE(vtkMRMLScene.h)
+#endif
+
 // qMRML includes
 #include "qMRMLWidgetsExport.h"
 
