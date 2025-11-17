@@ -1237,7 +1237,11 @@ void qSlicerSegmentEditorScissorsEffect::setupOptionsFrame()
   d->shapeGroup->addButton(d->rectangleRadioButton, qSlicerSegmentEditorScissorsEffectPrivate::ShapeRectangle);
 
   QObject::connect(d->shapeGroup, SIGNAL(buttonClicked(int)), this, SLOT(setShape(int)));
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+  QObject::connect(d->shapeDrawCenteredCheckBox, &QCheckBox::checkStateChanged, this, &qSlicerSegmentEditorScissorsEffect::setShapeDrawCentered);
+#else
   QObject::connect(d->shapeDrawCenteredCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShapeDrawCentered(int)));
+#endif
 
   // Slice cut mode
 
